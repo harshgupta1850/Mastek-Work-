@@ -1,0 +1,316 @@
+
+
+/**
+ * @fileoverview extendshoppingCartSummary_v15.js.
+ *
+ * @author
+ */
+define(
+    //---------------------
+    // DEPENDENCIES
+    //---------------------
+    ['knockout', 'ccRestClient', 'ccConstants', 'pubsub'],
+
+    //-----------------------
+    // MODULE DEFINITION
+    //-----------------------
+    function(ko, ccRestClient, ccConstants, pubsub) {
+
+        "use strict";
+        var getWidget;
+        return {
+            onLoad: function(widget) {
+
+                getWidget = widget;
+                getWidget.prodIdArray = ko.observableArray([]);
+                getWidget.prodIdQtyArray = ko.observableArray([]);
+                getWidget.add = ko.observable();
+                getWidget.transNumber = ko.observable();
+                getWidget.type = ko.observable();
+                getWidget.br_gift_order = ko.observable(false);
+                getWidget.br_all_gift_orders = ko.observable('');
+                getWidget.br_all_gift_orders_length = ko.observable(0);
+                getWidget.br_all_free_gift_wrap = ko.observable(true);
+
+
+                // Funtion to extract the query parameter from URL
+
+                widget.getProdIdQtyFromUrl = function() {
+                    var url = window.location.href;
+                    var params = (new URL(window.location.href)).searchParams;
+                    getWidget.add = params.get("add")
+                    getWidget.transNumber = params.get("transnumber");
+                    getWidget.type = params.get("type");
+                    if (getWidget.add !== null) {
+                        var pid_qty = getWidget.add.split(';');
+                        pid_qty.map(function(data) {
+                            getWidget.prodIdArray().push(data.split(':')[0]);
+                            getWidget.prodIdQtyArray().push({
+                                prodId: data.split(':')[0],
+                                prodQty: parseInt(data.split(':')[1], 10)
+                            });
+                        });
+                    }
+
+                };
+
+                getWidget.getProdIdQtyFromUrl();
+
+                // Function to find out SKU options
+
+
+                widget.getSelectedSkuOptionsSelf = function(variantOptions, x_color, x_width) {
+                    var selectedOptions = [],
+                        listingVariantImage;
+                    if (variantOptions) {
+                        for (var i = 0; i < variantOptions.length; i++) {
+                            if (variantOptions[i] && (x_color == Object.keys(variantOptions[i].optionValueMap)[i] || x_width == Object.keys(variantOptions[i].optionValueMap)[i])) {
+                                selectedOptions.push({
+                                    'optionName': variantOptions[i].optionName,
+                                    'optionValue': Object.keys(variantOptions[i].optionValueMap)[i],
+                                    'optionId': variantOptions[i].optionId,
+                                    'optionValueId': variantOptions[i].optionValueMap[Object.keys(variantOptions[i].optionValueMap)[i]]
+                                });
+                            }
+                        }
+                    }
+                    return selectedOptions;
+                };
+
+
+                // Function to add item in cart
+
+
+                widget.addItemsToCart = function() {
+                    var prodListIdQty = this.prodIdQtyArray();
+                    var prodListIds = this.prodIdArray();
+                    var prodListIdsObj = {};
+                    var prodListArray = [];
+                    var queryString = '';
+                    for (var i = 0; i < (prodListIds.length); i++) {
+                        if (i === 0) {
+                            queryString = "id eq \"" + prodListIds[i] + "\"";
+                        } else {
+
+                            queryString = queryString + " or id eq \"" + prodListIds[i] + "\"";
+                        }
+
+                    }
+                    prodListIdsObj["dataItems"] = "repositoryid";
+                    prodListIdsObj["q"] = queryString;
+                    if (prodListIds.length > 0) {
+                        ccRestClient.request(ccConstants.ENDPOINT_PRODUCTS_LIST_PRODUCTS, prodListIdsObj, function(productList) {
+                                console.log('product response', productList);
+                                var params = "";
+                                productList.items.map(function(item, i) {
+                                    var repId = item.childSKUs[0].repositoryId;
+                                    if (i === productList.items.length - 1) {
+                                        params += item.id + ":" + repId;
+                                    } else {
+                                        params += item.id + ":" + repId + ",";
+                                    }
+                                });
+                                var parameters = {};
+                                parameters[ccConstants.PRODUCTS_PARAM] = params;
+                                ccRestClient.request(ccConstants.ENDPOINT_PRODUCTS_AVAILABILITY, parameters, function(stockData) {
+                                    console.log('stockData', stockData)
+                                    productList.items.map(function(product) {
+                                        var selectedOptions = getWidget.getSelectedSkuOptionsSelf(product.productVariantOptions, product.childSKUs[0].x_width, product.childSKUs[0].x_color);
+                                        var selectedOptionsObj = {};
+                                        selectedOptionsObj['selectedOptions'] = selectedOptions;
+                                        var stockStateObj = {};
+                                        stockData.map(function(data) {
+                                            if (data.productId === product.id) {
+                                                if (data.stockStatus == 'IN_STOCK') {
+                                                    stockStateObj['stockState'] = data.stockStatus;
+                                                    var newProduct = $.extend(true, {}, product, selectedOptionsObj, stockStateObj);
+                                                    console.log('newProduct', newProduct)
+                                                    for (var i = 0; i < prodListIdQty.length; i++) {
+                                                        if (newProduct.id == prodListIdQty[i].prodId) {
+                                                            newProduct.orderQuantity = prodListIdQty[i].prodQty
+                                                        }
+                                                    }
+                                                    prodListArray.push(newProduct)
+                                                }
+                                            }
+                                        })
+
+                                    })
+                                    getWidget.cart().addItems(prodListArray);
+                                    setTimeout(function() {
+                                        getWidget.addExternalData();
+                                        console.log('Final Items', getWidget.cart().items());
+                                    }, 3000)
+                                })
+                            },
+                            function(err) {
+                                console.log(err)
+                            });
+                    }
+                };
+                var uri = window.location.toString();
+                if (uri.indexOf("?") > 0) {
+                    var clean_uri = uri.substring(0, uri.indexOf("?"));
+                    window.history.replaceState({}, document.title, clean_uri);
+                }
+                //function to add TransNumber and type to the commerce item from URL
+$.Topic(pubsub.topicNames.CART_READY).subscribe(function(obj) {
+console.log('1')
+});
+
+$.Topic(pubsub.topicNames.CART_UPDATED).subscribe(function(obj) {
+console.log('2')
+});
+
+
+$.Topic(pubsub.topicNames.CART_ADD_SUCCESS).subscribe(function(obj) {
+console.log('3')
+});
+
+$.Topic(pubsub.topicNames.CART_EDIT_ADD_ON).subscribe(function(obj) {
+console.log('4')
+});
+
+$.Topic(pubsub.topicNames.MINI_CART_SHOW).subscribe(function(obj) {
+console.log('5')
+});
+
+$.Topic(pubsub.topicNames.USER_LOAD_CART).subscribe(function(obj) {
+console.log('6')
+});
+
+$.Topic(pubsub.topicNames.PAGE_VIEW_CHANGED).subscribe(function(obj) {
+console.log('7')
+});
+
+$.Topic(pubsub.topicNames.SHOPPINGCART_VALIDATE_NOW).subscribe(function(obj) {
+console.log('8')
+});
+
+$.Topic(pubsub.topicNames.CART_LOADED).subscribe(function(obj) {
+console.log('9')
+});
+
+
+$.Topic(pubsub.topicNames.CART_EDIT_ADD_ONS_AT_CART).subscribe(function(obj) {
+console.log('10')
+});
+
+$.Topic(pubsub.topicNames.REFRESH_USER_CART).subscribe(function(obj) {
+console.log('11')
+});
+
+$.Topic(pubsub.topicNames.PAGE_READY).subscribe(function(obj) {
+console.log('12')
+});
+$.Topic(pubsub.topicNames.CART_DETAILS_CHILD_ITEM_SELECTED).subscribe(function(obj) {
+console.log('13')
+});
+
+$.Topic(pubsub.topicNames.DEFERRED_CART_LOAD).subscribe(function(obj) {
+console.log('14')
+});
+                widget.addExternalData = function() {
+                    for (var l = 0; l < this.prodIdArray().length; l++) {
+                        for (var k = 0; k < getWidget.cart().items().length; k++) {
+                            if (getWidget.cart().items()[k].productId == this.prodIdArray()[l]) {
+                                if (this.transNumber !== null && this.transNumber !== '') {
+                                    var objectData = {};
+                                    objectData['transNumber'] = this.transNumber;
+                                    objectData['type'] = this.type;
+                                    getWidget.cart().items()[k].externalData()['externalData'] = objectData
+                                        // getWidget.cart().items().map(function (item) {
+                                        //   for (var i in item ) {
+                                        //     item.externalData()['externalData'] = objectData;
+                                        //   }
+                                        // });
+                                        // getWidget.cart().allItems()[k].shopperInput = objectData;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                getWidget.prodIdArray = ko.observableArray([]);
+                getWidget.prodIdQtyArray = ko.observableArray([]);
+                getWidget.add = ko.observable();
+                getWidget.transNumber = ko.observable();
+                getWidget.type = ko.observable();
+                }
+                
+                //gift my options
+                widget.showGiftTab = function(id,val){
+                    $('#'+id).addClass('in');
+                    $('.brgtn-gift-content').not($('#'+id)).removeClass('in');
+                    widget.br_gift_order(val);
+                }
+                
+                
+                $(document).on('click','.brgtn-gift-my-order-check',function(){
+                    if($(this).is(':checked')){
+                        $('.brgtn-gift-my-order-check').not($(this)).prop('checked',false);
+                        if($(this).attr('name') === 'giftMyOrder'){
+                            widget.showGiftTab('brgtn-gift-my-order',true);
+                        }else if($(this).attr('name') === 'giftMyOrderInd'){
+                            widget.showGiftTab('brgtn-my-items-individually',false); 
+                        }
+                    }
+                });
+                
+                // show remaining characters
+                widget.showRemainingCharacters = function(e){
+                    var currentVal = e.target.value;
+                    if(currentVal){
+                        getWidget.br_all_gift_orders(currentVal);
+                        getWidget.br_all_gift_orders_length(currentVal.length);
+                    }
+                };
+                
+                widget.getRemainingCount = ko.computed(function(){
+                    var getRemainingCharacters = 200 - getWidget.br_all_gift_orders_length();
+                    return getRemainingCharacters;
+                });
+                
+                
+                //free gift wrap
+                widget.freeGiftWrap = function(){
+                    getWidget.br_all_free_gift_wrap(false);
+                    console.log('freeGiftWrap',getWidget.br_all_free_gift_wrap());
+                };
+                
+                
+                //save gift options
+                widget.saveGiftOptions = function(event){
+                    var getGiftOptions = [];
+                    var cartAllItems = getWidget.cart().allItems();
+                    if($('.brgtn-gift-my-order-check').is(':checked')){
+                        if(widget.br_gift_order() === true){
+                            cartAllItems.map(function(e){
+                                //e.shopperInput = {'br_gift_wrap': widget.br_gift_order(), 'br_gift_message': widget.br_all_gift_orders()}
+                                e.shopperInput = {}
+                                e.shopperInput['br_gift_wrap'] = widget.br_gift_order();
+                                e.shopperInput['br_gift_message'] = widget.br_all_gift_orders();
+                            });
+                            widget.cart().markDirty();
+                        }else{
+                            console.log('else');
+                            cartAllItems.map(function(e){
+                                getGiftOptions.push({'br_gift_wrap': '', 'br_gift_message': ''});
+                                e.shopperInput = {'br_gift_wrap': '', 'br_gift_message': ''}
+                            });
+                            //widget.cart().markDirty();
+                        }
+                    }
+                    console.log('all items',getWidget.cart().allItems());
+                    console.log('gift options',getGiftOptions);
+                };
+                
+                
+                
+            },
+            beforeAppear: function() {
+                getWidget.addItemsToCart();
+                console.log('extendshoppingCartSummary_v15.js before appear');
+            },
+        };
+    }
+);

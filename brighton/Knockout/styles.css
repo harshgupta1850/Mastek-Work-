@@ -1,0 +1,74 @@
+body {
+    font  : 21px ;
+    padding : 100px;
+    margin  : 0;
+    background : #00ff6a;
+}
+
+form {
+    position: relative;
+    width  : 500px;
+    height : 500px;
+    margin : 0 auto; 
+    background: #FFF;
+    padding: 10px
+}
+
+label {
+    font : .8em "typewriter", sans-serif;
+}
+
+.name{
+    padding: 10px;
+}
+
+.nameLabel{
+    width:20%;
+}
+
+.age{
+    padding: 10px;
+}
+
+.email{
+    padding: 10px;
+}
+
+.check{
+    padding: 10px;
+}
+
+.radio{
+    padding: 10px;
+}
+
+
+.input{
+    padding: 5px;
+    height: 10px;
+}
+
+
+.select{
+    padding: 10px;
+}
+
+
+button {
+    padding      : 5px;
+    font         : bold;
+    border       : 2px solid #333;
+    cursor       : pointer;
+    margin:auto;
+    display:flex;
+}
+button:hover,
+button:focus {
+    background: #000;
+    color   : #FFF;
+}
+
+
+.final{
+    margin: 10px
+}

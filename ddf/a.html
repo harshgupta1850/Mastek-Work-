@@ -1,0 +1,12 @@
+<div class="controls col-xs-6 col-sm-6">
+<span role="alert" class="text-danger" id="CC-userRegistration-dateofbirth-error" data-bind="event: {blur:$parent.dateOfBirthValidation.bind($parent) }"></span>
+<input style="height:50px;" type="text" autocomplete="off" id="datepicker" class="col-md-5 form-control inputbox-dateofbirth"
+placeholder="DATE OF BIRTH" data-bind="onRender:$parent.getCalender, datepicker: $parent.dateOfBirth, dpOptions: {format: 'dd/mm/yyyy'}">
+</div>
+														 
+
+<div class="controls col-xs-6 col-sm-6" style="margin-left: 21%;">
+<span role="alert" class="text-danger" id="CC-userRegistration-dateofbirth-error"></span>
+<input style="height:50px;" type="text" id="datepicker" class="col-md-5 form-control inputbox-dateofbirth inputbox-dateofbirth-m"
+placeholder="DATE OF BIRTH" data-bind="click: $parent.getDate(),value: $parent.dateOfBirth">
+</div>

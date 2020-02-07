@@ -1,0 +1,204 @@
+JSON.stringify(arr[1])
+"{"productId":"36956-164846","quantity":1,"repositoryId":"ci5002738","availabilityDate":null,"catRefId":"JL3911","expanded":false,"stockStatus":true,"stockState":"","commerceItemQuantity":1,"selectedOptions":[],"discountInfo":[],"rawTotalPrice":76,"detailedItemPriceInfo":[{"discounted":false,"secondaryCurrencyTaxAmount":0,"amount":76,"quantity":1,"tax":0,"orderDiscountShare":0,"detailedUnitPrice":76,"currencyCode":"USD"}],"externalData":{"transNumber":"LOCKETS-60UJC","type":"lockets"},"addOnItem":false,"displayName":"Trust Your Journey Heart Necklace","invalid":false,"commerceItemId":"ci5002738","priceListGroupId":"defaultPriceGroup","giftWithPurchaseCommerceItemMarkers":[]}"
+
+"{"productId":"36956-164846","quantity":2,"repositoryId":"ci5002742","availabilityDate":null,"catRefId":"JL3911","expanded":false,"stockStatus":true,"stockState":"IN_STOCK","orderableQuantityMessage":"","commerceItemQuantity":1,"orderableQuantity":88,"selectedOptions":[],"selectedSkuProperties":[],"discountInfo":[],"rawTotalPrice":152,"detailedItemPriceInfo":[{"discounted":false,"secondaryCurrencyTaxAmount":0,"amount":152,"quantity":2,"tax":0,"orderDiscountShare":0,"detailedUnitPrice":76,"currencyCode":"USD"}],"externalData":{"transNumber":"LOCKETS-60UJC","type":"lockets"},"addOnItem":false,"displayName":"","invalid":false,"commerceItemId":"ci5002738","priceListGroupId":"defaultPriceGroup","giftWithPurchaseCommerceItemMarkers":[]}"
+
+
+
+ without url product
+"{"productId":"J9037","quantity":1,"repositoryId":"ci5002761","availabilityDate":null,"catRefId":"881934000000","expanded":false,"stockStatus":true,"stockState":"IN_STOCK","orderableQuantityMessage":"","commerceItemQuantity":1,"orderableQuantity":45,"selectedOptions":[{"optionName":"Size","optionValue":null},{"optionName":"Color","optionValue":"Silver-Neutral"},{"optionName":"width","optionValue":null}],"selectedSkuProperties":[],"discountInfo":[],"rawTotalPrice":28,"detailedItemPriceInfo":[{"discounted":false,"secondaryCurrencyTaxAmount":0,"amount":28,"quantity":1,"tax":0,"orderDiscountShare":0,"detailedUnitPrice":28,"currencyCode":"USD"}],"externalData":[],"addOnItem":false,"displayName":"","invalid":false,"commerceItemId":"ci5002635","priceListGroupId":"defaultPriceGroup","giftWithPurchaseCommerceItemMarkers":[]}"
+
+with url on first add
+"{"productId":"J9037","quantity":1,"repositoryId":"ci5002783","availabilityDate":null,"catRefId":"881934000000","expanded":false,"stockStatus":true,"stockState":"","commerceItemQuantity":1,"selectedOptions":[{"optionName":"Color","optionValue":"Silver-Neutral","optionId":"x_color","optionValueId":5}],"discountInfo":[],"rawTotalPrice":28,"detailedItemPriceInfo":[{"discounted":false,"secondaryCurrencyTaxAmount":0,"amount":28,"quantity":1,"tax":0,"orderDiscountShare":0,"detailedUnitPrice":28,"currencyCode":"USD"}],"externalData":[],"addOnItem":false,"displayName":"Deco Heart Anklet","invalid":false,"commerceItemId":"ci5002783","priceListGroupId":"defaultPriceGroup","giftWithPurchaseCommerceItemMarkers":[]}"
+
+with url on second add
+"{"productId":"J9037","quantity":2,"repositoryId":"ci5002785","availabilityDate":null,"catRefId":"881934000000","expanded":false,"stockStatus":true,"stockState":"IN_STOCK","orderableQuantityMessage":"","commerceItemQuantity":1,"orderableQuantity":45,"selectedOptions":[{"optionName":"Size","optionValue":null},{"optionName":"Color","optionValue":"Silver-Neutral"},{"optionName":"width","optionValue":null}],"selectedSkuProperties":[],"discountInfo":[],"rawTotalPrice":56,"detailedItemPriceInfo":[{"discounted":false,"secondaryCurrencyTaxAmount":0,"amount":56,"quantity":2,"tax":0,"orderDiscountShare":0,"detailedUnitPrice":28,"currencyCode":"USD"}],"externalData":[],"addOnItem":false,"displayName":"","invalid":false,"commerceItemId":"ci5002783","priceListGroupId":"defaultPriceGroup","giftWithPurchaseCommerceItemMarkers":[]}"
+
+orderableQuantityMessage
+selectedSkuProperties
+
+with url on first add
+"{"productId":"36956-164846","quantity":1,"repositoryId":"ci5002764","availabilityDate":null,"catRefId":"JL3911","expanded":false,"stockStatus":true,"stockState":"","commerceItemQuantity":1,"selectedOptions":[],"discountInfo":[],"rawTotalPrice":76,"detailedItemPriceInfo":[{"discounted":false,"secondaryCurrencyTaxAmount":0,"amount":76,"quantity":1,"tax":0,"orderDiscountShare":0,"detailedUnitPrice":76,"currencyCode":"USD"}],"externalData":{"transNumber":"LOCKETS-60UJC","type":"lockets"},"addOnItem":false,"displayName":"Trust Your Journey Heart Necklace","invalid":false,"commerceItemId":"ci5002764","priceListGroupId":"defaultPriceGroup","giftWithPurchaseCommerceItemMarkers":[]}"
+
+with url on second add
+"{"productId":"36956-164846","quantity":2,"repositoryId":"ci5002772","availabilityDate":null,"catRefId":"JL3911","expanded":false,"stockStatus":true,"stockState":"IN_STOCK","orderableQuantityMessage":"","commerceItemQuantity":1,"orderableQuantity":88,"selectedOptions":[],"selectedSkuProperties":[],"discountInfo":[],"rawTotalPrice":152,"detailedItemPriceInfo":[{"discounted":false,"secondaryCurrencyTaxAmount":0,"amount":152,"quantity":2,"tax":0,"orderDiscountShare":0,"detailedUnitPrice":76,"currencyCode":"USD"}],"externalData":{"transNumber":"LOCKETS-60UJC","type":"lockets"},"addOnItem":false,"displayName":"","invalid":false,"commerceItemId":"ci5002764","priceListGroupId":"defaultPriceGroup","giftWithPurchaseCommerceItemMarkers":[]}"
+
+
+cart?add=36956-164846:1;ADELE:1&transnumber=LOCKETS-60UJC&type=lockets
+
+
+
+
+/**
+ * @fileoverview extendshoppingCartSummary_v15.js.
+ *
+ * @author
+ */
+define(
+    //---------------------
+    // DEPENDENCIES
+    //---------------------
+    ['knockout', 'ccRestClient', 'ccConstants', 'pubsub'],
+
+    //-----------------------
+    // MODULE DEFINITION
+    //-----------------------
+    function(ko, ccRestClient, ccConstants, pubsub) {
+
+        "use strict";
+        var getWidget;
+
+        return {
+            onLoad: function(widget) {
+                getWidget = widget;
+                getWidget.prodIdArray = ko.observableArray([]);
+                getWidget.prodIdQtyArray = ko.observableArray([]);
+                getWidget.add = ko.observable();
+                getWidget.transNumber = ko.observable();
+                getWidget.type = ko.observable();
+
+                // Funtion to extract the query parameter from URL
+
+                getWidget.getProdIdQtyFromUrl = function() {
+                    var url = window.location.href;
+                    var params = (new URL(window.location.href)).searchParams;
+                    getWidget.add = params.get("add")
+                    getWidget.transNumber = params.get("transnumber");
+                    getWidget.type = params.get("type");
+                    if (getWidget.add !== null) {
+                        var pid_qty = getWidget.add.split(';');
+                        pid_qty.map(function(data) {
+                            getWidget.prodIdArray().push(data.split(':')[0]);
+                            getWidget.prodIdQtyArray().push({
+                                prodId: data.split(':')[0],
+                                prodQty: data.split(':')[1]
+                            });
+                        });
+                    }
+
+                };
+
+                getWidget.getProdIdQtyFromUrl();
+
+                // Function to find out SKU options
+
+
+
+                widget.getSelectedSkuOptionsSelf = function(variantOptions) {
+                    var selectedOptions = [],
+                        listingVariantImage;
+                    if (variantOptions) {
+                        for (var i = 0; i < variantOptions.length; i++) {
+                            if (variantOptions[i]) {
+                                selectedOptions.push({
+                                    'optionName': variantOptions[i].optionName,
+                                    'optionValue': Object.keys(variantOptions[i].optionValueMap)[0],
+                                    'optionId': variantOptions[i].optionId,
+                                    'optionValueId': variantOptions[i].optionValueMap[Object.keys(variantOptions[i].optionValueMap)[0]]
+                                });
+                            }
+                        }
+                    }
+                    return selectedOptions;
+                };
+
+
+                // Function to add item in cart
+
+
+
+
+                widget.additem = function() {
+                    var prodListIdQty = this.prodIdQtyArray();
+                    var prodListIds = this.prodIdArray();
+                    var prodListIdsObj = {};
+                    var prodListArray = [];
+                    var queryString = '';
+                    for (var i = 0; i < (prodListIds.length); i++) {
+                        if (i === 0) {
+                            queryString = "id eq \"" + prodListIds[i] + "\"";
+                        } else {
+                            queryString = queryString + " or id eq \"" + prodListIds[i] + "\"";
+                        }
+                    }
+                    prodListIdsObj["q"] = queryString;
+                    prodListIdsObj["dataItems"] = "repositoryid";
+                    if (prodListIdsObj !== null) {
+                        var stockArr = []
+                        prodListIds.map(function(id) {
+                            // Check the stock status of product based on prodId by calling API
+                            ccRestClient.request("/ccstoreui/v1/stockStatus/" + id, '', function(data) {
+                                console.log('data',data)
+                                stockArr.push({
+                                    id: id,
+                                    stockstate: data.stockStatus
+                                })
+                            });
+                        })
+                    console.log('prodListIdsObj',prodListIdsObj)
+                        // Fetch the list of the product based on prodid which are coming from URL by calling api
+
+                        ccRestClient.request(ccConstants.ENDPOINT_PRODUCTS_LIST_PRODUCTS, prodListIdsObj, function(resp) {
+                                console.log('product response', resp);
+                                var localItems = [];
+                                localItems = resp.items;
+                                for (var j = 0; j < localItems.length; j++) {
+                                    var Options = localItems[j].productVariantOptions;
+                                    var selectedOptions = getWidget.getSelectedSkuOptionsSelf(Options);
+                                    var selectedOptionsObj = {
+                                        'selectedOptions': selectedOptions
+                                    };
+                                    for (var k = 0; k < stockArr.length; k++) {
+                                        if (stockArr[k].id === localItems[j].id) {
+                                            var stockStateObj = {
+                                                'stockState': stockArr[k].stockstate
+                                            }
+                                        }
+                                    }
+                                    var newProduct = $.extend(true, {}, localItems[j], selectedOptionsObj, stockStateObj);
+                                    for (var i = 0; i < prodListIdQty.length; i++) {
+                                        if (newProduct.id == prodListIdQty[i].prodId) {
+                                            newProduct.orderQuantity = parseInt(prodListIdQty[i].prodQty, 10);
+                                        }
+                                    }
+                                    prodListArray.push(newProduct)
+                                }
+                                getWidget.cart().addItems(prodListArray);
+                                setTimeout(function() {
+                                    getWidget.addCartItem();
+                                    getWidget.cart().allItems();
+                                }, 3000);
+                            },
+                            function(err) {
+                                console.log(err)
+                            });
+                    }
+
+
+                };
+
+                //function to add TransNumber and type to the commerce item from URL
+
+                widget.addCartItem = function() {
+                    for (var l = 0; l < this.prodIdArray().length; l++) {
+                        for (var k = 0; k < getWidget.cart().allItems().length; k++) {
+                            if (getWidget.cart().allItems()[k].productId == this.prodIdArray()[l]) {
+                                if (this.transNumber !== null && this.transNumber !== '') {
+                                    var objectData = {};
+                                    objectData['transNumber'] = this.transNumber;
+                                    objectData['type'] = this.type;
+                                    getWidget.cart().allItems()[k].externalData = objectData;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            },
+            beforeAppear: function() {
+                getWidget.additem();
+                console.log('extendshoppingCartSummary_v15.js before appear');
+            },
+        };
+    }
+);

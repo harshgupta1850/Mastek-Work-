@@ -1,0 +1,19 @@
+<button class="btn text-uppercase" >
+                    <!-- ko if: $data.variantOptionsArray -->
+                        <!-- ko if: $data.variantOptionsArray.length === 1 -->
+                            <span data-bind="click: $parents[1].addToBag.bind(event)">Add to Bag</span>
+                        <!-- /ko -->
+                        <!-- ko if: $data.variantOptionsArray.length > 1 -->
+                            <span data-bind="attr : { id: 'CC-product-grid-title-'+id()+'-'+$parentContext.$index()+$index()}, ccLink : $data.listingSku ? $data.listingSku : $data.product, click: $parents[1].updateFocus" >More Options</span>
+
+                        <!-- /ko -->
+                    <!-- /ko -->
+                    
+                    <!-- ko if: !$data.variantOptionsArray  -->
+                        <a data-bind="attr : { id: 'CC-product-grid-title-'+id()+'-'+$parentContext.$index()+$index()}, ccLink : $data.listingSku ? $data.listingSku : $data.product, click: $parents[1].updateFocus">
+                            <span>More Options</span>
+                        </a>
+                    <!-- /ko -->
+                    
+                  </button>
+                  

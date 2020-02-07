@@ -1,0 +1,5 @@
+ <!-- ko if: $parent[1].productStockListing.prodId === $data.id() -->
+                  <button class="btn text-uppercase" data-bind="text: $parent[1].productStockListing.text,click: $parents[1].addToBag.bind(event)">
+                   
+                  </button>
+                  <!-- /ko -->

@@ -1,0 +1,26 @@
+<button class="btn text-uppercase" >
+                      <!-- ko if: $data.variantOptionsArray -->
+                      <span  data-bind="text: $data.variantOptionsArray.length === 1 ? 'Add to bag' : 'More Options', click: $data.text=='Add To Bag' ? $parents[1].addToBag.bind(event) : $parents[1].addToBag.bind(event) "></span>
+                      <!-- /ko -->
+                      
+                      <!-- ko if: $data.variantOptionsArray === 1 -->
+                      <span data-bind="click: $parents[1].addToBag.bind(event)">Add to Bag</span>
+                      <!-- /ko -->
+                      <!-- ko if: $data.variantOptionsArray != 1 -->
+                      <span>More Options</span>
+                      <!-- /ko -->
+
+
+
+
+
+
+
+
+<div class="brgtn-add-to-bag text-center">
+                  <button class="btn text-uppercase" >
+                      <!-- ko if: $data.variantOptionsArray -->
+                      <span  data-bind="text: $data.variantOptionsArray.length === 1 ? 'Add to bag' : 'More Options', click: $data.text=='Add To Bag' ? $parents[1].addToBag.bind(event) : $parents[1].addToBag.bind(event) "></span>
+                      <!-- /ko -->
+                  </button>
+              </div>

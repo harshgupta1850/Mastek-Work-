@@ -1,0 +1,275 @@
+/**
+ * @fileoverview extendproductListing_v15.js.
+ *
+ * @author 
+ */
+ console.log("Coming from override!!!!");
+define(
+    //---------------------
+    // DEPENDENCIES
+    //---------------------
+    ['jquery', 'knockout', 'pubsub', 'ccConstants', 'pageLayout/product', 'ccRestClient'],
+
+    //-----------------------
+    // MODULE DEFINITION
+    //-----------------------
+    function ($, ko,pubsub, CCConstants , Product, ccRestClient) {
+
+        "use strict";
+        var getWidget;
+        console.log('1111');
+        return {
+            onLoad: function (widget) {
+                getWidget = widget;
+                widget.swatchList = ko.observableArray([]);
+                widget.swatchIndex = ko.observable(0);
+                widget.uniqueChildKSUsArray = ko.observableArray([]);
+                widget.check = ko.observable();
+                widget.productDataArray = ko.observableArray([]);
+                
+                $(document).on('click', '.brgtn-get-data-swatch', function(){
+                    widget.swatchIndex(parseInt($(this).attr('data-swatch')));
+                });
+                $.Topic(pubsub.topicNames.PAGE_CHANGED).subscribe(function(obj){
+                    widget.swatchIndex(0);
+                })
+                
+            },
+
+            beforeAppear: function () {
+                getWidget = this;
+                var owlScript = document.createElement('script');
+                owlScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js');
+                document.head.appendChild(owlScript);
+                setTimeout(function () {
+                    $('.sync-2').owlCarousel({
+                        margin: 0,
+                        nav: true,
+                        responsive: {
+                            0: {
+                                items: 3
+                            },
+                            600: {
+                                items: 3
+                            },
+                            1000: {
+                                items: 5
+                            }
+                        }
+                    })
+                }, 3000);
+
+                this.startHoverOverImages = function () {
+                    $('#brgtn-prod-list-carousel').carousel('cycle'); 
+                },
+                
+                this.stopHoverOverImages = function () {
+                    $('#brgtn-prod-list-carousel').carousel('pause');
+                },
+
+                // remove timeout after getting correct pubsub
+                setTimeout(function(){
+                    var uniqueChildKSUs = [];
+                    uniqueChildKSUs.length = 0;
+                    getWidget.productGrid().map(function (product) {
+                        product.map(function (productCollection, index) {
+                          var uniqueChildKSUsObj = {};
+                          var uniqueColorPics = [];
+                          var uniqueColorPicsNew = [];
+                          var colorPicsNew = [];
+                          if (productCollection.childSKUs().length > 1) {
+                            var uniqueArrFinal = productCollection.childSKUs().map(function (e,i) {
+                                return e.br_color_pic();
+                            }).map(function (e, i, final) {
+                              return final.indexOf(e) === i && i;
+                            }).filter(function (e) {
+                              return productCollection.childSKUs()[e];
+                            }).map(function (e) {
+                              return productCollection.childSKUs()[e].br_color_pic();
+                            });
+                            
+                            //new
+                            var uniqueArrFinal2 = productCollection.childSKUs().map(function (e,i) {
+                                return e.br_color_pic();
+                            }).map(function (e, i, final) {
+                              return final.indexOf(e) === i && i;
+                            }).filter(function (e) {
+                              return productCollection.childSKUs()[e];
+                            }).map(function (e) {
+                              return {'colorPic': productCollection.childSKUs()[e].br_color_pic(), 'index': e};
+                            });
+                            
+                            uniqueColorPics = uniqueArrFinal;
+                            uniqueColorPicsNew = uniqueArrFinal2;
+                          } else {
+                            uniqueColorPics = [];
+                            uniqueChildKSUsObj['index'] = index;
+                          }
+
+                          uniqueChildKSUsObj['colorPic'] = uniqueColorPics;
+                          uniqueChildKSUsObj['colorPicNew'] = uniqueColorPicsNew;
+                          //uniqueChildKSUsObj['index'] = index;
+                          uniqueChildKSUsObj['productId'] = productCollection.id();
+                          //uniqueChildKSUsObj['altImages'] = altImages;
+                          uniqueChildKSUs.push(uniqueChildKSUsObj);
+                          getWidget.uniqueChildKSUsArray(uniqueChildKSUs);
+                          console.log('uniqueChildKSUsArray', getWidget.uniqueChildKSUsArray());
+                        });
+                    });
+                },2000);
+                
+                
+                setTimeout(function() {
+                    var params = "";
+                    getWidget.productGrid().map(function(product) {
+                        product.map(function(item) {
+                            item.product.childSKUs.map(function(data) {
+                                params += item.product.id + ":" + data.repositoryId + ",";
+                            })
+                        })
+                    })
+                    var param = params.slice(0, -1);
+                    console.log('param', param)
+                    var parameters = {};
+                    parameters[CCConstants.PRODUCTS_PARAM] = param;
+                    ccRestClient.request(CCConstants.ENDPOINT_PRODUCTS_AVAILABILITY, parameters, function(stockData) {
+                        console.log(stockData)
+                        var status = {};
+                        // var obj={}
+
+                        // for (var i = 0; i < stockData.length; i++) {
+                        //     for (var j = i + 1; j < stockData.length; j++) {
+                        //         if (stockData[i].productId != stockData[j].productId) {
+
+                        //             obj = {
+                        //                 id: stockData[i].productId,
+                        //                 inStock: []
+                        //             }
+                        //             obj.inStock.push(stockData[i].stockStatus)
+                        //         }
+                        //     }
+                        // }
+
+
+                        //console.log('obj', obj)
+                        stockData.map(function(data) {
+                            //console.log(data,'data')
+                            if (!status[data.productId]) {
+                                status[data.productId] = {
+                                    inStock: [],
+                                    text: "",
+                                    catRefId : ""
+                                };
+                            }
+                            if (data.stockStatus === "IN_STOCK") {
+                                if (status[data.productId].inStock.includes('IN_STOCK')) {
+                                    status[data.productId].text = "More Options";
+                                    status[data.productId].catRefId = data.catRefId;
+                                } else {
+                                    status[data.productId].text = "Add to Bag";
+                                    status[data.productId].catRefId = data.catRefId;
+                                }
+                                status[data.productId].inStock.push(data.stockStatus);
+                            }
+                        })
+                        console.log('status', status)
+
+                        getWidget.productGrid().map(function(product) {
+                            console.log(product);
+                            var productMap = {};
+                            product.map(function(item) {
+                                var totalStatus = Object.keys(status).length;
+                                for ( var i = 0; i < totalStatus; i++)
+                                    {
+                                        console.log("ID: " + status[item.id()] );
+                                        if(status[item.id()]){
+                                     
+                                        productMap['text'] = status[item.id()].text;
+                                        getWidget.productDataArray.push(productMap);
+                                        }
+                                    }
+                                Object.keys(status).map(function(id,status) {
+                                    console.log(status.catRefId+'status');
+                                    if (id == item.id()) {
+                                       
+                                        //item.itemText.valueHasMutated();
+                                        
+                                    }
+                                    //getWidget.listingViewModel.currentPage.notifySubscribers();
+                                })
+                            })
+                            console.log(getWidget.productDataArray(), 'array')
+                        })
+                       
+                    })
+                    
+                }, 2000)
+                
+                // Add to bag and more option
+                getWidget.addToBag = function() {
+                    console.log('add to bag');
+                };
+                getWidget.addToBag()
+                
+                setTimeout(function(){
+                    $('#CC-guidedNavigation-column').parent().parent().addClass('left-nav-filter').addClass('filter-transition');
+                    $('#popupStack-re400035').parent().parent().addClass('right-nav-filter').addClass('filter-transition-porducts-list');
+                    $('#popupStack-re400089').parent().parent().addClass('right-nav-filter').addClass('filter-transition-porducts-list');
+                },100);
+                
+                // pubsub for search results
+                // setTimeout(function(){
+                //     console.log('false 123');
+                //     $('#popupStack-re400089').parent().parent().parent().prepend('<div class="brgtn-sh-filter-plp col-sm-12"><div class="row"><div class="col-sm-3"><div class="brgtn-filter-by"><span class="col-xs-6 col-md-12 col-sm-12 hide">Hide Filters <img src="/file/general/brgtn-arrow-up.svg"></span><span class="col-xs-6 col-sm-12 col-md-6">Filter By <img src="/file/general/brgtn-arrow-down.svg"></span></div></div></div></div>');  
+                //     $('brgtn-sh-filter').remove(); 
+                // },1000)
+                
+                // pubsub for search results need to be find out and applied here
+                $.Topic(pubsub.topicNames.SEARCH_RESULTS_UPDATED).subscribe(function(obj){
+                    // For the Search Result Caption
+                    if (obj.message !== CCConstants.SEARCH_MESSAGE_FAIL && this.totalRecordsFound !== 0) {
+                        $(".brgtn-shopping-bag-head").css('display','block');
+                    } else {
+                        $(".brgtn-shopping-bag-head").css('display','none');
+                    }
+                    
+                    // console.log('calling')
+                    // console.log(this.navigation);
+                    $('.brgtn-sh-filter-plp').remove();
+                    if (!this.navigation || this.navigation.length == 0) {
+                    console.log('false');
+                    $('.brgtn-sh-filter-plp').hide();
+                    $('#CC-productListing').css('border-top','1px solid #000');
+                  }else{
+                    console.log('true');
+                    // filter show hide
+                    $('#popupStack-re400089').parent().parent().parent().prepend('<div class="brgtn-sh-filter-plp col-sm-12"><div class="row"><div class="col-sm-3"><div class="brgtn-filter-by"><span class="col-xs-6 col-md-12 col-sm-12 hide">Hide Filters <img src="/file/general/brgtn-arrow-up.svg"></span><span class="col-xs-6 col-sm-12 col-md-6">Filter By <img src="/file/general/brgtn-arrow-down.svg"></span></div></div></div></div>');  
+                    $('brgtn-sh-filter').remove(); 
+                      
+                    //$('.brgtn-sh-filter-plp').show();
+                    $('#CC-productListing').css('border-top','none');
+                  }
+                });
+            
+                // Pubsub For product Listing pages of different Categories, Code is same for SEARCH_RESULTS_UPDATED as per functionality
+                $.Topic(pubsub.topicNames.SEARCH_RESULTS_FOR_CATEGORY_UPDATED).subscribe(function(obj){
+                    $('.brgtn-sh-filter-plp').remove();
+                  if (!this.navigation || this.navigation.length == 0) {
+                    console.log('false');
+                    $('.brgtn-sh-filter-plp').hide();
+                    $('#CC-productListing').css('border-top','1px solid #000');
+                  }else{
+                    console.log('true');
+                    // filter show hide
+                    $('#popupStack-re400035').parent().parent().parent().prepend('<div class="brgtn-sh-filter-plp col-sm-12"><div class="row"><div class="col-sm-3"><div class="brgtn-filter-by"><span class="col-xs-6 col-md-12 col-sm-12 hide">Hide Filters <img src="/file/general/brgtn-arrow-up.svg"></span><span class="col-xs-6 col-sm-12 col-md-6">Filter By <img src="/file/general/brgtn-arrow-down.svg"></span></div></div></div></div>');  
+                    $('brgtn-sh-filter').remove(); 
+                      
+                    //$('.brgtn-sh-filter-plp').show();
+                    $('#CC-productListing').css('border-top','none');
+                  }
+                })
+            }
+
+        };
+    }
+);

@@ -1,0 +1,434 @@
+<div data-bind="onRender: initHeader.bind($data)">
+<div class="templateRegion" id="CC-headerWidget" data-oc-id="CC-headerWidget">
+    <div class="header-line">
+        <h1 class="label-hidden" data-bind="text: $data.site().siteInfo.name"></h1>
+        <div class="header-background">
+            <div id="header">
+                <!-- Vik Edit -->
+                <div class="row">
+                    <div id="col-ddf-top-menu">
+                        <!--ko ifnot: isMobile-->
+                        <ul class="nav navbar-nav" style="text-align: center; flex-direction: row; " id="headerMenu">
+                            <li style="height: 60px;border-left: 1px grey solid;width: 90px;" class="active">
+                              
+                                <a data-bind="ccLink:{'route':'/aboutus', 'displayName':'DDF - About us?'}" target="_blank">
+                                    <p style="color: inherit;">ABOUT <br />DDF</p>
+                                </a>
+                            </li>
+                            <li class="dropdown menu-item" style="height: 60px;border-left: 1px grey solid;width: 90px;">
+                                <a id="shoppingAtDDFMenu">
+                                    <p style="color: inherit;">SHOPPING <br />AT DDF</p>
+                                </a>
+                                <div class="dropdown-content shoppingAtDDFMenuContent">
+                                    <a data-bind="ccLink:{'route':'/howtopreorder', 'displayName':'How to pre-order?'}"></a>
+                                    <a data-bind="ccLink:{'route':'/deliveryandreturns', 'displayName':'Delivery & Returns'}"></a>
+                                    <a data-bind="ccLink:{'route':'/dutyfreeallowances', 'displayName':'Duty Free Allowances'}"></a>
+                                    <a data-bind="ccLink:{'route':'/concoursemap', 'displayName':'Concourse Maps'}"></a>
+                                    <a data-bind="ccLink:{'route':'/lagregulations', 'displayName':'LAG Regulations'}"></a>
+                                    <a data-bind="ccLink:{'route':'/shopwithemirateskyward', 'displayName':'Shop with Emirates Skywards'}"></a>
+                                    <a href="http://www.dubaiairports.ae" target="_blank">Dubai Airport Website</a>
+                                </div>
+                            </li>
+                            <li class="dropdown menu-item" style=" height: 60px;border-left: 1px grey solid;width: 90px;">
+                                <a id="customerCareMenu">
+                                    <p style="color: inherit;">CUSTOMER <br />CARE</p>
+                                </a>
+                                <div class="dropdown-content customerCareMenuContent">
+                                    <a data-bind="ccLink:{'route':'/trackorder', 'displayName':'Track Your Order'}"></a>
+                                    <a data-bind="ccLink:{'route':'/contactus', 'displayName':'Contact Us'}"></a>
+                                    <a target="_blank" href="https://www.surveymonkey.com/s/SGYJDG6">Feedback</a>
+                                </div>
+                            </li>
+                            <li style=" height: 60px;border-left: 1px grey solid;width: 80px;">
+                                <a data-bind="ccLink:{'route':'/FAQS'}">
+                                    <p style="padding: 9px 0; color: inherit;">FAQs</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <!--/ko-->
+                        <div class="col-xs-1 col-sm-1" id="languagedropdown">
+                            <div class="">
+                                <div class="heading"> <!--style="padding: 0;height: 25px;text-align: center;width: 25px;"-->
+                                    <a data-bind="visible: supportedLocales().length > 1 , click: toggleLanguageDropDown($data), event: {keydown: $data.keypressLanguageHandler, mouseover: toggleLanguageDropDown($data)}, attr: {id: 'CC-header-language-link'}">
+                                        <img data-bind="ccResizeImage: {
+                                    source: '/file/general/'+$data.locale()+'-flag.png',
+                                    xsmall: '20,20',
+                                    medium: '120,120',
+                                    size:'20,20',
+                                    alt: 'Antique Wood Chair',
+                                    errorSrc:'images/noImage.png',
+                                    errorAlt:'No Image Found'}">
+                                        <span data-bind="text: languageLinkText"></span>
+                                        <!--<img style="margin: 10px 2px;" data-bind="attr:{src:'/file/general/icon-down-arrow.svg'}">-->
+                                    </a>
+                                    <span data-bind="visible: supportedLocales().length == 1, text: languageLinkText"></span>
+                                </div>
+                                <div class="content" data-bind="visible: languageDropdownVisible()">
+                                    <div data-bind="foreach: supportedLocales" role="presentation">
+                                        <div class="languagePicker">
+                                            <a data-bind="attr: {id: 'CC-header-languagePicker-'+ $index(), href: $parent.redirectToLink()},
+                                      click: $parent.handleLanguageChange.bind($parent,$data,$parents[3].alternates()), event: {keydown: $parent.keypressLanguageHandler.bind($parent)}">
+                                                <img data-bind="ccResizeImage: {
+                                                source: '/file/general/'+$data.name+'-flag.png',
+                                                xsmall: '20,20',
+                                                medium: '120,120',
+                                                size:'20,20',
+                                                alt: 'Language Selection',
+                                                errorSrc:'images/noImage.png',
+                                                setMinHeightBeforeImageLoad:false,
+                                                errorAlt:'No Image Found'}">
+                                                <!--ko if: localeId === "24" -->
+                                                <span data-bind="widgetLocaleText: 'chineseLanguageText'"></span>
+                                                <!--/ko-->
+                                                <!--ko if: localeId !== "24" -->
+                                                <span data-bind="text: displayName"></span>
+                                                <!--/ko-->
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-1 col-sm-1" id="currencyPicker">
+                            <!--ko with: $data-->
+                            <!-- ko if: $data.defaultPriceListGroup() && $parent.site().activePriceListGroups().length >= 1 && !$parent.user().isB2BUser()-->
+                            <div id="headerCurrencyPicker">
+                                <div class="heading" style="text-align: center;">
+                                    <a data-bind="click: toggleCurrencyDropDown($data), event: {keydown: $data.keypressCurrencyHandler,
+                                        mouseenter: toggleCurrencyDropDown($data)}, attr: {id: 'CC-header-currency-link', href: '#'}">
+                                        <!--<span data-bind="text: $parent.site().selectedPriceListGroup().currency.currencyCode" class="currencyCodeWidth"></span>-->
+                                        <!--ko if: selectedLocalCurrency() && selectedLocalCurrency().CURRENCYCODE-->
+                                        <span data-bind="text: selectedLocalCurrency().CURRENCYCODE"></span>
+                                        <!--/ko-->
+                                        <!--ko ifnot: selectedLocalCurrency() && selectedLocalCurrency().CURRENCYCODE-->
+                                        <!--<span data-bind="text: $parent.site().selectedPriceListGroup().currency.symbol"></span>-->
+                                        <span>AED</span>
+                                        <!--/ko-->
+                                        <!--<img class="down-arrow-menu-mobile" data-bind="attr:{src:'/file/general/icon-down-arrow.svg'}">-->
+                                    </a>
+                                </div>
+                                <!--Currency Code v1-->
+                                <div class="content" data-bind="visible: currencyDropdownVisible()">
+                                    <!--<div data-bind="foreach: $data.activePriceListGroups">-->
+                                    <div data-bind="foreach:localCurrencyExchange">
+                                        <!--ko if: $index() === 0 && $parent.selectedLocalCurrency() && $parent.selectedLocalCurrency().CURRENCYCODE && $parent.selectedLocalCurrency().CURRENCYCODE !== "AED"-->
+                                        <div class="col-xs-4 col-sm-4 paddingBottom">
+                                            <a data-bind="click: $parent.resetCurrency.bind($parent),
+                                              attr: {id: 'CC-header-Currency-'+ $index(), href: '#'}, 
+                                              event: {keydown: $parent.keypressCurrencyHandler.bind($parent)}">
+                                                <span>AED</span>
+                                            </a>
+                                        </div>
+                                        <!--/ko-->
+                                        <!--ko if: $parent.selectedLocalCurrency().CURRENCYCODE !== $data.CURRENCYCODE-->
+                                        <div class="col-xs-4 col-sm-4 paddingBottom">
+                                            <a data-bind="click: $parent.handleCurrencyChange.bind($data),
+                                              attr: {id: 'CC-header-Currency-'+ $index(), href: '#'}, 
+                                              event: {keydown: $parent.keypressCurrencyHandler.bind($parent)}">
+                                                <span data-bind="text: $data.CURRENCYCODE"></span>
+                                            </a>
+
+                                        </div>
+                                        <!--/ko-->
+                                    </div>
+                                </div>
+                            </div>
+                          <!--/ko-->
+                          <!--/ko-->
+                        </div>
+                        <div class="col-xs-1 col-sm-1" id="loginRegistration">
+                            <div>
+                                <!-- ko with: user -->
+                                <!-- ko if: readyToDisplay -->
+                                <div style="text-align: center;word-break: break-word;line-height: 100%;" data-bind="event: { click: $parent.showMyAccountMenuAtDDF.bind($parent)} ,visible: loggedInUserName() && (loggedIn() || isUserSessionExpired())">
+                                    <!--style="text-align: center;word-break: break-word;padding: 23px 0 0 0;line-height: 100%;"-->
+                                    <!--<img src="/file/general/icons8-lock.svg" style="padding-bottom: 3px;">-->
+                                    <a id="CC-loginHeader-login" data-original-title="login"><span>My Account</span></a>
+                                </div>
+                                <div class="text-right cc-welcome">
+                                    <div class="dropdown-content-myaccount" data-bind="visible: loggedInUserName() && (loggedIn() || isUserSessionExpired()) ">
+                                        <a id="CC-loginHeader-mydashboard" data-original-title="myDashboard" data-bind="widgetLocaleText: {attr: 'innerText', value: 'My Dashboard'}, event:{click:$parent.navigateToProfile.bind($parent,0) }"></a>
+
+                                        <a id="CC-loginHeader-preOrders" data-original-title="wishlist" data-bind="widgetLocaleText: {attr: 'innerText', value: 'My Pre-Orders'}, event:{click:$parent.navigateToProfile.bind($parent,1) }"></a>
+                                        <a id="CC-loginHeader-ddfTickets" data-original-title="wishlist" data-bind="widgetLocaleText: {attr: 'innerText', value: 'My DDF Tickets'}, event:{click:$parent.navigateToProfile.bind($parent,2) }"></a>
+                                        <!-- ko if: $parent.hasOwnProperty('links') && $parent.links().hasOwnProperty('wishlist') -->
+                                        <a id="CC-loginHeader-wishlist-logged-in" data-original-title="wishlist" data-bind="widgetLocaleText: {attr: 'innerText', value: 'My Wishlist'}, event:{click:$parent.navigateToProfile.bind($parent,3) }"></a>
+                                        <!-- /ko -->
+                                        <a id="CC-loginHeader-myAccount" data-original-title="myAccount" data-bind="widgetLocaleText: {attr: 'innerText', value: 'My Profile'}, event:{click:$parent.navigateToProfile.bind($parent,4) }"></a>
+                                        <a id="CC-loginHeader-logout" data-original-title="logout" data-bind="widgetLocaleText: {attr: 'innerText', value: 'logoutText'}, click: $parent.handleLogout.bind($parent)" href="#"></a>
+                                    </div>
+                                    <div class="login-box" style="" data-bind="visible: !(loggedInUserName() && (loggedIn() || isUserSessionExpired()))">
+
+                                        <!--ko ifnot: $parent.isMobile-->
+                                        <!--<a data-bind="event:{click:$parent.handleLoginNavigation},ccLink: {route: '/login', displayName:'Login'}"><img src="/file/general/icons8-lock.svg"></a>-->
+                                        <a id="CC-loginHeader-login" data-original-title="login" data-bind="ccLink: {route: '/login', displayName:'Login'}"></a>
+                                        <!--/ko-->
+                                        <!--ko if: $parent.isMobile-->
+                                        <a style="color:white;" id="CC-loginHeader-login" data-original-title="login" data-bind="ccLink: {url: '/login'}"> <img src="/file/general/icon-profile-white.svg"></a>
+                                        <!--/ko-->
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                        <div class="col-xs-1 col-sm-2" id="search">
+                            <div class="input-group-btn">
+                                <button type="submit" id="searchSubmit" class="btn btn-default form-control" data-toggle="modal" data-target="#searchModal" data-bind="event: { keydown : $data.hideSearchDropdown}">
+                                    <span class="sr-only" data-bind="widgetLocaleText :'searchButtonText'">Search</span>
+                                    <!--<span class="glyphicon glyphicon-search"></span>-->
+                                    <img src="/file/general/icon-search-white.svg" data-bind="click: $data.handleSearchText">
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-xs-1 col-sm-2" id="miniCart">
+                            <div class="row" >
+                                <h2 class="label-hidden" data-bind="widgetLocaleText : 'shoppingCartHeader'"></h2>
+                                <div class="col-md-12 cartDataContainer" id="dropdowncart" data-bind="event: { click: $data.navigateToCart}">
+                                    <div>
+                                        <h3 class="label-hidden" data-bind="widgetLocaleText : 'cartOperationsText'"></h3>
+                                        <div class="heading cartData" style="text-align: center;line-height: 1;" data-bind="event:{ mouseover: toggleDropDownCart.bind($data,'show'), mouseout: hideDropDownCart.bind($data,'hide')}">
+                                           <a href="/cart" ><img id="cartSymbol" data-bind="attr: {src: $data.cartImageSrc}"/></a>
+                                            
+                                            <!--ko ifnot: isMobile-->
+                                            <a data-bind="visible: cart().allItems().length > 0 , click: toggleDropDownCart,
+                                             widgetLocaleText: {attr: 'aria-label', value: 'miniShoppingCartTitle'},
+                                            event: {keydown: $data.keypressHandler}" href="#" id="CC-header-cart-total" data-original-title="Shopping Cart" class="cc-cartlink-anchor" style="padding:0">
+                                                <div data-bind="text: cart().numberOfItems()" style="color: #fff;background-color: black;padding: 4px 10px;
+                                     border-radius: 13px;width: fit-content;margin: auto;"></div>
+                                            </a>
+                                            <!--/ko-->
+
+                                            <!--ko if: isMobile-->
+                                            <a data-bind="visible: cart().allItems().length > 0" href="/cart">
+                                                <div data-bind="text: cart().numberOfItems()" style="color: #fff;background-color: black;padding: 4px 10px;
+                                     border-radius: 13px;width: fit-content;margin: auto;"></div>
+                                            </a>
+                                            <!--/ko-->
+
+                                            <a data-bind="visible:cart().allItems().length ==0" href="/cart">
+                                                <!--<span data-bind="text: cartLinkText"></span>-->
+                                                <div data-bind="text: cart().numberOfItems()" class="cartcount"></div>
+                                            </a>
+                                        </div>
+                                        <!--ko ifnot: isMobile-->
+                                        <div class="content" data-bind="visible: cartVisible() , event:{mouseover: toggleDropDownCart.bind($data,'show'), mouseout: hideDropDownCart.bind($data,'hide')}">
+                                            <!-- ko with: $data -->
+
+                                            <div class="table container dropdowncartItems items" style="display: block;height: 367px;overflow-y: scroll;" data-bind="widgetLocaleText:{value:'minicartText',attr:'summary'}">
+                                                <!--ko if : _displayedMiniCartItems-->
+                                                <!-- ko if: nonRaffleProducts().length -->
+                                                <h4 class="cart-heading" style="margin-top: -10px;" data-bind="widgetLocaleText : 'cartHeading'"></h4>
+                                                <!--/ko -->
+                                                <!-- ko foreach: nonRaffleProducts -->
+                                                <div data-bind="with: productData" class="row productData">
+                                                    <a class="lineItem">
+                                                        <div class="col-sm-3 productImg">
+                                                            <img class="img-responsive" data-bind="productVariantImageSource:
+                                                            {   src: $data, imageType: 'thumb',
+                                                                alt: displayName,
+                                                            errorSrc: '/img/no-image.jpg',
+                                                            errorAlt: 'Missing Product Image'
+                                                            },
+                                                            attr:{id: 'CC-checkoutCartSummary-itemImage-'+id+$parent.catRefId}" style="padding: 8px;" />
+                                                        </div>
+                                                    </a>
+                                                    <div class="col-sm-9" style="margin-left: -15px;">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <a data-bind=" attr : { id: 'CC-checkoutCartSummary-itemDisplayName-'+id+$parent.catRefId}, text: displayName" class="mini-cart-summary-product-description">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                           <!--Promotionssssss-->
+                                                            <!--ko foreach: $parents[1].allAvailablePromotions-->
+                                                                <!--ko if: $data.itemCode === $parents[1].productId-->
+                                                                    <!--ko foreach: $data.discounts-->
+                                                                        <!--ko if: $data.discountType === 'SIMPLE_PROMO' -->
+                                                                        <!--<div class="col-sm-12">-->
+                                                                            <!--<img src="/file/general/icon-red-ribbon-hoz.svg">-->
+                                                                        <!--    <div class="discount"><b data-bind="text: $data.discountDesc"></b>-->
+                                                                        <!--    </div>-->
+                                                                        <!--</div>-->
+                                                                        <!--/ko-->
+                                                                        <!-- ko if:  ['SIMPLE_PROMO'].indexOf($data.discountType) > -1  -->   
+                                                                            <div class="row" style="position: relative; margin-left: 1px;">
+                                                                                <!--<img src="/file/general/icon-red-ribbon-hoz.svg">-->
+                                                                                <div class="multiDiscount">
+                                                                                    <span data-bind="text: $data.discountDesc"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        <!--/ko-->
+                                                                        <!-- ko if:  ['THRESHOLD_PROMO','BUY_GET_PROMO'].indexOf($data.discountType) > -1  -->   
+                                                                            <div class="row" style="position: relative; margin-left: 1px;">
+                                                                                <div class="multiDiscount">
+                                                                                    <span data-bind="text: $data.discountDesc"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        <!--/ko-->
+                                                                        <!--ko if: !$parent.gwpQuantity-->
+                                                                                <!--ko if: $data.discountPercentage === 100-->
+                                                                                    <img class="freeFlag" data-bind="attr:{src:'/file/general/icon-red-ribbon-free.svg'}"/>
+                                                                                <!--/ko-->
+                                                                        <!--/ko-->
+                                                                    <!--/ko-->
+                                                                <!--/ko-->
+                                                            <!--/ko-->
+                                                        <div class="row">
+                                                            <div class="col-md-9 col-sm-12">
+                                                                <!--ko foreach: $parents[1].allAvailablePromotions-->
+                                                                    <!--ko if: $data.itemCode === $parent.id-->
+                                                                        <!--ko if: $data.discounts.length && $data.discounts[0].discountType !== 'SPECIAL_DISCOUNT' -->
+                                                                            <span style="font-size: 18px; font-weight: bold; color:#000000" data-bind="currencyValueHandler: { price: $parents[2].getItemUnitPrice($parents[1].itemTotal(),$data.VATAmount,$parent.id), currencyObj: $parents[2].cart().currency}"></span>
+                                                                            <span style="color: #9B9B9B;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[2].cart().currency}"></span>
+                                                                            <del style="text-decoration-color: #D40808;">
+                                                                                <span class="listPriceValue" data-bind="currencyValueHandler: { price: $parents[1].rawTotalPrice(), currencyObj: $parents[2].cart().currency}"></span>
+                                                                            </del>
+                                                                            <span style="color: #9B9B9B; font-size: 16px; font-weight: 100;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[2].cart().currency}"></span>
+                                                                        <!--/ko-->
+                                                                       
+                                                                        <!--ko if: $data.discounts.length === 1 && $data.discounts[0].discountType === 'SPECIAL_DISCOUNT' || $data.discounts.length === 0 -->
+                                                                            <!--ko if: $parent.salePrice-->
+                                                                                <!--<span style="font-size: 18px; font-weight: bold; color:#000000" data-bind="currencyValueHandler: { price: ($parent.salePrice * $data.quantity) , currencyObj: $parents[2].cart().currency}"></span>-->
+                                                                                <!--<span style="color: #9B9B9B;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[2].cart().currency}"></span>-->
+                                                                                <!--<del style="text-decoration-color: #D40808;">-->
+                                                                                <!--    <span class="listPriceValue" data-bind="currencyValueHandler: { price: ($data.unitListPrice* $data.quantity), currencyObj: $parents[2].cart().currency}"></span>-->
+                                                                                <!--</del>-->
+                                                                                <!--<span style="color: #9B9B9B; font-size: 16px; font-weight: 100;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[2].cart().currency}"></span>-->
+                                                                            <!--/ko-->
+                                                                            <!--ko ifnot: $parent.salePrice-->
+                                                                            <!--/ko-->
+                                                                                <span style="font-size: 18px; font-weight: bold; color:#000000" data-bind="currencyValueHandler: { price: ($data.unitListPrice* $data.quantity) , currencyObj: $parents[2].cart().currency}"></span>
+                                                                                <span style="color: #9B9B9B;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[2].cart().currency}"></span>
+                                                                            
+                                                                        <!--/ko-->
+                                                                    <!--/ko-->
+                                                                <!--/ko-->
+                                                                </div>
+                                                                <div class="col-md-3 col-sm-12">
+                                                                <div style="text-align: right;">
+                                                                    <small>
+                                                                        <span data-bind="widgetLocaleText: 'cartColHeaderQuantity'" class="mini-cart-summary-product-price-heading"></span>
+                                                                        <span data-bind="attr : { id: 'CC-checkoutCartSummary-itemQuantity-'+id+$parent.catRefId}, ccNumber: $parent.quantity" class="mini-cart-summary-product-price"></span>
+                                                                    </small>
+                                                                </div>
+                                                                <!--ko if: $parent.availabilityDate() != null && $parent.stockState() != 'IN_STOCK' -->
+                                                                <div>
+                                                                    <small>
+                                                                        <span data-bind="widgetLocaleText: 'availabilityDateText'"></span>
+                                                                        <span data-bind="attr : { id: 'CC-checkoutCartSummary-availabilityDate-'+id+$parent.catRefId}, ccDate: {date: $parent.availabilityDate()}"></span>
+                                                                    </small>
+                                                                </div>
+                                                                <!--/ko -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr class="hr-line" style="margin: 5px 0 10px 0; border-top: 1px solid #D8D8D8;">
+                                                <!-- /ko -->
+                                                <!--/ko -->
+                                                <!--Raffle Ticket Section-->
+                                                <!--ko if : _displayedMiniCartItems-->
+                                                <!-- ko if: raffleProducts().length -->
+                                                <h4 class="cart-heading">WIN WITH DDF TICKETS</h4>
+                                                <!--/ko -->
+                                                <!-- ko foreach: raffleProducts -->
+                                                <div data-bind="with: productData" class="row">
+                                                    <a data-bind="attr:{href:'/product/'+$data.id}">
+                                                        <div class="col-sm-4 productImg" style="display: inline-flex;">
+                                                            <!--ko if: $data.id.indexOf('MM') > -1-->
+            <img style="padding: 3px;height: 42px;max-width: 47px;"  class="img-responsive" data-bind="ccResizeImage: {
+                            source: '/file/general/raffle-mm-03.jpg',
+                            alt: $data.displayName,
+                            errorSrc:'images/noImage.png',
+                            errorAlt:'No Image Found'}"/>
+        <!--/ko-->
+        <!--ko ifnot: $data.id.indexOf('MM') > -1-->
+         <img style="padding: 3px;height: 42px;max-width: 47px" class="img-responsive" data-bind="productVariantImageSource:
+                                                            {   src: $data, imageType: 'thumb',
+                                                                alt: displayName,
+                                                            errorSrc: '/img/no-image.jpg',
+                                                            errorAlt: 'Missing Product Image'
+                                                            },
+                                                            attr:{id: 'CC-checkoutCartSummary-itemImage-'+id+$parent.catRefId}" />
+        <!--/ko-->
+                                                            <div class="ticket-num">
+                                                                <ul class="ticket-num-list" name="miniCartraffleTickets">
+                                                                    <li class="cr-ticket-no" data-bind="text:childSKUs[0].displayName.split(' ')[0]"></li>
+                                                                    <li class="cr-ticket-value" data-bind="text:childSKUs[0].displayName.split(' ')[1]"></li>
+                                                                    <span  style="display: none;color: red;width: 172px;margin-left: 174px;margin-top: -58%;word-wrap: break-word;line-height: 13px;" data-bind="attr: { id:childSKUs[0].displayName.split(' ')[1] }">Ticket expired,remove it to proceed.</span>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="col-sm-7">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <a data-bind="attr:{href:'/product/'+$data.id}, text: displayName" class="mini-cart-summary-product-description">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-8 col-sm-12">
+                                                                <span class="listPriceValue" style="font-size: 18px; font-weight: bold; color:#000000;padding-left: 0px;" data-bind="currencyValueHandler: { price: $parent.rawTotalPrice(), currencyObj: $parents[1].cart().currency}"></span>
+                                                                <span style="color: #9B9B9B;" data-bind="currencySymbolHandler: { price: $parent.rawTotalPrice(), currencyObj: $parents[1].cart().currency}"></span>
+                                                            </div>
+
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <p style="margin-left: -58px;margin-top: 4px;font-size: 10px;color: #9b9b9b;font-weight: 500;">(Exclusive of 5% VAT)</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr class="hr-line" style="margin: 5px 0 10px 0;">
+                                                <!-- /ko -->
+                                                <!--/ko -->
+                                            </div>
+                                            <!-- /ko -->
+                                            <div class="cart-total" style="color: #4A4A4A; font-weight: normal;" data-bind="widgetLocaleText: {attr: 'summary', value: 'totalTableSummary'}" summary="Shopping cart totals.">
+                                                <div class="col-md-12" scope="row"><b><span style="color: #6b6868;" data-bind="widgetLocaleText:'totalTableTotal'">CART SUB TOTAL</span></b></div>
+                                                <div class="col-md-12" style="font-weight: bold;font-size: 40px;color: black;padding-top: 5px;padding-bottom: 10px;">
+                                                    <!--<span data-bind="currency: {price: cart().subTotal(), currencyObj: $data.cart().currency}"></span>-->
+                                                    <div class="col-md-8" style="padding-left: 0;padding-right: 0;">
+                                                        <span data-bind="currencyValueHandler: { price: Math.round($data.cart().subTotal()- $data.preOrderCartVAT() - $data.raffleTicketsVATTotal() + $data.preOrderCartDiscount()), currencyObj: $data.cart().currency}"></span>
+                                                        <!--<span data-bind="text:cart().total"></span>-->
+                                                        <span style="color: #9B9B9B;margin-left:12px;padding-top: 8px;font-size: 20px;padding-bottom: 10px;font-weight: normal;margin-left: 7px;" data-bind="currencySymbolHandler: { price: $data.cart().total(), currencyObj: $data.cart().currency}"></span>
+
+                                                    </div>
+                                                    <div class="col-md-4" style="font-weight: normal;font-size: 14px;color: #4A4A4A;padding-top: 5px;padding-bottom: 10px;text-align: right;padding-right: 0;">(Taxes May Apply)</div>
+                                                </div>
+                                                <div class="edit-cart-checkout row">
+                                                    <div data-bind="visible: cart().allItems().length > 0">
+                                                        <div class="col-md-6">
+                                                            <a data-bind="disabled: {condition : cart().allItems().length == 0, link: 'cart'}, click: hideDropDownCart" id="CC-headerShoppingCart-Edit" class="cc-button-primary btn-menu-edit-cart" role="button">
+                                                                <span data-bind="widgetLocaleText: 'buttonEditCart'">Edit Cart</span>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-md-6 text-right">
+                                                            <a data-bind="click: handleDropDownCheckout, ccNavigation: 'prevent', disabled: {condition : cart().allItems().length == 0, link: 'checkout'} , event: {keydown: $data.keypressHandler}" id="CC-headerShoppingCart-Checkout" class="cc-button-primary btn-menu-checkout" role="button">
+                                                                <span data-bind="widgetLocaleText: 'buttonCheckout'">Checkout</span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <a id="closecart" class="close" data-dismiss="item" onClick="$('#dropdowncart').removeClass('active');">×</a>
+                                            </div>
+                                            <a style="display:none;" data-bind="click: handleValidateCart, ccNavigation: 'prevent', disabled: {condition: cart().allItems().length == 0, link : 'checkout'}, inTabFlow: cart().allItems().length != 0, attr: { 'aria-disabled': cart().allItems().length == 0 ? 'true' : 'false'}" id="CC-header-checkout" class="cc-button-primary" role="button">
+                                                <span id="CC-headerCheckout" data-bind="widgetLocaleText: 'buttonCheckout'"></span>
+                                            </a>
+                                        </div>
+                                        <!--/ko-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Vik Edit -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

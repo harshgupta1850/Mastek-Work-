@@ -1,0 +1,12 @@
+<div class="controls col-xs-6 col-md-6">
+                        <label class="control-label inline" for="CC-userRegistration-firstname" data-bind="widgetLocaleText:'firstNameText'"></label>
+                        <span role="alert" class="text-danger" id="CC-userRegistration-firstname-error" data-bind="validationMessage: firstName"></span>
+                        <input type="text" class="col-md-5 form-control inputbox" id="CC-userRegistration-firstname"
+                           aria-required="true" data-bind="validatableValue: firstName, widgetLocaleText : {value:'firstNameText', attr:'placeholder'}, valueUpdate: 'afterkeydown', event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }}" />
+                     </div>
+					 
+					 
+<input type="text" class="col-xs-5 col-sm-5 form-control inputbox" id="CC-userRegistration-passportno" min="4"
+                           maxlength="50"
+                           aria-required="true" data-bind="value: $parent.passportNumber, event: {keyup: $parent.onkeypresspassportno, blur:$parent.passportNumberValidation.bind($parent) }" required="required"
+                           placeholder="PASSPORT NUMBER">

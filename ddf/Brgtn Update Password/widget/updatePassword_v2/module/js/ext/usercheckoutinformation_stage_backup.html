@@ -1,0 +1,656 @@
+<!--ko foreach: cart().items()-->
+    <!--ko if: productData-->
+        <span data-bind="text: $parent.raffleTicketValue.bind($parent)(productData())"></span>
+    <!--/ko-->
+<!--/ko-->
+
+<!--ko ifnot: isMobile()-->
+<div id="checkout-registration">
+   <!--ko if: isRaffleTicketsInCart() === true && phoneNumberValue && [null,undefined,''].indexOf(phoneNumberValue()) !==-1-->
+    <div class="col-md-12 center-block" style="background-color:#fff;padding: 9px 0px 8px 2px;margin-bottom: 15px;border: 1px solid #D40808;border-radius: 2px;">
+        <div class="col-md-1 text-center">
+            <img src="/file/general/icon-error.svg" style="width: 40px;position: relative;top: 4px">
+        </div>
+        <div class="col-md-8">
+            <label style="margin-bottom:0">ENTER YOUR MOBILE NUMBER</label>
+            <span style="font-size: 14px;color: #4a4a4a;display: block;line-height: 13px;">For Win With DDF tickets, we would require your valid mobile number to be provided for this purchase.</span>
+        </div>
+        <div class="col-md-3 text-right" style="margin-top: 8px;">
+            <button type="button" class="cc-button-primary" id="modalBtn" data-bind="click: function(data){return $data.handleOTPModal(data)}" style="background-color: #EEEFF6; border: 1px solid #EAEAEA;text-transform: uppercase;height: 30px;border-radius: 6px; color: black;font-size: 14px;font-weight: 900;font-family: dubai;padding-top: 4px;">ENTER NOW</button>
+        </div>
+    </div>
+  <!--/ko-->
+     <!--ko if: isNonRaffleProductInCart()-->
+
+   <span class="col-md-12 text-danger" id="CC-flightDate-error" role="alert" style="display: none;"></span>
+       <span class="col-md-12 text-danger" id="CC-flightNo-error" role="alert" style="display: none;"></span>
+	    <span class="col-md-12 text-danger" id="CC-flightdata-error" role="alert" style="display: none;"></span>
+	     <span class="col-md-12 text-danger" id="CC-NoFlightData-error" role="alert" style="display: none;"></span>
+    <div class="col-md-6" style="border-right: 1px solid #979797;">
+        <h4 class="title-label" data-bind="widgetLocaleText: 'selectFromPickupOptions'"></h4>
+        <label for="card type" style="display: block; margin-top: 4px; color: #4A4A4A; font-size: 14px; font-weight: 500;" data-bind="widgetLocaleText: 'pickupText'">Where do you want to pick up your order from?</label>
+        <div class="row" style="display: block; margin-top: 10px;">
+            <div id="rates" class="form-group">
+                <div class="col-sm-6 col-lg-6" style="padding-right: 0;">
+                    <label class="radio-btn"><span data-bind="widgetLocaleText: 'fromDepartureText'"></span>
+                     <input type="radio" name="flightType" class="radiobtn" id="departure" value="Departure" data-bind="event: { change:displayFlightData}, checked:flightType , disable : (isRaffleTicketsInCart() === true && phoneNumberValue && [null,undefined,''].indexOf(phoneNumberValue()) !=-1) || isNIPaymentRedirected">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="col-sm-6 col-lg-6" style="padding-right: 0;">
+                    <label class="radio-btn" ><span data-bind="widgetLocaleText: 'fromArrivalText'"></span>
+                      <input type="radio" name="flightType" class="radiobtn" id="arrival" value="Arrival" data-bind="event: { change:displayFlightData}, checked:flightType, disable : (isRaffleTicketsInCart() === true && phoneNumberValue && [null,undefined,''].indexOf(phoneNumberValue()) !=-1) || isNIPaymentRedirected"/>
+                         <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <label for="card type" style="display: block; margin-top: 5px;font-weight: 500" data-bind="widgetLocaleText: 'noticeText'">Please allow us minimum of 48 hours notice to keep your order ready to pick up.</label>
+       
+        <div class="row" style="margin-top: 11px;">
+            <span role="alert" class="text-danger" id="CC-arrivalDate-error" style="display: none;"></span>
+            <div class="col-md-6">
+                <div class="date-num-container" style="position: relative;">
+                    <span style="font-size: 12px; color: #9b9b9b;"></span>
+                    <!--ko if: flightType() ==="Departure" || isDeparture-->
+                        <span style="font-size: 12px; color: #9b9b9b;" data-bind="widgetLocaleText: 'departureDateText'">DEPARTURE DATE</span>
+                    <!--/ko-->
+                      <!--ko if: flightType() ==="Arrival" || isArrival-->
+                    <span style="font-size: 12px; color: #9b9b9b;" data-bind="widgetLocaleText: 'arrivalDateText'">ARRIVAL DATE</span>
+                    <!--/ko-->
+                    <span class="text-danger visible-xs" id="CC-checkoutAddressBook-phone-sfirstname-error" data-bind="validationMessage: selectedDateString" role="alert" style=""></span>
+                    <input type="text" 
+                    class="form-control input-style-holder" 
+                    style="background: none;" 
+                    id="myDate" 
+                    data-bind="onRender:$data.getCalender,enable: flightType,value:selectedDateString,
+                    disable : isDisable,isNIPaymentRedirected"  
+                    name="travelDate" required="required" placeholder="DD/MM/YYYY" readonly>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="flight-num-container">
+                    <span style="font-size: 12px; color: #9b9b9b;" data-bind="widgetLocaleText: 'flightNumberText'">FLIGHT NUMBER</span>  
+                   <div id="myDropdown">
+        	               <input id="myInput" draggable="true" type="text" name="sflightNumber" class="form-control input-style-holder" 
+                            data-bind= "valueUpdate: 'afterkeydown', value: flightNumberValue, enable: flightType, disable : isDisable ,isNIPaymentRedirected" autocomplete="off">
+                    	<!--<input type="text" list="cars" />-->
+                    	<!--ko if: filteredflightData().length && flightNumberValue()-->
+                            <!--<select id="flights" data-bind="options: filteredflightData,optionsText: 'Flight_Content',value: selectedFlightNo, optionsCaption: 'Choose...'"></select>-->
+                            <div class="dropdown-content-container"> 
+                                <ul class="dropdown-menu" data-bind="foreach: filteredflightData">
+                                  <li><a href="javascript:void(0)" data-bind="event:{click: $parent.handleSelectedFlight.bind($parent)}, text: Flight_Content + 'Hrs'"></a></li>
+                                </ul>
+                            </div>
+                        <!--/ko-->
+        		      
+                </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <!--ko if: selectedFlightNo() && flightNumberValue() -->
+        <div class="row airline-det-container">
+        <div class="col-md-1">
+            <img data-bind="attr:{src: airlineUrl}" style="max-width: 40px;width: auto;height: 35px;object-fit: contain;padding: 0;background-color: #fff;"/>
+        </div>
+        <div class="col-md-10" style="margin-left: 15px; margin-top: -4px;">
+            <div class="row" style="margin-bottom: -2px;">
+                <div class="col-sm-12">
+            <label data-bind="widgetLocaleText: 'airlineText'">AIRLINE</label>
+            <span class="value-container fs14" data-bind="text: selectedFlightNo().Airline_Name"></span></div></div>
+             <div class="row" style="margin-bottom: 10px;">
+                 <div class="col-sm-6">
+             <label data-bind="widgetLocaleText: 'destinationText'">DESTINATION</label>
+            <span class="value-container fs14" data-bind="text: selectedFlightNo().CITY"></span></div>
+             <div class="col-sm-6">
+             <!--ko if: flightType() ==="Departure" || isDeparture-->
+            <label data-bind="widgetLocaleText: 'departureTimeText'">DEPARTURE TIME</label>
+                 <!--/ko-->
+             <!--ko if: flightType() ==="Arrival" || isArrival-->
+            <label class="title-label" data-bind="widgetLocaleText: 'arrivalTimeText'">ARRIVAL TIME</label>
+            <!--/ko-->
+            <span class="value-container fs14" data-bind="text: selectedFlightNo().FLIGHT_TIME + ' Hrs'"></span>
+            
+            </div> 
+			</div>
+        </div>
+        </div>
+        <!--/ko-->
+    </div>
+    	   <!--/ko-->
+    
+    <div class="col-md-6"  id="checkout-profile">
+        <!--ko with: user-->
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="title-label" data-bind="widgetLocaleText: 'yourProfileText'">YOUR PROFILE</h4>
+            </div>
+            <div class="col-sm-6">
+                <a id="checkoutInformationDetails"  class="editButton cc-button-primary pull-right" data-bind="widgetLocaleText: {attr: 'editCartText', value: 'Edit'}, event:{click:$parent.navigateToProfile.bind($parent,4,1) }">
+                    <img src="/file/general/icon-edit-grey.svg">
+                    <span data-bind="widgetLocaleText: 'editText'">EDIT</span></a>
+            </div>
+        </div>
+        <div class="row" style="display: block; margin-top: 10px;margin-bottom: 10px;">
+        
+            <div class="col-sm-6 col-lg-6">
+                <label data-bind="widgetLocaleText: 'firstNameText'">FIRST NAME</label>
+               <span class="value-container" data-bind="text: firstName"></span>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <label data-bind="widgetLocaleText: 'lastNameText'">LAST NAME</label>
+                <span class="value-container" data-bind="text: lastName"></span>
+            </div>
+        </div>
+        
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-sm-12">
+                <label data-bind="widgetLocaleText: 'emailText'">EMAIL</label>
+                <span class="value-container" data-bind="text: email">usersemailID@domain.com</span>
+            </div>
+        </div>
+        <!--/ko-->
+      
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-sm-6 col-lg-6">
+                <label data-bind="widgetLocaleText: 'nationalityText'">NATIONALITY</label>
+                <span class="value-container" data-bind="text: selectedCountryValue"></span>
+            </div>
+            <div class="col-sm-6 col-lg-6">
+            <!--ko if: passportNumberValue() -->
+                <label data-bind="widgetLocaleText: 'passportNumberText'">PASSPORT NO.</label>
+                <span class="value-container" data-bind="text:passportNumberValue"></span>
+            <!--/ko-->
+            <!--ko if: emiratesIdValue() -->
+                <label data-bind="widgetLocaleText: 'thankyouText'">EMIRATES ID</label>
+                <span class="value-container" data-bind="text:emiratesIdValue"></span>
+            <!--/ko-->
+            </div>
+        </div>
+         
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-sm-6 col-lg-6">
+                <label data-bind="widgetLocaleText: 'dateOfBirthText'">DATE OF BIRTH</label>
+                <span class="value-container" data-bind="text:dateOfBirthValue"></span>
+            </div>
+            <div class="col-sm-6 col-lg-6">
+                <label data-bind="widgetLocaleText: 'mobileNumberText'">MOBILE NUMBER</label>
+                <!--ko if: phoneCodeValue() -->
+                <span class="value-container">  <span>+</span>
+                <span  style="margin-right:5px" data-bind="text:phoneCodeValue"></span><span data-bind="text: phoneNumberValue"></span></span>
+                <!--/ko-->
+            </div>
+        </div>
+        
+    </div>
+    
+     <!--ko if: isNonRaffleProductInCart() && selectedFlightNo() && flightNumberValue()-->
+    <div class="col-md-12 center-block" style="background-color:#fff;padding: 15px;margin-top: 15px;margin-bottom: 15px;border: 1px solid #D8D8D8;margin-left: 15px;width: 98%">
+        <div class="col-md-5 text-center">
+            <img style="padding-bottom:5px;" src="/file/general/icon-marker-red.svg"><br/>
+            <label style="color: #9b9b9b;font-weight: 500;margin-bottom: 0;font-size: 12px" data-bind="widgetLocaleText: 'collectionPointText'">COLLECTION POINT</label>
+            <label style="font-weight: 500;margin-bottom: 0; display:inherit"><span data-bind="widgetLocaleText: 'terminalText'"></span> <span data-bind="text:selectedFlightNo().TERMINAL"></span></label>
+             <!--ko if: flightType() ==="Departure" || isDeparture-->
+            <span style="display: inline-block;" data-bind="widgetLocaleText: 'departureText'"> Departure Duty Free Webshop</span>
+            <!--/ko-->
+              <!--ko if: flightType() ==="Arrival" || isArrival-->
+              <span style="display: inline-block;" data-bind="widgetLocaleText: 'arrivalText'"> Arrival Duty Free Webshop</span>
+              <!--/ko-->
+        </div>
+        <div class="col-md-7" style="margin-top: 9px;">
+            <span style="color: #9b9b9b;">You can collect your order from the webshop closest to your boarding gate if you are a departing passenger or from the webshop  in the  terminal of arrival if you are an arriving passenger.</span>
+            
+        </div>    
+    </div>
+    <!--/ko-->
+    <span id="cc-informationTab" role="alert" style="display: none;"></span>
+    <div class="col-md-12 center-block">
+        <button type="button" class="cc-button-primary" 
+        data-bind="click: openPayment , enable : (isRaffleTicketsInCart() && phoneNumberValue && [null,undefined,''].indexOf(phoneNumberValue()) ===-1 ||  flightType()), widgetLocaleText: 'selectPaymentMethodText'"
+        style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; width: 320px; height: 50px; border-radius: 8px; font-size:20px;">SELECT PAYMENT METHOD</button>
+    </div>
+    
+    <!--Modal for Phone Number Verification-->
+   
+        <section id="phoneNumberModal" class="modal fade" tabindex="-1" data-width="760">
+          <div class="modal-dialog" style="width: 500px;">
+        <div class="modal-content"  style="border-radius: 0;">
+            <div class="modal-header" style="border: 0;">
+                <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="background: #000;-->
+                <!--opacity: 1; border-radius: 50%; width: 30px;height: 30px; color: #fff; font-weight: normal; font-size: 14px;">&#10005;</button>-->
+                <button type="button" class="close" data-bind="click: $data.closePhoneNumberModal" aria-hidden="true" style="background: #000;
+                opacity: 1; border-radius: 50%; width: 30px;height: 30px; color: #fff; font-weight: normal; font-size: 14px;">&#10005;</button>
+            </div>
+    <div class="modal-body" style="padding: 2px 56px 55px 30px !important;">
+         <div class="row">
+             <div class="col-md-10 col-md-offset-1">
+                 <div class="row">
+                   <div class="col-md-12">
+                        <h2 class="modal-title">Enter Your Mobile Number</h2>
+                    </div>
+                 </div>
+                 <div class="row">
+                   <div class="col-md-12 valid-mobile-no"> 
+                        <h5>Please enter a valid (working) mobile number</h5>
+                        <h5 id="errorMsg" style="color: red;display: none;">Please enter mobile number</h5>
+                    </div>
+                 </div>
+                 <ul class="list-inline">
+                     <li>
+                         <div class="form-group col-xs-12 col-md-5 pd0">
+                        <!--ko if: phoneCodeValue-->
+                                <input style="height: 50px;border-radius: 0;box-shadow: none;border: 1px solid rgba(29,35,48,0.18);" class="form-control"  data-bind="value:preSelectedCountryCodeValue" disabled/>
+                        <!--/ko-->
+                        <!--ko ifnot: phoneCodeValue-->
+                              <select class="verify-select-box" id="phoneCodeList" data-bind="options: countryCodeArray,optionsText: 'country_val', value:$data.selectedCountryCode"></select>
+                        <!--/ko-->
+                     </div>
+                         <div class="form-group col-xs-12 col-md-7">
+                            <!--ko if: phoneNumberValue-->
+                            <input type="text" data-bind="value:phoneNumberValue" disabled class="form-control verify-input-box" id="mobile_number" placeholder="MOBILE NUMBER" 
+                            />
+                            <!--/ko--> 
+                            <!--ko ifnot: phoneNumberValue-->
+                            <input type="text" data-bind="numeric,value:selectedPhoneNumberValue" maxlength="50" class="form-control verify-input-box" id="phone_number" placeholder="MOBILE NUMBER" 
+                            />
+                            <!--/ko-->
+                          </div>
+                     </li>
+                 </ul>
+                  <div class="row">
+                       <div class="col-md-12">
+                            <!--<button type="button" id="otpModalBtn" class="cc-button-primary btn-block" data-bind="click:function(data){return $data.handleOTPModalforMobileVerification(data)}" -->
+                            <!--style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; -->
+                            <!--height: 50px; border-radius: 8px; font-size:20px;">GET OTP</button>-->
+                            <button type="button" id="otpModalBtn" class="cc-button-primary btn-block" data-bind="click: function(data){return $data.handleOTPVerification(data)}" 
+                            style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; 
+                            height: 50px; border-radius: 8px; font-size:20px;">SUBMIT</button>
+                        </div>
+                   </div>
+            </div>
+        </div>
+              
+
+            
+             
+          </div>
+          </div>
+              </div>
+</section>
+    
+            <!--Modal for OTP-->
+<!--ko ifnot: mobileNoVerifiedValue()-->
+<section id="OTPModal" class="modal fade" tabindex="-1" data-width="760" role="dialog">
+      <div class="modal-dialog" style="width: 500px;">
+    <div class="modal-content" style="border-radius: 0;">
+    <div class="modal-body" style="padding: 20px 60px 0px 60px !important;">
+        <div class="row otp-content">
+            <div class="col-md-12 text-center">
+                <h2> Enter OTP</h2>
+                <p class="bold mt20">Please Verify your mobile number</p>
+                <p>We have sent you an verification code via SMS</p>
+                <p>Type the Verification Code below to verify</p>
+            </div>
+        </div>
+                        <div id="divOuter">
+                         <div id="divInner">
+                             <input id="otpValue" type="text" maxlength="4" data-bind="numeric" />
+                               <p id="otpError" style="color: #FF0000; display:none;text-align: center"> Please enter a valid OTP</p>
+                               <p id="resendMsg" style="color: #008000; display:none;text-align: center">One time password has been sent on your mobile number.</p>
+                                  </div>
+                                    <div>
+                                    </div>
+                                </div>
+    <div class="row">
+         <div class="col-md-12 text-center">
+            <button type="button" id="verifyButton" class="cc-button-primary" data-bind="click: function(data){return $data.handleOTPVerification(data)}" 
+            style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; width: 210px; 
+            height: 50px; border-radius: 8px; font-size:20px;margin: 20px 0;">VERIFY</button>
+        </div>
+    </div>
+     </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+            <hr style="margin-bottom: 10px;">
+            <p class="dark-bl">
+                <span style="color: darkGrey">SMS was sent to </span>
+                <label>+</label>
+                <label data-bind="text: $data.selectedCountryCode() ? $data.selectedCountryCode().Number_Prefix : $data.phoneCodeValue()" style="margin-left: -3px;"></label> <label data-bind="text:$data.selectedPhoneNumberValue() ? $data.selectedPhoneNumberValue() : $data.phoneNumberValue()"></label>
+                <br/>
+                <a class="dark-bl" data-bind="click:function(data){return $data.handleOTPModalforMobileVerification(data,'reSent')}" style="cursor: pointer;"><span>Resend OTP</span></a>
+            </p>
+            </div>
+        </div>
+  </div>
+</div>
+</section>
+<!--/ko-->
+</div>
+<!--/ko-->
+
+
+
+
+<!--ko if: isMobile()-->
+<div id="checkout-registration">
+    <!--ko if: isRaffleTicketsInCart() === true && phoneNumberValue && [null,undefined,''].indexOf(phoneNumberValue()) !==-1-->
+    <div class="col-md-12 col-xs-12 center-block" style="background-color:#fff;padding: 15px;margin-bottom: 15px;border: 1px solid #D40808;border-radius: 2px;padding-left: 0;padding-right: 0;">
+        <div class="col-md-1 col-xs-12 text-center">
+            <img src="/file/general/icon-error.svg" style="width: 30px;">
+        </div>
+        <div class="col-md-8 col-xs-12" style="text-align: center;margin-top: 5px;">
+            <label>ENTER YOUR MOBILE NUMBER</label>
+            <span style="display: block;line-height: 16px;">For Win With DDF tickets, we would require your valid mobile number to be provided for this purchase.</span>
+        </div>
+        <div class="col-md-3 col-xs-12" style="text-align: center;margin-top: 16px;">
+            <button type="button" class="cc-button-primary" id="modalBtn" data-bind="click: function(data){return $data.handleOTPModal(data)}" style="background-color: #EEEFF6;border: 1px solid #EAEAEA;text-transform: uppercase;font-weight: normal;height: 34px;border-radius: 8px;color: black;font-size: 14px;">ENTER NOW</button>
+        </div>
+    </div>
+  <!--/ko-->
+     <!--ko if: isNonRaffleProductInCart()-->
+
+   <span class="col-md-12 col-xs-12 text-danger" id="CC-flightDate-error" role="alert" style="display: none;"></span>
+       <span class="col-md-12 col-xs-12 text-danger" id="CC-flightNo-error" role="alert" style="display: none;"></span>
+	    <span class="col-md-12 col-xs-12 text-danger" id="CC-flightdata-error" role="alert" style="display: none;"></span>
+	     <span class="col-md-12 col-xs-12 text-danger" id="CC-NoFlightData-error" role="alert" style="display: none;"></span>
+    <div class="" style="">
+        <h4 class="title-label">SELECT FROM PICK UP OPTIONS</h4>
+        <label for="card type" style="display: block; margin-top: 4px; color: #4A4A4A; font-size: 14px; font-weight: 500;">Where do you want to pick up your order from?</label>
+        <div class="row" style="display: block; margin-top: 10px;">
+            <div id="rates" class="form-group">
+                <div class="col-sm-6 col-lg-6 col-xs-6" style="padding-right: 0;">
+                    <label class="radio-btn">FROM DEPARTURES
+                     <input type="radio" name="flightType" class="radiobtn" id="departure" value="Departure" data-bind="event: { change:displayFlightData}, checked:flightType , disable : (isRaffleTicketsInCart() === true  && phoneNumberValue && [null,undefined,''].indexOf(phoneNumberValue()) !=-1) || isNIPaymentRedirected">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="col-sm-6 col-lg-6 col-xs-6" style="padding-right: 0;">
+                    <label class="radio-btn">FROM ARRIVALS
+                       <input type="radio" name="flightType" class="radiobtn" id="arrival" value="Arrival" data-bind="event: { change:displayFlightData}, checked:flightType, disable : (isRaffleTicketsInCart() === true  && phoneNumberValue && [null,undefined,''].indexOf(phoneNumberValue()) !=-1) || isNIPaymentRedirected"/>
+                         <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <label for="card type" style="display: block; margin-top: 5px;font-weight: 500">Please allow us minimum of 48 hours notice to keep your order ready to pick up.</label>
+ 
+         <div class="row form-group" style="margin-top: 11px;">
+            <span role="alert" class="text-danger" id="CC-arrivalDate-error" style="display: none;"></span>
+            <div class="col-md-6 col-xs-6">
+                <div class="date-num-container" style="position: relative;">
+                    <img src="/file/general/icon-calendar.svg" style="position: absolute; z-index: 0; right: 10px; top: 14px;z-index: 1111">
+                    <span style="font-size: 12px; color: #9b9b9b;"></span>
+                    <!--ko if: flightType() ==="Departure" || isDeparture-->
+                        <span style="font-size: 12px; color: #9b9b9b;margin-left: 6px;">DEPARTURE DATE</span>
+                    <!--/ko-->
+                      <!--ko if: flightType() ==="Arrival" || isArrival-->
+                    <span style="font-size: 12px; color: #9b9b9b;margin-left: 6px;">ARRIVAL DATE</span>
+                    <!--/ko-->
+                    <span class="text-danger visible-xs" id="CC-checkoutAddressBook-phone-sfirstname-error" data-bind="validationMessage: selectedDateString" role="alert" style=""></span>
+                     <input type="text" 
+                    class="form-control input-style-holder" 
+                    style="background: none;" 
+                    id="myDate"
+                    data-bind="onRender:$data.getCalender,enable: flightType,datepicker:selectedDateString,dpOptions: {format: 'dd/mm/yyyy'},
+                    disable : isDisable,isNIPaymentRedirected"  
+                    name="travelDate" required="required" placeholder="DD/MM/YYYY" readonly>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6">
+                <div class="flight-num-container" style="width: 147px;">
+                    <span style="font-size: 12px; color: #9b9b9b;margin-left: 6px;">FLIGHT NUMBER</span>  
+                   <div id="myDropdown">
+        	               <input id="myInput" type="text" name="sflightNumber" class="form-control input-style-holder" 
+                            data-bind= "valueUpdate: 'afterkeydown', value: flightNumberValue, enable: flightType, disable : isDisable ,isNIPaymentRedirected" autocomplete="off">
+                    	<!--<input type="text" list="cars" />-->
+                    	<!--ko if: filteredflightData().length && flightNumberValue()-->
+                            <!--<select id="flights" data-bind="options: filteredflightData,optionsText: 'Flight_Content',value: selectedFlightNo, optionsCaption: 'Choose...'"></select>-->
+                            <div class="dropdown-content-container"> 
+                                <ul class="dropdown-menu" data-bind="foreach: filteredflightData">
+                                  <li><a href="javascript:void(0)" data-bind="event:{click: $parent.handleSelectedFlight.bind($parent)}, text: Flight_Content + 'Hrs'"></a></li>
+                                </ul>
+                            </div>
+                        <!--/ko-->
+        		      
+                </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <!--ko if: selectedFlightNo() && flightNumberValue() -->
+     <div class="row airline-det-container">
+        <div class="col-md-1 col-xs-1">
+            <img data-bind="attr:{src: airlineUrl}" style="max-width: 50px;width: auto;height: 35px;object-fit: contain;padding: 0;background-color: #fff;"/>
+        </div>
+        <div class="col-md-9 col-xs-9" style="margin-left: 30px; margin-top: -4px;">
+            <div class="row" style="margin-bottom: -2px;">
+                <div class="col-sm-12 col-xs-12">
+            <label>AIRLINE</label>
+            <span class="value-container fs14" data-bind="text: selectedFlightNo().Airline_Name"></span></div></div>
+             <div class="row" style="margin-bottom: 10px;">
+                 <div class="col-sm-6 col-xs-6">
+             <label>DESTINATION</label>
+            <span class="value-container fs14" data-bind="text: selectedFlightNo().CITY"></span></div>
+             <div class="col-sm-6 col-xs-6">
+             <!--ko if: flightType() ==="Departure" || isDeparture-->
+            <label>DEPARTURE TIME</label>
+                 <!--/ko-->
+             <!--ko if: flightType() ==="Arrival" || isArrival-->
+            <label class="title-label">ARRIVAL TIME</label>
+            <!--/ko-->
+            <span class="value-container fs14" data-bind="text: selectedFlightNo().FLIGHT_TIME + ' Hrs'"></span>
+            
+            </div>
+            </div>
+        </div>
+        </div>
+        <!--/ko-->
+        </div>
+    	   <!--/ko-->
+    	   <!--ko if: isNonRaffleProductInCart() && selectedFlightNo() && flightNumberValue()-->
+    <div class="col-md-12 col-xs-12 center-block" style="border-bottom: 1px solid #979797;background-color:#fff;padding: 15px;margin-top: 15px;margin-bottom: 15px;border: 1px solid #D8D8D8;width: 100%">
+        <div class="col-md-5 col-xs-5 text-center">
+            <img style="padding-bottom:5px;" src="/file/general/icon-marker-red.svg"><br/>
+            <label style="color: #9b9b9b;font-weight: 500;margin-bottom: 0;font-size: 12px">COLLECTION POINT</label>
+            <label style="font-weight: 500;margin-bottom: 0; display:inherit">Terminal <span data-bind="text: selectedFlightNo().TERMINAL"></span></label>
+             <!--ko if: flightType() ==="Departure" || isDeparture-->
+            <span style="display: inline-block;"> Departure Duty Free WebSHOP</span>
+            <!--/ko-->
+              <!--ko if: flightType() ==="Arrival" || isArrival-->
+              <span style="display: inline-block;"> Arrival Duty Free WebSHOP</span>
+              <!--/ko-->
+        </div>
+        <div class="col-md-7 col-xs-7" style="margin-top: 9px;">
+            <span style="color: #9b9b9b;">You can collect your order from the webshop closest to your boarding gate if you are a departing passenger or from the webshop  in the  terminal of arrival if you are an arriving passenger.</span>
+        </div>    
+    </div>
+    <!--/ko-->
+    
+   <div class="col-md-12 col-xs-12"  id="checkout-profile" style="border-top: 2px solid #979797;padding-top: 12px;">
+        <!--ko with: user-->
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                <h4 class="title-label">YOUR PROFILE</h4>
+            </div>
+            <div class="col-sm-6 col-xs-6">
+                <a id="checkoutInformationDetails"  class="editButton cc-button-primary pull-right" data-bind="widgetLocaleText: {attr: 'editCartText', value: 'Edit'}, event:{click:$parent.navigateToProfile.bind($parent,4) }">
+                    <img src="/file/general/icon-edit-grey.svg">
+                    <span>EDIT</span></a>
+            </div>
+        </div>
+        <div class="row" style="display: block; margin-top: 10px;margin-bottom: 10px;">
+        
+            <div class="col-sm-6 col-lg-6 col-xs-6">
+                <label>FIRST NAME</label>
+               <span class="value-container" data-bind="text: firstName"></span>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xs-4">
+                <label>LAST NAME</label>
+                <span class="value-container" data-bind="text: lastName"></span>
+            </div>
+        </div>
+        
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-sm-12 col-xs-12">
+                <label>EMAIL</label>
+                <span class="value-container" data-bind="text: email">usersemailID@domain.com</span>
+            </div>
+        </div>
+        <!--/ko-->
+      
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-sm-6 col-lg-6 col-xs-6">
+                <label>NATIONALITY</label>
+                <span class="value-container" data-bind="text: selectedCountryValue"></span>
+            </div>
+            <div class="col-sm-6 col-lg-6 col-xs-6">
+                  <!--ko if: passportNumberValue() -->
+                <label>PASSPORT NO.</label>
+                <span class="value-container" data-bind="text:passportNumberValue"></span>
+                <!--/ko-->
+                <!--ko if: emiratesIdValue() -->
+                    <label>EMIRATES ID</label>
+                    <span class="value-container" data-bind="text:emiratesIdValue"></span>
+                <!--/ko-->
+            </div>
+        </div>
+         
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-sm-6 col-lg-6 col-xs-6">
+                <label>DATE OF BIRTH</label>
+                <span class="value-container" data-bind="text:dateOfBirthValue"></span>
+            </div>
+            <div class="col-sm-6 col-lg-6 col-xs-6">
+                <label>MOBILE NUMBER</label>
+                <!--ko if: phoneCodeValue() -->
+               <span class="value-container"> <span>+</span>
+                <span  style="margin-right:5px" data-bind="text:phoneCodeValue"></span><span data-bind="text: phoneNumberValue"></span></span>
+                <!--/ko-->
+            </div>
+        </div>
+        
+    </div>
+       
+   <span id="cc-informationTab" role="alert" style="display: none;"></span>
+    <div class="col-md-12 col-xs-12 center-block">
+        <button type="button" class="cc-button-primary" 
+        data-bind="click: openPayment , enable : (isRaffleTicketsInCart() && phoneNumberValue && [null,undefined,''].indexOf(phoneNumberValue()) ===-1 ||  flightType())"
+        style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; width: 100%; height: 40px; border-radius: 8px; font-size:19px;">SELECT PAYMENT METHOD</button>
+    </div>
+    
+      <!--Modal for Phone Number Verification-->
+   
+        <section id="phoneNumberModal" class="modal fade" tabindex="-1" data-width="760">
+          <div class="modal-dialog">
+        <div class="modal-content"  style="border-radius: 0;">
+            <div class="modal-header" style="border: 0;">
+                <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="background: #000;-->
+                <!--opacity: 1; border-radius: 50%; width: 30px;height: 30px; color: #fff; font-weight: normal; font-size: 14px;">&#10005;</button>-->
+                <button type="button" class="close" data-bind="click: $data.closePhoneNumberModal" aria-hidden="true" style="background: #000;
+                opacity: 1; border-radius: 50%; width: 30px;height: 30px; color: #fff; font-weight: normal; font-size: 14px;">&#10005;</button>
+            </div>
+    <div class="modal-body" style="padding: 2px 30px 55px 12px !important">
+         <div class="row">
+             <div class="col-md-10 col-md-offset-1">
+                 <div class="row">
+                   <div class="col-md-12">
+                        <h2 class="modal-title" style="width: 100%;font-size: 24px;text-align: center;">Verify Your Mobile Number</h2>
+                    </div>
+                 </div>
+                 <div class="row">
+                   <div class="col-md-12 valid-mobile-no" style="margin-top: 16px;margin-left: 6px;"> 
+                        <h5>Please enter a valid (working) mobile number</h5>
+                        <h5 id="errorMsg" style="color: red;display: none;">Please enter mobile number</h5>
+                    </div>
+                 </div>
+                 <ul class="list-inline">
+                     <li>
+                         <div class="form-group col-xs-6 col-md-5 pd0">
+                        <!--ko if: phoneCodeValue-->
+                                <input style="height: 50px;border-radius: 0;box-shadow: none;border: 1px solid rgba(29,35,48,0.18);" class="form-control"  data-bind="value:preSelectedCountryCodeValue" disabled/>
+                        <!--/ko-->
+                        <!--ko ifnot: phoneCodeValue-->
+                              <select class="verify-select-box" id="phoneCodeList" data-bind="options: countryCodeArray,optionsText: 'country_val', value:$data.selectedCountryCode"></select>
+                        <!--/ko-->
+                     </div>
+                         <div class="form-group col-xs-6 col-md-7" style="padding-left: 4px;">
+                            <!--ko if: phoneNumberValue-->
+                            <input style="width: 156px;" type="text" data-bind="value:phoneNumberValue" disabled class="form-control verify-input-box" id="mobile_number" placeholder="MOBILE NUMBER" 
+                            />
+                            <!--/ko--> 
+                            <!--ko ifnot: phoneNumberValue-->
+                            <input style="width: 156px;" type="text" data-bind="numeric,value:selectedPhoneNumberValue" maxlength="50" class="form-control verify-input-box" id="phone_number" placeholder="MOBILE NUMBER" 
+                            />
+                            <!--/ko-->
+                          </div>
+                     </li>
+                 </ul>
+                  <div class="row">
+                       <div class="col-md-12" style="text-align: center;">
+                            <button type="button" id="otpModalBtn" class="cc-button-primary btn-block" data-bind="click:function(data){return $data.handleOTPVerification(data)}" 
+                            style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; 
+                            height: 50px; border-radius: 8px; font-size:20px;">SUBMIT</button>
+                        </div>
+                   </div>
+            </div>
+        </div>
+              
+
+            
+             
+          </div>
+          </div>
+              </div>
+</section>
+    
+            <!--Modal for OTP-->
+    <!--ko ifnot: mobileNoVerifiedValue()-->
+    <section id="OTPModal" class="modal fade" tabindex="-1" data-width="760" role="dialog">
+          <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 0;">
+        <div class="modal-body" style="padding: 20px 60px 0px 60px !important;">
+            <div class="row otp-content">
+                <div class="col-md-12 text-center">
+                    <h2> Enter OTP</h2>
+                    <p class="bold mt20">Please Verify your mobile number</p>
+                    <p style="font-size: 15px;">We have sent you an verification code via SMS</p>
+                    <p>Type the Verification Code below to verify</p>
+                </div>
+            </div>
+                            <div id="divOuter" style="margin-left: 28px;">
+                             <div id="divInner">
+                                 <input id="otpValue" type="text" maxlength="4" data-bind="numeric" />
+                                   <p id="otpError" style="color: #FF0000; display:none;text-align: center"> Please enter a valid OTP</p>
+                                   <p id="resendMsg" style="color: #008000; display:none;text-align: center">One time password has been sent on your mobile number.</p>
+                                      </div>
+                                        <div>
+                                        </div>
+                                    </div>
+        <div class="row">
+             <div class="col-md-12 text-center">
+                <button type="button" id="verifyButton" class="cc-button-primary" data-bind="click: function(data){return $data.handleOTPVerification(data)}" 
+                style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; width: 210px; 
+                height: 50px; border-radius: 8px; font-size:20px;margin: 20px 0;">VERIFY</button>
+            </div>
+        </div>
+         </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                <hr style="margin-bottom: 10px;">
+                <p class="dark-bl">
+                    <span style="color: darkGrey">SMS was sent to </span>
+                    <label>+</label>
+                    <label data-bind="text: $data.selectedCountryCode() ? $data.selectedCountryCode().Number_Prefix : $data.phoneCodeValue()" style="margin-left: -3px;"></label> <label data-bind="text:$data.selectedPhoneNumberValue() ? $data.selectedPhoneNumberValue() : $data.phoneNumberValue()"></label>
+                    <br/>
+                    <a class="dark-bl" data-bind="click:function(data){return $data.handleOTPModalforMobileVerification(data,'reSent')}" style="cursor: pointer;"><span>Resend OTP</span></a>
+                </p>
+                </div>
+            </div>
+      </div>
+    </div>
+    </section>
+    <!--/ko-->
+ 
+</div>
+<!--/ko-->

@@ -1,0 +1,852 @@
+<!-- ko if: (user().loggedIn() || user().isUserSessionExpired()) -->
+<!--ko if: isMobile-->
+<div class="col-sm-9 col-md-9 col-lg-9 order-list" data-bind="onRender: getOrders.bind($data)">
+    <div class="col-sm-6 col-md-6 col-lg-6 mr-top13">
+        <div class="h2 my-pre-order-m">My Pre-Orders</div>
+    </div>
+    <!--ko if: orderList-->
+    <div class="pre-order-container" data-bind="foreach: orderList">
+        
+        <div class="pre-order-list-mobile col-xs-6" >
+            <div class="grey-text">ORDER NUMBER</div>
+            <div class="mt2"><span data-bind="text: orderId, click: $parent.getOrderDetails.bind($parent, orderId)"></span></div>
+            <div style="margin-top:10px;" class="grey-text">ORDER AMOUNT</div>
+            <div class="mt2"><span data-bind="{currencyValueHandler: {price: ($data.total).toString(), currencyObj: $parent.site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>&nbsp;<span
+                            class="sale-price-symbol" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[0].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false},
+                  attr: {id: 'CC-product-sale-price-'+ $parents[1].id()}"></span></div>
+            <hr />
+            <div class="col-xs-12" style="padding: 0;margin-bottom: 11px;">
+                <div class="col-xs-6" style="padding: 0;">
+                    <span class="grey-text">PLACED ON</span>
+                    <span style="display: block;" data-bind="text: $parent.formatDate(submittedDate)"></span>
+                </div>
+                <div class="col-xs-6" style="padding: 0;">
+                    <span class="grey-text">TRAVEL ON</span>
+                    <span style="display: block;" data-bind="text: $parent.formatDate(dynamicProperties[2].value)"></span>
+                </div>
+            </div>
+            <div style="clear: both;" class="yellow-ticket-status" data-bind="text: state"></div>
+        </div>
+       
+    </div>
+     <!-- /ko -->
+</div>
+<!-- /ko -->
+<!-- ko ifnot: isMobile-->
+<div class="col-sm-9 col-md-9 col-lg-9 order-list" data-bind="onRender: getOrders.bind($data)">
+    <div class="col-sm-6 col-md-6 col-lg-6 mr-top13">
+        <div class="h2">Recent Pre-Orders</div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 pre-order-container">
+        <table class="pre-order-table">
+            <thead class="csc-table-head-bg">
+                <tr>
+                    <th class="width-20">Order Number</th>
+                    <th class="width-20">Order Amount</th>
+                    <th class="width-20">Placed On</th>
+                    <th class="width-20">Travel On</th>
+                    <th class="width-20">Order Status</th>
+                </tr>
+            </thead>
+            <!--ko if: orderList-->
+            <tbody data-bind="foreach: orderList">
+                <tr>
+                    <td style="cursor: pointer;" data-bind="text: orderId, click: $parent.getOrderDetails.bind($parent, orderId)"></td>
+                    <td><span data-bind="{currencyValueHandler: {price: ($data.total).toString(), currencyObj: $parent.site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>&nbsp;<span
+                        class="sale-price-symbol" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[0].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false},
+                        attr: {id: 'CC-product-sale-price-'+ $parents[1].id()}"></span></td>
+                    <td data-bind="text: $parent.formatDate(submittedDate)"></td>
+                    <td data-bind="text: $parent.formatDate(dynamicProperties[2].value)"></td>
+                    <td>
+                        <div class="yellow-ticket-status" data-bind="text: state"></div>
+                    </td>
+                </tr>
+            </tbody>
+            <!--/ko-->
+        </table>
+    </div>
+    <a style="float:right; padding: 15px" href="/previous-orders" target="_blank">Previous Orders</a>
+</div>
+<!--neha D-->
+
+<!-- /ko -->
+<div class="order-details col-sm-12 col-md-12 col-lg-12 hide">
+    <!-- ko if: orderView -->
+    <div class="row" id="orderConfirmation" data-bind="with: orderView">
+        <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9" style="margin-top: 16px;margin-bottom: 16px;">
+            <button id="go-to-orders" class="pre-order-btn" data-bind="click: $parent.showOrderList">Back to My Pre-orders</button>
+        </div>
+        <!-- <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+                    <button id="cancel-order" class="cc-button-secondary" data-bind="click: $parent.cancelOrder.bind($parent, id, 'badProductReview')">Cancel Order</button>
+                </div>-->
+    </div>
+    <div class="row" style="margin-bottom: 12px; margin-top: 15px;">
+      <div class="col-md-12 center-block green-meesage-container">
+                <label> Your order is</label> <label data-bind="text:$data.orderView().orderStatus"></label><br/>
+                <!--neha himthani -->
+                
+     </div>
+     </div>
+     
+     <div>
+         <!--ko with: orderView-->
+          <!--ko foreach: $data.dynamicProperties-->
+           <!--ko if:$data.id === '_OrderShippingInstructions'-->
+           <span style="display:none" data-bind="html:$parents[1].getValueOfOrderFulfillment($data.value)"></span>
+
+           <!--/ko-->
+          <!--/ko-->
+        <!--/ko-->
+        <!--ko if: splittedBody-->
+        <div class="row" style="margin-left: -30px;margin-right: -30px;margin-bottom: 18px;">
+            <div class="col-md-12">
+            <div id="orderFullfillmentTable">
+            <h2 style="font-size: 32px;font-weight: normal;">ORDER FULFILLMENT DETAILS</h2>
+            <div style="background: #fff;padding-left: 15px;padding-right: 15px;">
+             <table class="order-fulfillment-table">
+                 <thead>
+                     <tr>
+                         <th>ITEM</th>
+                         <th>ITEM DESCRIPTION</th>
+                         <th>ORIGINAL QUANTITY</th>
+                         <th>FULFILLED QUANTITY</th>
+                     </tr>
+                </thead>
+                <tbody>
+                    <!--ko foreach: splittedBody-->
+                        <!--ko with:$data-->
+                            <tr>
+                             <td data-bind="text: productId"></td>
+                           
+                             <td data-bind="text: displayName"></td>
+                            
+                             <td data-bind="text: quantity"></td>
+                            
+                             <td data-bind="text: fulFilled"></td>
+                            </tr>
+                        <!--/ko-->
+                    <!--/ko-->
+                </tbody>
+             </table>
+             </div>
+           </div>
+           </div>
+           </div>
+           <!--/ko-->
+     </div>
+     
+     
+     <div class="row text-center">
+      <div class="col-md-11">
+         <!--ko with: user-->
+         <span class="grey-label">We have send your order confirmation to </span>
+         <label data-bind="text: email">usersemailID@domain.com.</label>
+         <span  class="grey-label">Order status will be emailed to the same email once updated</span>
+         <!--/ko-->
+      </div>
+      <div class="col-md-1 print-btn">
+         <img src='/file/general/icon-print.svg'> <a id="viewLocationMap" data-bind="event:{click: function(){printConfirmationPage('orderConfirmationPrintMyOrdersListed')}}">PRINT</a>
+      </div>
+   </div>
+
+    <div class="row">
+        <div id="orderConfirmation" data-bind="with: orderView">
+            <div class="row" style="background-color:#fff;padding: 15px;margin-top: 15px;margin-bottom: 15px;margin-left: 0px;margin-right: 0;box-shadow: 1px 2px 12px 0 rgba(0,0,0,0.5);">
+                <div class="col-md-3 col-lg-3 text-center" style="border-right: 1px solid #979797;">
+                    <label class="grey-label">ORDER NUMBER</label>
+                    <span class="dark-grey-value" data-bind="text: id"></span>
+                </div>
+                <div class="col-md-3 col-lg-3 text-center" style="border-right: 1px solid #979797;">
+                    <label class="grey-label">ORDER DATE / TIME</label>
+                    <span class="dark-grey-value fs20" data-bind="text:$parent.formatDate(submittedDate)"></span>
+                    <span class="dark-grey-value fs20" data-bind="text:$parent.orderTimeOnConfirmation(submittedDate)"></span>
+                </div>
+                <div class="col-md-3 col-lg-3 text-center" style="border-right: 1px solid #979797;">
+                    <label class="grey-label">ORDER STATUS</label>
+                    <span class="dark-grey-value fs20" data-bind="text: orderStatus">orderProcessing</span>
+                </div>
+                <div class="col-md-3 col-lg-3 text-center">
+                    <label class="grey-label">PAYMENT METHOD</label>
+                    <!-- ko if: Array.isArray(payments) && payments.length > 0-->
+                    <!--ko if: payments[0]. paymentMethod === "cash"-->
+                    <span class="dark-grey-value fs20" data-bind="widgetLocaleText: 'PAY AT AIRPORT'"></span>
+                    <!--/ko-->
+                    <!--ko if: payments[0]. paymentMethod === "onlinePaymentGroup"-->
+                    <span class="dark-grey-value fs20" data-bind="widgetLocaleText: 'PAID ONLINE (CREDIT/DEBIT CARD)'"></span>
+                    <!--/ko-->
+                    <!--<span class="dark-grey-value fs20" data-bind="text: payments[0]. paymentMethod"></span>-->
+                    <!--/ko-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ko-->
+
+    <div class="row details-container">
+          <!--ko with:cart()-->
+          <!--ko foreach: $data.dynamicProperties-->
+         <!--ko if: $data.id() === "_orderType" && $data.value() === 'hybrid' || $data.id() === "_orderType" && $data.value() === 'normal'-->
+            <div class="col-md-4">
+            <h4 class="details-cust-travel">CUSTOMER DETAILS</h4>
+             <!--ko with: $parent.user-->
+                  
+                    	<div class="col-sm-6 col-lg-6 mb8">
+                    		<label>NAME</label>
+                    	   <span class="value-cont"><span style="display:inline" data-bind="text: firstName"></span>&nbsp;<span style="display:inline" data-bind="text: lastName"></span> </span>
+                        </div>
+
+                    	<div class="col-sm-12 mb8">
+                    		<label>EMAIL</label>
+                    		<span class="value-cont" data-bind="text: email"></span>
+                    	</div>
+
+                    	<div class="col-sm-6 col-lg-6 mb8">
+                    	 <label>MOBILE NUMBER</label>
+                         <span class="value-cont"> 
+                         <!--ko foreach: $data.dynamicProperties-->
+                         <!--ko if: $data.id() === "_phoneCode" && $data.value() -->
+                         <span>+</span>
+                         <span style="margin-right:5px;display: inline" data-bind="text:$data.value()"></span>
+                         <!--/ko-->
+                         <!--ko if: $data.id() === "_phoneNumber" && $data.value() -->
+                         <span style="display: inline" data-bind="text: $data.value()"></span>
+                         <!--/ko-->
+                           <!--/ko-->
+                         </span>
+                    	</div>
+                    	<div class="col-sm-6 col-lg-6 mb8">
+                          <!--ko foreach: $data.dynamicProperties-->
+                           <!--ko if: $data.id() === "_passportNumber" && $data.value() -->
+                           <label>PASSPORT NO.</label><br/>
+                         <span class="value-cont" data-bind="text:$data.value()"></span>
+                        <!--/ko-->
+                          <!--/ko-->
+                        <!--ko foreach: $data.dynamicProperties-->
+                           <!--ko if: $data.id() === "_emiratesId" && $data.value() -->
+                           <label>EMIRATES ID</label><br/>
+                         <span class="value-cont" data-bind="text:$data.value()"></span>
+                        <!--/ko-->
+                              <!--/ko-->
+                        	</div>
+                         <!--/ko-->
+            </div>
+            <!--/ko-->
+             <!--/ko-->
+            <!--/ko-->
+          
+             <!--ko with:cart()-->
+          <!--ko foreach: $data.dynamicProperties-->
+         <!--ko if: $data.id() === "_orderType" && $data.value() === 'raffle'-->
+            <div class="col-md-12">
+            <h4 class="details-cust-travel">CUSTOMER DETAILS</h4>
+             <!--ko with: $parent.user-->
+                  
+                    	<div class="col-sm-6 col-lg-6 mb8">
+                    		<label>NAME</label>
+                    	   <span class="value-cont"><span style="display:inline" data-bind="text: firstName"></span>&nbsp;<span style="display:inline" data-bind="text: lastName"></span> </span>
+                        </div>
+
+                    	<div class="col-sm-12 mb8">
+                    		<label>EMAIL</label>
+                    		<span class="value-cont" data-bind="text: email"></span>
+                    	</div>
+
+                    	<div class="col-sm-6 col-lg-6 mb8">
+                    	 <label>MOBILE NUMBER</label>
+                         <span class="value-cont"> 
+                         <!--ko foreach: $data.dynamicProperties-->
+                         <!--ko if: $data.id() === "_phoneCode" && $data.value() -->
+                         <span>+</span>
+                         <span style="margin-right:5px;display: inline" data-bind="text:$data.value()"></span>
+                         <!--/ko-->
+                         <!--ko if: $data.id() === "_phoneNumber" && $data.value() -->
+                         <span style="display: inline" data-bind="text: $data.value()"></span>
+                         <!--/ko-->
+                           <!--/ko-->
+                         </span>
+                    	</div>
+                    	<div class="col-sm-6 col-lg-6 mb8">
+                          <!--ko foreach: $data.dynamicProperties-->
+                           <!--ko if: $data.id() === "_passportNumber" && $data.value() -->
+                           <label>PASSPORT NO.</label><br/>
+                         <span class="value-cont" data-bind="text:$data.value()"></span>
+                        <!--/ko-->
+                          <!--/ko-->
+                        <!--ko foreach: $data.dynamicProperties-->
+                           <!--ko if: $data.id() === "_emiratesId" && $data.value() -->
+                           <label>EMIRATES ID</label><br/>
+                         <span class="value-cont" data-bind="text:$data.value()"></span>
+                        <!--/ko-->
+                              <!--/ko-->
+                        	</div>
+                         <!--/ko-->
+            </div>
+            <!--/ko-->
+             <!--/ko-->
+            <!--/ko-->
+            
+        <!-- ko if: orderView -->
+        <!-- ko with: orderView -->
+        <!-- ko with: shippingAddress -->
+         <!-- ko if: address1.includes('Departure') || address1.includes('Arrival')-->
+        <div class="col-md-4">
+            <h4 class="details-cust-travel">TRAVEL DETAILS</h4>
+            <div class="row" style="display: block; margin-top: 10px;">
+                <div class="col-sm-6 col-lg-6 mb8">
+                    <label>AIRLINE</label>
+                    <span class="value-cont" data-bind="text: jobTitle"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-lg-6 mb8">
+                    <label>FLIGHT NUMBER</label>
+                    <span class="value-cont" data-bind="text: address3.split('#')[0]"></span>
+                </div>
+                <div class="col-sm-6 col-lg-6 mb8">
+                    <label>DESTINATION</label>
+                    <span class="value-cont" data-bind="text: city.split('#')[0]"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-lg-6 mb8">
+                    <!-- ko if: address1.includes('Departure') -->
+                    <label>DEPARTURE DATE</label>
+                    <span class="value-cont" data-bind="text: address2.split('#')[0]"></span>
+                    <!--/ko-->
+                    <!-- ko if: address1.includes('Arrival') -->
+                    <label>ARRIVAL DATE</label>
+                    <span class="value-cont" data-bind="text: address2.split('#')[0]"></span>
+                    <!--/ko-->
+                </div>
+                <div class="col-sm-6 col-lg-6 mb8">
+                    <!-- ko if: address1.includes('Departure') -->
+                    <label>DEPARTURE TIME</label>
+                    <span class="value-cont" data-bind="text: companyName"></span>
+                    <!--/ko-->
+                    <!-- ko if: address1.includes('Arrival') -->
+                    <label>ARRIVAL TIME</label><br />
+                    <span class="value-cont" data-bind="text: companyName"></span>
+                    <!--/ko-->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <h4 class="details-cust-travel">PRE - ORDER PICKUP DETAILS</h4>
+            <div class="col-md-12" style="background-color:#fff;border-right: 1px solid #979797;padding: 15px;margin-top: 15px;margin-bottom: 15px;border: 1px solid #D8D8D8;">
+                <div class="row">
+                    <div class="col-md-2 text-right">
+                        <img style="padding-bottom:5px;" src="/file/general/icon-marker-red.svg">
+                    </div>
+                    <div class="col-md-6">
+                        <label>TERMINAL <span data-bind="text: phoneNumber"></span></label><br />
+                        <!-- ko if: address1.includes('Departure') -->
+                        <span> Departure Duty Free WebSHOP</span>
+                        <!--/ko-->
+                        <!-- ko if: address1.includes('Arrival') -->
+                        <span> Arrival Duty Free WebSHOP</span>
+                        <!--/ko-->
+                    </div>
+                    <div class="col-md-4 view-map-btn">
+                        <img src='/file/general/icon-floor-map.svg'>
+                        <a id="viewLocationMap" href="/concoursemap">VIEW MAP</a>
+                    </div>
+                </div>
+                <br />
+                <div class="col-md-12">
+                    <span>You can collect your order from the webshop closest to your boarding gate if you are a
+                        departing passenger or from the webshop in the terminal of arrival if you are an arriving
+                        passenger.</span>
+                </div>
+            </div>
+        </div>
+        <!--/ko-->
+        <!--/ko-->
+
+        <!--Condition for pre orders-->
+        <div class="row order-summary-conatiner" style="margin-top:22px;">
+            <div class="col-md-8 col-lg-8">
+                <h2 class="order-heading">YOUR ORDER</h2>
+                <!-- ko if: order.items-->
+                    <!-- ko with: order-->
+                 
+                <!--ko if: $parents[1].productPrice() > 0-->
+                    <div class="row thead">
+                    <div class="col-xs-12 col-sm-6 image pl0">PRE-ORDER ITEMS</div>
+                    <div class="quantity col-sm-2 hidden-xs greycolor pdng-quantity">UNIT PRICE</div>
+                    <div class="quantity col-sm-2 hidden-xs greycolor">QUANTITY</div>
+                    <div class="col-sm-2 text-left hidden-xs greycolor pdng-total" style="padding-left: 21px;">TOTAL</div>
+                </div>
+                <!--/ko-->
+                  
+                    <!--ko foreach: items-->
+                        <!--ko if: $data.productId.indexOf('Car') === -1 && $data.productId.indexOf('Bike') === -1 && $data.productId.indexOf('MM') === -1 -->
+                            <div class="row item" style="margin-left: 0; margin-right: -10px;border-bottom:0; background:white; padding: 11px 0px 11px 0px;margin-bottom: 6px;">
+                                <div class="image col-xs-3 col-sm-2" style="width: 14%">
+                                                    <div class="thumbnail-container" style="border: 1px solid #EAEAEA;padding: 8px;height: 80px;width: 80px;">
+                                                        <img style="width: 70px;max-width: 100%; max-height: 100%;display: block;margin: auto;"
+                                                            data-bind="attr: { src: primaryThumbImageURL, errorSrc: '/img/no-image.jpg', errorAlt: 'Missing Product Image'}" />
+                                                    </div>
+                                                </div>
+                                    <div class="col-xs-4 col-sm-4" style="margin-top: 8px;">
+                                        <a class="product-link" data-bind="ccLink:{'route': route, 'displayName': displayName}"></a><br />
+                                         <!--ko foreach: $parents[2].allAvailablePromotions-->
+                                        <!--ko if: $data.itemCode === $parent.productId-->
+                                            <!--ko foreach: $data.discounts-->
+                                                <!-- ko if:  ['THRESHOLD_PROMO','BUY_GET_PROMO'].indexOf($data.discountType) > -1  -->                        
+                                                    <div class="multiDiscount">
+                                                        <span data-bind="text: $data.discountDesc"></span>
+                                                    </div>                        
+                                                <!-- /ko -->
+                                                 <!-- ko if:  ['SIMPLE_PROMO'].indexOf($data.discountType) > -1  -->     
+                                                        <div class="multiDiscount">
+                                                            <span data-bind="text: $data.discountDesc"></span>
+                                                        </div>
+                                                <!-- /ko -->
+                                            <!--/ko-->
+                                        <!--/ko--> 
+                                    <!--/ko--> 
+                                    <!--ko foreach: $parents[2].allAvailablePromotions-->
+                                        <!--ko if: $data.itemCode === $parent.productId-->
+                                            <!--ko ifnot: $data.discounts.length === 1 && $data.discounts[0].discountType === 'SPECIAL_DISCOUNT' -->
+                                                <!--ko if: $parent.listPrice !== $parent.salePrice-->
+                                                    <del class="strikeout" style="color:#D40808">
+                                                    <span style="font-size: 14px;color: #D8D8D8;" data-bind="{currencyValueHandler: {price: $parent.listPrice, currencyObj: $parents[3].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span></del>
+                                                    <span class="currency-style" data-bind="currencySymbolHandler: {price: 0, currencyObj: $parents[3].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                                <!--/ko-->
+                                            <!--/ko-->
+                                        <!--/ko-->
+                                    <!--/ko-->
+                                    
+                                    </div>
+                                            
+                                <div class="price col-sm-2 hidden-xs cart-col-spacing-pr" style="padding-left: 35px;">
+                                    <span class="bold" data-bind="{currencyValueHandler: {price: $parents[2].getItemUnitPrice($parents[1].dynamicProperties,productId), currencyObj: $parents[2].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                    <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[2].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                </div>
+                                <div class="form-group quantity col-sm-2 col-xs-4" style="position: relative;left: 41px;font-size: 16px;font-weight: bold;padding-top: 18px;">
+                                    <span class="bold" data-bind="text: quantity"></span>
+                                </div>
+                               <!--ko foreach: $parents[2].allAvailablePromotions-->
+                                    <!--ko if: $data.itemCode === $parent.productId-->
+                                        <!--ko ifnot: $data.discounts.length === 1 && $data.discounts[0].discountType === 'SPECIAL_DISCOUNT' -->
+                                            <div class="text-left col-sm-2 hidden-xs right cart-col-spacing-pr" style="margin-right: -4px;">
+                                                <span class="bold" data-bind="{currencyValueHandler: {price:  $parents[3].getProductTotalPrice.bind($parents[3])($data.itemCode), currencyObj: $parents[3].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                                <span class="currency-style" data-bind="currencySymbolHandler: {price: 0, currencyObj: $parents[3].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                            
+                                            <!--ko if: $parents[0].listPrice !== $parents[0].salePrice-->
+                                                <del class="strikeout" style="color:#D40808">
+                                                <span style="font-size: 14px;color: #D8D8D8;" data-bind="{currencyValueHandler: {price: $parents[0].listPrice * quantity, currencyObj: $parents[3].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span></del>
+                                                <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[3].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                            <!--/ko-->
+                                            </div>
+                                        <!--/ko-->
+                                         <!--ko if: $data.discounts.length === 1 && $data.discounts[0].discountType === 'SPECIAL_DISCOUNT' -->
+                                         <div class="text-left col-sm-2 hidden-xs right cart-col-spacing-pr" style="margin-right: -4px;">
+                                            <span class="bold" data-bind="{currencyValueHandler: {price: $parents[0].listPrice * quantity, currencyObj: $parents[3].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                            <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[3].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                         </div>
+                                         <!--/ko-->
+                                    <!--/ko-->
+                                <!--/ko-->
+                            </div>
+                        <!--/ko-->
+                    <!--/ko-->
+                    <!--ko if: $parents[1].productPrice() > 0-->
+                    <div class="row" style="margin: 5px -10px 0px 0px;background:white;padding: 12px 0px 11px 0px;">
+                                <div class="col-sm-12 text-right total-cart-padding-top">
+                                    <div class="col-md-3 col-sm-3 col-xs-6 text-left" style="padding-left: 0;">
+                                        <div class="bold padding-right">PRE-ORDER TOTAL</div>
+                                    </div>
+                                    <div class="col-md-9 col-sm-9 col-xs-6 text-right">
+                                    <span id="CC-shoppingCart-subTotal" class="bold padding-zero" style="font-size: 18px;" data-bind="{currencyValueHandler: {price: $parents[1].productPrice(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                    <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                    <!--/ko-->
+                            
+                  <!--Condition for Raffle Tickets-->
+                        <!--ko if: $parents[1].ticketPrice()-->
+                            <div class="row thead">
+                        <div class="col-xs-12 col-sm-8 image pl0">WIN WITH DDF TICKETS</div>
+                         <div class="quantity col-sm-2 hidden-xs greycolor pdng-quantity">QUANTITY</div>
+                        <div class="quantity col-sm-2 hidden-xs greycolor" style="padding-left: 33px;">TOTAL</div>
+                    </div>
+                        <!-- /ko -->
+
+                    <!--ko foreach: items-->
+                        <!--ko if: $data.productId.indexOf('Car') > -1 || $data.productId.indexOf('Bike') > -1 || $data.productId.indexOf('MM') > -1 -->
+                            <div class="row item" style="margin-left: 0; margin-right: -10px;border-bottom:0; background:white;padding: 11px 0px 11px 0px;margin-bottom: 6px;">
+                          
+                        
+                                <div class="image col-xs-3 col-sm-2" style="width: 9%">
+                                    <div class="thumbnail-container" style="width: 50px;height: 50px;border: 1px solid #EAEAEA;margin: auto;display: table-cell;vertical-align: middle;padding-top: 6px;">
+                                    <img style="width: 70px;max-width: 100%; max-height: 100%;display: block;margin: auto;"
+                                        data-bind="attr: { src: primaryThumbImageURL, errorSrc: '/img/no-image.jpg', errorAlt: 'Missing Product Image'}" />
+                                    </div></div>
+                             
+                                
+                                <!--ko if: skuProperties-->
+                                <!--ko if: skuProperties[1].id === "displayName"-->
+                                <div class="col-sm-2">
+                                    <ul class="car-number-container">
+                                        <li class="car-num-1" data-bind="text:skuProperties[1].value.split(' ')[0]"></li>
+                                        <li class="car-num-2" data-bind="text:skuProperties[1].value.split(' ')[1]"></li>
+                                    </ul>
+                                </div>
+                                <!--/ko-->
+                                 <!--/ko-->
+                                
+                            <div class="col-xs-5 col-sm-4" style="width: 41%;">
+                                <div class="row left cart-col-spacing-pr">
+                                <span class="bold" data-bind="text: displayName"></span></div>
+                                
+                               
+                            <div class="row right print-btn-container">
+                                <button data-bind="event:{click:function(data){return $parents[2].downloadTickets(data,$parents[1].creationDate, $parents[1].id)}}" style="color: #9B9B9B;background-color: #fff;border: 1px #EAEAEA solid;text-transform: uppercase;font-weight: bold;width: 89px;font-size: 14px;height: 30px;border-radius: 6px;float: none!important;">
+                                <img src="/file/general/icon-print.svg"><a id="DDFTickets" style="color: #a9a1a1;" >PRINT</a></button></div>
+                            </div>
+                            <div class="form-group quantity col-sm-1 col-xs-4 cart-col-spacing-pr">
+                                <span class="bold" data-bind="text: quantity" style="padding-left: 15px;"></span>
+                            </div>
+                            <div class="price col-sm-3 hidden-xs cart-col-spacing-pr" style="text-align: right;float: right;padding-right: 25px">
+                        <span class="bold" data-bind="{currencyValueHandler: {price: ($data.listPrice).toString(), currencyObj: $parents[2].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                        <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[2].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                        <span style="padding-left: 20px;color: #9B9B9B; display: block;">(Excl. VAT)</span>
+
+                    </div>
+                        </div>
+                        <!--/ko-->
+                    <!--/ko-->
+                    
+                    <!--ko if: $parents[1].ticketPrice()-->
+                        <div style="font-weight: bold;margin-top: 10px;margin-bottom: 10px;">
+                                <span>We have sent e-tickets to </span><span data-bind="text:$parents[1].user().emailAddress()"></span>
+                                <span>.Tickets will also be save in "My Account" section of the DDF website.</span></div>
+                        <div class="row" style="margin: 5px -10px 0px 0px;background:white;padding: 12px 0px 11px 0px;">
+                                <div class="col-sm-12 text-right total-cart-padding-top">
+                                    <div class="col-md-3 col-sm-3 col-xs-6 text-left" style="padding-left: 0;">
+                                        <div class="bold padding-right">TICKETS TOTAL</div>
+                                    </div>
+                                    <div class="col-md-9 col-sm-9 col-xs-6 text-right">
+                                        <span id="CC-shoppingCart-subTotal" class="bold padding-zero" style="font-size: 18px;"
+                                            data-bind="{currencyValueHandler: {price: $parents[1].ticketPrice(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                        <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                    <!--/ko-->  
+                    
+                  <!--/ko-->
+                  <div class="row" style="margin: 5px -10px 0px 0px;background:white;padding: 12px 0px 11px 0px;">
+                    <div class="col-sm-12 text-right total-cart-padding-top">
+                        <div class="col-md-3 col-sm-3 col-xs-6 text-left" style="padding-left: 0;">
+                            <div class="bold padding-right">SUB TOTAL</div>
+                        </div>
+                        <div class="col-md-9 col-sm-9 col-xs-6 text-right">
+                        <span id="CC-shoppingCart-subTotal" class="bold padding-zero" style="font-size: 18px;" data-bind="{currencyValueHandler: {price: priceInfo.subTotal + $parent.PreOrderDiscount() - $parent.VATTotalForPreOrder() - $parent.VATTotalRaffleTickets(), currencyObj: $parent.site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                        <span class="currency-style" data-bind="currencySymbolHandler: {price: 0, currencyObj: $parent.site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                        </div>
+                    </div>
+                </div>
+                  <!-- /ko -->
+            
+            </div>
+            
+        <!--Order Summary-->
+        <div class="col-md-4 col-lg-4" data-bind="with: priceInfo" style="padding-top: 56px;">
+                <h4 class="thead" style="margin-bottom: 0px;">ORDER SUMMARY</h4>
+                <div id="orderSummary">
+                    <div class="ordersummary clearfix" style="margin: -1px 20px 17px 20px;">
+                        <div id="CC-orderSummaryLoadingModal">
+                            <div id="CC-orderSummary-shipping" class="shippingCost clearfix">
+                                <span class="dark-grey-style">CART SUB TOTAL</span>
+                                <div class="pull-right">
+                                    <span class="bold ordersumprice" style="padding-bottom: 10px;" data-bind="{currencyValueHandler: {price: $parents[0].priceInfo.subTotal + $parents[1].PreOrderDiscount() -  $parents[1].VATTotalForPreOrder() -  $parents[1].VATTotalRaffleTickets(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                    <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                </div>
+                            </div>
+                            <!--ko if: $parents[1].PreOrderDiscount() >0-->
+                            <div id="CC-orderSummary-salesTax" class="salesTax clearfix">
+                                <img src="/file/general/icon-checked_green.svg">
+                                <span class="dark-grey-style">Pre-Order Discount/Special Discount</span>
+                                <div class="pull-right">
+                                    <span style="font-size: 18px;color: #000;margin-left: -3%;">-</span>
+                                    <span class="bold ordersumprice" data-bind="{currencyValueHandler: {price: $parents[1].PreOrderDiscount(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                    <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                </div>
+                                <p class="para" style="padding-left: 18px; color: #9B9B9B;">(Applicable on pre-orderitems)</p>
+                            </div>
+                            <!--/ko-->
+                            <!--ko if: $parents[1].VATTotalRaffleTickets() >0-->
+                            <div id="CC-orderSummary-shippingDiscount" class="shippingDiscount clearfix" style="border-bottom: 2px solid #e3e3e3;">
+                                <span class="dark-grey-style">VAT 5%</span>
+                                <div class="pull-right"><span style="font-size: 18px; color: #000;">+</span>
+                                <span class="bold ordersumprice" style="font-size: 17px;" data-bind="currencyValueHandler: {price: $parents[1].VATTotalRaffleTickets(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                 <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span></div>
+                                <p class="para" style="color: #9B9B9B;">(Applicable on MM and FS Tickets)</p>
+                            </div>
+                            <!--/ko-->
+                            <!--ko if: $parents[1].VATTotalForPreOrder() >0-->
+                            <div id="CC-orderSummary-preOrderDiscount" class="shippingDiscount clearfix">
+                                <span class="dark-grey-style">VAT 5%</span>
+                                <div class="pull-right"> <span style="font-size: 18px; color: #000;">+</span>
+                                <span class="bold ordersumprice" style="font-size: 16px;" data-bind="currencyValueHandler: {price: $parents[1].VATTotalForPreOrder(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}">0.00</span>
+                                 <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}">AED</span></div>
+                                <p class="para" style="color: #9B9B9B;">(Applicable on pre-order items)</p>
+                            </div>
+                            <!--/ko-->
+                        </div>
+
+                        <!-- Cart Total -->
+                        <div id="CC-orderSummary-orderTotal" role="alert" aria-live="polite" aria-atomic="true" class="ordertotal clearfix">
+                            <span style="font-size: 14px; color: #4A4A4A;font-weight: 400;display: inline-block;margin-bottom:8px;">TOTAL</span>
+                            <br>
+                            <span class="pull-left ordersumprice" style="font-size: 40px; color: black; padding-top: 5px; padding-bottom: 10px;"
+                                data-bind="{currencyValueHandler: {price: (total).toString(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>&nbsp;
+                            <span class="currency-style pull-left" style="padding-top: 8px; font-size: 20px; padding-bottom: 10px; font-weight: normal; margin-left: 7px;"
+                                data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                            <!--	<p class="para mt5"> VAT on pre-order items may apply based on your flight details</p>-->
+
+                        </div>
+
+                    </div>
+                    <img src="/file/general/icon-checkout-deco.svg" style="width: 100%; background-color: #EEEFF6; padding-bottom: 9px;">
+                </div>
+            </div>
+        </div>
+        <!--/ko-->
+        <!-- /ko -->
+    </div>
+    
+
+</div>
+<!--Print template-->
+<div id="orderConfirmationPrintMyOrdersListed" style="display:none;">
+<div  style="background:white;padding: 20px;width:951px;">
+    <div>
+        <img data-bind="attr:{src: '/file/general/ddfEmailHeaderLogo.jpg'}" />
+    </div>
+    <!--ko if: orderView-->
+        <div style="margin-bottom: 25px;">
+            <!--ko with: user-->
+                <div style="display: block;font-weight: normal;font-size: 18px;font-family: Dubai;color: #4a4a4a;">
+                    NAME : <span data-bind="text:firstName() + ' ' + lastName()"></span>
+                </div>
+                <div style="display: block;font-weight: normal;font-size: 18px;font-family: Dubai;color: #4a4a4a;">
+                    EMAIL: <span data-bind="text:email"></span>
+                </div>
+            <!--/ko-->
+            <div data-bind="with: orderView">
+            <div style="display: block;font-weight: normal;font-size: 18px;font-family: Dubai;color: #4a4a4a;">
+                ORDER NUMBER : <span data-bind="text:id"></span>
+            </div>
+           <div style="display: block;font-weight: normal;font-size: 18px;font-family: Dubai;color: #4a4a4a;">
+                ORDER DATE : <span data-bind="text:$parent.formatDate(submittedDate)"></span>
+            </div>
+            <div style="display: block;font-weight: normal;font-size: 18px;font-family: Dubai;color: #4a4a4a;">
+                ORDER TIME : <span data-bind="text:$parent.orderTimeOnConfirmation(submittedDate)"></span>
+            </div>
+            </div>
+        </div>
+        <!--/ko-->
+       
+        <!-- ko with: orderView -->
+         <!-- ko if: order.items-->
+                    <!-- ko with: order-->
+                 
+                <!--ko if: $parents[1].productPrice() > 0-->
+                      <div style="padding-bottom: 10px;">
+                <span style="font-weight: bold;font-size: 20px;">PRE-ORDER ITEMS</span>
+            </div>
+            <hr style="border: 2px solid #1b1919;">
+            <table style="background:white;width: 100%;margin-bottom:15px;">
+              <tr>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;"></th>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;">ITEMS</th>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;">PRICE</th>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;">QUANTITY</th>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;">TOTAL</th>
+              </tr>
+                        <!--ko foreach: items-->
+                            <!--ko if: $data.productId.indexOf('Car') === -1 && $data.productId.indexOf('Bike') === -1 && $data.productId.indexOf('MM') === -1 -->
+                                <tr style="padding: 8px;">
+                                    <td style="padding: 8px;">
+                                            <img style="width: 80px;" data-bind="attr:{src: primaryThumbImageURL, alt: primaryImageAltText , title: primaryImageTitle}"/>
+                                    </td>
+                                    <td style="padding: 8px;text-align:left;">
+                                        <span data-bind="text: displayName"></span>
+                                        <!--ko foreach: $parents[2].allAvailablePromotions-->
+                                            <!--ko if: $data.itemCode === $parent.productId-->
+                                                <!--ko foreach: $data.discounts-->
+                                                    <!-- ko if:  ['THRESHOLD_PROMO','BUY_GET_PROMO','SIMPLE_PROMO'].indexOf($data.discountType) > -1  -->
+                                                    <div style="color: #fff;background: #d40808;padding-left: 5px;width: fit-content;width: -webkit-fit-content;display: table;">
+                                                        <span data-bind="text: $data.discountDesc"></span>
+                                                    </div>
+                                                    <!-- /ko -->
+                                                <!--/ko-->
+                                            <!--/ko-->
+                                        <!--/ko-->
+                                    </td>
+                                    <td style="text-align:center;padding: 8px;">
+                                        <!--ko foreach: $parents[2].allAvailablePromotions-->
+                                            <!--ko if: $data.itemCode === $parent.productId-->
+                                                <!--ko if: $data.discounts.length > 1 && $data.discounts[0].discountType !== 'SPECIAL_DISCOUNT' -->
+                                                    <span data-bind="currencyValueHandler: { price: $parents[3].getItemUnitPrice.bind($parents[3])(0,0,$parent.productId) , currencyObj: $parents[3].cart().currency}"></span>
+                                                    <span  style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[3].cart().currency}"></span>
+                                                    <br/>
+                                                    <del class="strikeout" style="color:#D40808">
+                                                        <span style="font-size: 14px;color: #777474;" data-bind="currencyValueHandler: { price: $parent.listPrice, currencyObj: $parents[3].cart().currency}"></span>
+                                                    </del>
+                                                    <span class="currency-style" style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[3].cart().currency}"></span>
+                                                <!--/ko-->
+                                                <!--ko if: ($data.discounts.length === 1 && $data.discounts[0].discountType === 'SPECIAL_DISCOUNT') || !$data.discounts.length  -->
+                                                    <!--ko if: $parent.salePrice-->
+                                                        <span data-bind="currencyValueHandler: { price: $parent.salePrice, currencyObj: $parents[3].cart().currency} "></span>
+                                                        <span style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[3].cart().currency}"></span>
+                                                        <br/>
+                                                        <del class="strikeout" style="color:#D40808">
+                                                            <span style="font-size: 14px;color: #777474;" data-bind="currencyValueHandler: { price: $parent.listPrice, currencyObj: $parents[3].cart().currency}"></span>
+                                                        </del>
+                                                        <span style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[3].cart().currency}"></span>
+                                                    <!--/ko-->
+                                                    <!--ko ifnot: $parent.salePrice-->
+                                                        <span data-bind=" currencyValueHandler: { price:$parent.listPrice, currencyObj: $parents[3].cart().currency} "></span>
+                                                        <span style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[3].cart().currency}"></span>
+                                                    <!--/ko-->
+                                                <!--/ko-->
+                                            <!--/ko-->
+                                        <!--/ko-->
+                                    </td>
+                                    <td style="text-align:center;padding: 8px;"><span data-bind="text: quantity"></span></td>
+                                    <td style="text-align:center;padding: 8px;">
+                                        <span data-bind="currencyValueHandler: { price: $parents[2].getProductTotalPrice.bind($parents[2])(productId), currencyObj: $parents[2].cart().currency} "></span>
+                                        <span class="currency-style" style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[2].cart().currency}"></span>
+                                    </td>
+                                </tr>
+                          <!--/ko-->
+                        <!--/ko-->
+                   
+              </table>
+               <hr style="border: 1px solid #1b1919;">
+            <div>
+                PRE-ORDER SUBTOTAL : <span data-bind="currencyValueHandler: { price: $parents[1].productPrice(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false} "></span>
+                <span class="currency-style" style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+            </div>
+            <hr style="border: 1px solid #1b1919;">
+                <!--/ko-->
+        
+         <!--ko if: $parents[1].ticketPrice()-->
+          <div style="padding-bottom: 10px;padding-top: 20px;">
+                <span style="font-weight: bold;font-size: 20px;">RAFFLE TICKETS</span>
+            </div>
+            <hr style="border: 2px solid #1b1919;">
+            <table style="background:white;width: 100%;">
+              <tr>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;"></th>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;">ITEMS</th>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;">QUANTITY</th>
+                <th style="padding-top: 12px;padding-bottom: 12px;text-align:center; background-color: #d0021b; color: white;">TOTAL</th>
+              </tr>
+            
+                        <!--ko foreach: items-->
+                            <!--ko if: $data.productId.indexOf('Car') > -1 || $data.productId.indexOf('Bike') > -1 || $data.productId.indexOf('MM') > -1 -->
+                                <tr style="padding: 8px;">
+                                    <td style="padding: 8px;">
+                                        
+                                            <img style="float:left;" data-bind="attr:{src: primaryThumbImageURL, alt: primaryImageAltText , title: primaryImageTitle}"/>
+                                       <!--ko if: skuProperties-->
+                                <!--ko if: skuProperties[1].id === "displayName"-->
+                                        <ul style="float:left;list-style-type: none;padding-left: 0;border: 1px solid rgba(95,100,112,0.4);width: 100px;text-align: center; padding-bottom: 3px; margin-top: 3px;">
+                                            <li style="color: #a0a0a0;text-transform: uppercase;font-size: 14px;margin-top: 2px;" data-bind="text:skuProperties[1].value.split(' ')[0]"></li>
+                                            <li style="font-size: 18px;font-weight: bold;color: #4a4a4a;margin-top: -3px;" data-bind="text:skuProperties[1].value.split(' ')[1]"></li>
+                                        </ul>
+                                        <!--/ko-->
+                                 <!--/ko-->
+                                    </td>
+                                    <td style="text-align:center;padding: 8px;">
+                                        <div>
+                                            <span data-bind="text: displayName" style="color: #3d3d3d;font-weight: bold;font-size: 16px;"></span>
+                                        </div>
+                                        
+                                    </td>
+                                    
+                                    <td style="text-align:center;padding: 8px;">
+                                        <span data-bind="text: quantity"></span>
+                                    </td>
+                                    <td style="text-align:center;padding: 8px;">
+                                        <span style="color: #4a4a4a;font-weight: bold;font-size: 16px;" data-bind="currencyValueHandler: {price: rawTotalPrice, currencyObj: $parents[2].cart().currency}">
+                                        </span>
+                                        <span style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler:{price: 0, currencyObj: $parents[2].cart().currency}"></span>
+                                        <span style="padding-left: 20px;color: #9B9B9B; display: inline-block;">(Excl. VAT)</span>
+                                    </td>
+                                </tr>
+                          <!--/ko-->
+                        <!--/ko-->
+                
+              </table>
+              <hr style="border: 1px solid #1b1919;">
+            <div>
+                RAFFLE TICKETS SUBTOTAL : <span data-bind="currencyValueHandler: { price: $parents[1].ticketPrice(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false} "></span>
+                <span class="currency-style" style="font-size:14px;color: #777474;" data-bind="currencySymbolHandler: { price: 0, currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+            </div>
+            <hr style="border: 1px solid #1b1919;">
+         <!--/ko-->
+         <!--/ko-->
+        <!--/ko-->
+        <!--/ko-->
+        <!-- ko if: orderView -->
+        <!-- ko with: orderView -->
+        <div style="margin-top: 12px;border-bottom: 2px solid #e3e3e3;padding-bottom: 14px;" data-bind="with: priceInfo">
+            <span style="font-size: 16px; font-weight: 400;color: #4a4a4a;">CART SUB TOTAL</span>
+            <div style="float: right !important;">
+                <span data-bind="{currencyValueHandler: {price: $parents[0].priceInfo.subTotal + $parents[1].PreOrderDiscount() -  $parents[1].VATTotalForPreOrder() -  $parents[1].VATTotalRaffleTickets(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}" style="margin-left: 2px;font-size: 16px;"></span>
+            <span data-bind="currencySymbolHandler: {price: 0, currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}" style="margin-left: 2px;font-size: 16px;color: #9b9b9b;"></span>
+          </div>
+           <!--ko if : $parents[1].PreOrderDiscount() >0-->
+            <div style="margin-top: 12px;border-bottom: 2px solid #e3e3e3;">
+                <img src="/file/general/icon-checked_green.svg">
+              <span style="font-size: 16px;font-weight: 400;color: #4a4a4a;" data-bind="widgetLocaleText: 'salesTaxText'"></span>
+             <div style="margin-top: 11px;float: right !important;">
+                 <span>-</span>
+              <span data-bind="{currencyValueHandler: {price: $parents[1].PreOrderDiscount(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}" style="color: #3d3d3d;font-weight: bold;font-size: 16px;"></span>
+              <span data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}" style="margin-left: 2px;font-size: 16px;color: #9b9b9b;"></span></div>
+              <p style="padding-left: 18px; color: #9B9B9B;">(Applicable on pre-order items)</p>
+            </div>
+        <!--/ko-->
+         <!--ko if: $parents[1].VATTotalRaffleTickets() > 0-->
+             <div style="margin-top: 12px; border-bottom: 2px solid #e3e3e3;">
+                <span style="font-size: 16px;font-weight: 400;color: #4a4a4a;">VAT 5%</span>
+                <div style="margin-top: 11px;float: right !important;"> 
+                <span>+</span>
+                <span data-bind="currencyValueHandler: {price: $parents[1].VATTotalRaffleTickets(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}" style="color:#3d3d3d;font-weight: bold;font-size: 16px;"></span>
+                <span data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}" style="margin-left: 2px;font-size: 16px;color: #9b9b9b;"></span></div>
+                <p class="para" style="color: #9B9B9B;">(Applicable on MM and FS Tickets)</p>
+            </div>
+        <!--/ko-->
+          <!--ko if: $parents[1].VATTotalForPreOrder() >0-->
+             <div style="margin-top: 12px; border-bottom: 2px solid #e3e3e3;">
+                <span style="font-size: 16px;font-weight: 400;color: #4a4a4a;">VAT</span>
+                <div style="margin-top: 11px;float: right !important;"> 
+                <span>+</span>
+                <span data-bind="currencyValueHandler: {price: $parents[1].VATTotalForPreOrder(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}" style="color:#3d3d3d;font-weight: bold;font-size: 16px;"></span>
+                <span  data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}" style="margin-left: 2px;font-size: 16px;color: #9b9b9b;"></span></div>
+              <p class="para" style="color: #9B9B9B;">(Applicable on pre-order items)</p>
+            </div>
+        <!--/ko-->
+        <div style="padding-top: 10px;">
+              <div style="font-size: 14px;padding-bottom: 10px;">
+                <span style="font-size: 14px;color: #4A4A4A;font-weight: 400;display: inline-block;margin-bottom: 8px;">TOTAL</span>
+                <div style="float:right;">
+                    <span  data-bind="{currencyValueHandler: {price: (total).toString(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}" style="font-weight:bold;font-size: 18px; color: black; padding-top: 5px; padding-bottom: 10px;"></span>
+                    <span data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}" style="font-size: 18px; padding-bottom: 10px; font-weight: normal; margin-left: 7px;"></span>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!--/ko-->
+        <!--/ko-->
+</div>
+</div>
+<!-- /ko -->

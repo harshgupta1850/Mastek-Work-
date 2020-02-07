@@ -1,0 +1,54 @@
+pre order total 
+
+$parents[1].productPrice()
+                    <div class="row" style="margin: 5px -10px 0px 0px;background:white;padding: 12px 0px 11px 0px;">
+                                <div class="col-sm-12 text-right total-cart-padding-top">
+                                    <div class="col-md-3 col-sm-3 col-xs-6 text-left" style="padding-left: 0;">
+                                        <div class="bold padding-right">PRE-ORDER TOTAL</div>
+                                    </div>
+                                    <div class="col-md-9 col-sm-9 col-xs-6 text-right">
+                                    <span id="CC-shoppingCart-subTotal" class="bold padding-zero" style="font-size: 18px;" data-bind="{currencyValueHandler: {price: $parents[1].productPrice(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                    <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+Sub total in order summary
+priceInfo.subTotal + $parent.PreOrderDiscount() - $parent.VATTotalForPreOrder() - $parent.VATTotalRaffleTickets()
+
+
+                  <div class="row" style="margin: 5px -10px 0px 0px;background:white;padding: 12px 0px 11px 0px;">
+                    <div class="col-sm-12 text-right total-cart-padding-top">
+                        <div class="col-md-3 col-sm-3 col-xs-6 text-left" style="padding-left: 0;">
+                            <div class="bold padding-right">SUB TOTAL</div>
+                        </div>
+                        <div class="col-md-9 col-sm-9 col-xs-6 text-right">
+                        <span id="CC-shoppingCart-subTotal" class="bold padding-zero" style="font-size: 18px;" data-bind="{currencyValueHandler: {price: priceInfo.subTotal + $parent.PreOrderDiscount() - $parent.VATTotalForPreOrder() - $parent.VATTotalRaffleTickets(), currencyObj: $parent.site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                        <span class="currency-style" data-bind="currencySymbolHandler: {price: 0, currencyObj: $parent.site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                        </div>
+                    </div>
+                </div>
+
+				
+cart total summary 
+$parents[0].priceInfo.subTotal + $parents[1].PreOrderDiscount() + $parents[1].AnniversaryDiscount() -  $parents[1].VATTotalForPreOrder() -  $parents[1].VATTotalRaffleTickets()
+
+
+							<div id="CC-orderSummary-shipping" class="shippingCost clearfix">
+                                <span class="dark-grey-style">CART SUB TOTAL</span>
+                                <div class="pull-right">
+                                    <span class="bold ordersumprice" style="padding-bottom: 10px;" data-bind="{currencyValueHandler: {price: $parents[0].priceInfo.subTotal + $parents[1].PreOrderDiscount() + $parents[1].AnniversaryDiscount() -  $parents[1].VATTotalForPreOrder() -  $parents[1].VATTotalRaffleTickets(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                    <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                </div>
+                            </div>
+							
+							
+
+							
+							
+print summary
+PRE-ORDER SUBTOTAL
+$parents[1].productPrice()
+
+CART SUB TOTAL
+$parents[0].priceInfo.subTotal + $parents[1].PreOrderDiscount()  + $parents[1].AnniversaryDiscount() -  $parents[1].VATTotalForPreOrder() -  $parents[1].VATTotalRaffleTickets()

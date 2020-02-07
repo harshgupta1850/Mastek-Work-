@@ -1,0 +1,26 @@
+v=1&_v=j79&a=1935073044&t=event&_s=4&dl=https%3A%2F%2Fccstore-stage-z6ua.oracleoutsourcing.com%2Fcart&dp=%2Flogin&ul=en-us&de=UTF-8&dt=Dubai%20Duty%20Free&sd=24-bit&sr=1366x768&vp=1349x443&je=0&ec=Ecommerce&ea=checkout&el=1&_u=SCCAAEIJ~&jid=&gjid=&cid=488569383.1575275931&tid=UA-43754289-2&_gid=762540797.1575275931&z=163810108
+
+
+v: 1
+_v: j79
+a: 1290225124
+t: event
+_s: 2
+dl: https://ccstore-stage-z6ua.oracleoutsourcing.com/cart
+ul: en-us
+de: UTF-8
+dt: Dubai Duty Free
+sd: 24-bit
+sr: 1366x768
+vp: 1349x419
+je: 0
+ec: Ecommerce
+ea: checkout
+el: 1
+_u: CACAAEAB~
+jid: 
+gjid: 
+cid: 488569383.1575275931
+tid: UA-43754289-2
+_gid: 762540797.1575275931
+z: 105279424

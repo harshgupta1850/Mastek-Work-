@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<head>
+    <title>
+    </title>
+    <script src="knockout-3.5.0.js"></script>
+</head>
+<body>
+        <label>Checkbox</label>
+        <ul data-bind="foreach:people">
+            <li data-bind="text:$data.firstName"></li>
+        </ul>
+    <ul data-bind="foreach: people">
+        <li data-bind="text: firstName">
+
+        </li>
+    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: people">
+            <tr>
+                <td data-bind="text: firstName"></td>
+                <td data-bind="text: lastName"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+        ko.applyBindings({
+            people: [
+                { firstName: 'Bert', lastName: 'Bertington' },
+                { firstName: 'Charles', lastName: 'Charlesforth' },
+                { firstName: 'Denise', lastName: 'Dentiste' }
+            ]
+        });
+    </script>
+</body>
+</html>

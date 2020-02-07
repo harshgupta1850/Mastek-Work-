@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<head>
+    <title>
+    </title>
+    <script src="knockout-3.5.0.js"></script>
+</head>
+
+<body>
+        <div>
+            New Item:
+            <input data-bind='value: itemToAdd' />
+            <button data-bind='click: addItem'>Add</button><br/>
+            Your Items:
+            <div>
+                <span data-bind='text: items'><br/>
+                </span>
+            </div>
+            
+        </div>
+    <script>
+        var listModel = function () {
+            this.items = ko.observableArray([]);
+            this.itemToAdd = ko.observable("");
+            this.addItem = function () {
+                if (this.itemToAdd !== 0) {
+                    this.items.push(this.itemToAdd());
+                    this.itemToAdd("");
+                }
+            }.bind(this);
+        }
+        ko.applyBindings(new listModel());
+
+    </script>
+</body>
+
+</html>
+
+
+
+<input type="checkbox" data-bind="options: values, values: selectedValues"/>

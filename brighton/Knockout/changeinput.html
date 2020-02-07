@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<head>
+    <title>
+    </title>
+    <script src="knockout-3.5.0.js"></script>
+</head>
+
+<body>
+    <div>
+        <div>First Name: <span data-bind="text: firstName"></span></div>
+        <div>Last Name:<span data-bind="text:lastName"></span></div>
+        The Full Name is <input data-bind="textInput:fullName">
+    </div>
+    <script>
+        var appViewModel = function () {
+            this.firstName = ko.observable("Bob");
+            this.lastName = ko.observable("Smith");
+            this.fullName = ko.computed({
+                read:function(){
+                    return this.firstName() + " " + this.lastName();
+                },
+                write: function(value){
+                    var lastSpacePos=value.lastIndexOf(" ");
+                    if(lastSpacePos>0){
+                        this.firstName(value.substring(0,lastSpacePos));
+                        this.lastName(value.substring(lastSpacePos+1));
+                    }
+                },
+                owner:this
+
+            })
+        }
+        ko.applyBindings(new appViewModel());
+    </script>
+</body>
+
+</html>

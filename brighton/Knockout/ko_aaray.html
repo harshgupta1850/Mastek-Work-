@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+    <title>
+    </title>
+    <script src="knockout-3.5.0.js"></script>
+</head>
+<body>
+    <script>
+        var myModel=function(){
+            var myObservableArray=ko.myObservableArray([
+            {name:'Alex',age:23},
+            {name:'Zippy',age:25},
+            {name:'Bungle',age:24}
+    ]);
+            
+        }
+        
+    alert('The length of the array is ' + this.myObservableArray().length);
+    </script>
+</body>
+</html>

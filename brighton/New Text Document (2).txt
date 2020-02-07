@@ -1,0 +1,1 @@
+<svg aria-labelledby="sti2" roll="img" viewBox="0 0 24.9 24.9" width="40" height="40"><title id="sti2">Follow Brighton on Facebook</title><circle class="svga" cx="12.45" cy="12.45" r="12.2"></circle><path class="svgb" d="M9.35,7.55v2.4H7.65v2.9h1.7v8.7H13v-8.6h2.4s.2-1.4.3-2.9H13v-2a.86.86,0,0,1,.8-.7h2v-3H13C9.25,4.25,9.35,7.15,9.35,7.55Z"></path></svg>

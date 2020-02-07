@@ -1,0 +1,75 @@
+<div class="controls col-xs-6 col-sm-6">
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-dateofbirth-error" data-bind="event: {blur:$parent.dateOfBirthValidation.bind($parent) }"></span>
+                                                            <input style="height:50px;" type="text" autocomplete="off" id="datepicker" class="col-md-5 form-control inputbox-dateofbirth"
+                                                               placeholder="DATE OF BIRTH" data-bind="onRender:$parent.getCalender, datepicker: $parent.dateOfBirth, dpOptions: {format: 'dd/mm/yyyy'}">
+                                                         </div>
+
+<div class="controls col-xs-6 col-sm-6 dobDatePickerWrapper">
+                            <span role="alert" class="	-danger" id="CC-userRegistration-dateofbirth-error" style="display: none;"></span>
+                            <input type="text" id="myDate" autocomplete="off" class="col-md-5 form-control inputbox-dateofbirth"
+                            placeholder="DATE OF BIRTH" data-bind="onRender:$parent.getCalender, datepicker: $parent.dateOfBirth, dpOptions: {format: 'dd/mm/yyyy'}" readonly>
+</div>
+
+						
+														 
+.inputbox-dateofbirth {
+       height: 50px;
+      border-radius: 2px;
+      color: #4A4A4A;
+      font-size:16px;
+      text-transform: uppercase;
+      width: 200px;
+      -webkit-appearance: none;
+      background: url('/file/general/icon-calendar.svg') no-repeat 162px #fff;
+      @media (max-width: 767px) {
+          width: 100%;
+          font-size:12px;
+          background: url('/file/general/icon-calendar.svg') no-repeat 112px #fff;
+      }
+  }
+  
+.dobDatePickerWrapper{
+        @media(max-width:767px){
+            .datepicker{
+                left:-10px!important
+            }
+        }
+    }
+	
+	
+	
+getDate: function() {
+                $("#datepicker").datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true
+                });
+            },
+            getCalender: function() {
+                var dateafterCurrentDate = new Date();
+                $("#myDate").datepicker({
+                    endDate: dateafterCurrentDate,
+                    format: 'dd/mm/yyyy',
+                }).on('changeDate', function(ev){
+                //widgetLoginScope.dateOfBirth($('#myDate').val());
+                $('#myDate').datepicker('hide');
+                });
+            }
+			
+dateOfBirthValidation: function() {
+                if (this.dateOfBirth() !== "") {
+                    if(this.isSocialLoginAttemptSuccessFull()){
+                    $("#myModal #CC-userRegistration-dateofbirth-error").css("cssText", "display: none;");
+                    }else{
+                    $("#CC-userRegistration #CC-userRegistration-dateofbirth-error").css("cssText", "display: none;");    
+                    }
+                    return true;
+                } else {
+                    if(this.isSocialLoginAttemptSuccessFull()){
+                        $('#myModal #CC-userRegistration-dateofbirth-error').text("Enter valid Date of Birth");
+                        $("#myModal #CC-userRegistration-dateofbirth-error").css("cssText", "display: block;");
+                    }else{
+                        $('#CC-userRegistration #CC-userRegistration-dateofbirth-error').text("Enter valid Date of Birth");
+                        $("#CC-userRegistration #CC-userRegistration-dateofbirth-error").css("cssText", "display: block;");
+                    }
+                }
+            }

@@ -1,0 +1,28 @@
+    params += "\'" + id + "\'" +':' + "\'" + id + "\'" ;
+                        } else {
+                            params += "\'" + id + "\'" +':' + "\'" + id + "\'" + ",";
+
+
+
+
+
+
+ccRestClient.request('/ccstore/v1/stockStatus', parameters, function(stockData) {
+                        console.log('stockData', stockData)
+                        var prodIdArr = []
+                        stockData.map(function(id) {
+                            prodIdArr.push(id.productId)
+                        })
+                        var uniqueIdArr = prodIdArr.filter(function(item, i, ar) {
+                            return ar.indexOf(item) === i;
+                        });
+                        var stockArr=[]
+                        prodIdArr.map(function (id){
+                            stockData.map(function (uniqueId){
+                                if(id==uniqueId.productId){
+                                   stockArr.push(id.stockStatus) 
+                                }
+                            })
+                        })
+                        console.log('unique',stockArr)
+                    })

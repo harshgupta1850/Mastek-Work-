@@ -1,0 +1,323 @@
+<!-- ko if: (user().loggedIn() || user().isUserSessionExpired()) -->
+<!-- ko with: user -->
+<div data-bind="onRender: $parent.initResource.bind($parent)">
+    <!--ko ifnot: $parent.isChangingPassword()-->
+    <div>
+        <div class="widget-heading col-xs-12 col-sm-12 editSection" style="left: -30px;">
+            <div class="col-xs-6 col-sm-10" style="left: 0px;">
+                <div class="h2" data-bind="widgetLocaleText:'myProfileText'" id="CC-customerAccount-title"></div>
+            </div>
+            <!--ko ifnot: $parent.isEditable()-->
+            <a id="editProfileDetails" class="editButton cc-button-primary pull-right" style="background-color:#9B9B9B;" tabindex="0" data-bind="event: {click: $parent.editProfile.bind($parent,$parent)}">
+                <img src="/file/general/icon-edit.svg">
+                <span>EDIT PROFILE</span>
+            </a>
+            <!--/ko-->
+        </div>
+        <div class="profile-details col-xs-12" style="background-color:#fff; padding: 35px;">
+            <div class="col-xs-12 col-sm-2">
+                <img id="userProfileImage" style="border-radius: 100%; width: 150px; height:150px;" data-bind="ccResizeImage: {
+                    source: '/file/general/no-image-profile.jpg',
+                    xsmall: '80,80',
+                    medium: '120,120',
+                    size:'150,150',
+                    alt: firstName,
+                    errorSrc:'/file/general/no-image-profile.jpg',
+                    errorAlt:'No Image Found'}"
+                >
+            </div>
+            <div class="col-xs-12 col-sm-10 profile-m">
+                <div class="col-xs-12 col-sm-7 pd-m-0">
+                    <div>
+                        <table class="profile-container-left-table">
+                            <tr>
+                                <th class="pt-30-m"><span class="grey-color-label">NAME</span></th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="dark-grey-value" data-bind="text: firstName"></span> <span class="dark-grey-value" data-bind="text: lastName"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="pt40"><span class="grey-color-label">EMAIL</span></th>
+                            </tr>
+                            <tr>
+                                <td><span class="dark-grey-value" data-bind="text: email"></span></td>
+                            </tr>
+                            <tr>
+                                <th class="pt40"><span class="grey-color-label mobile-label">MOBILE NUMBER</span></th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <!--ko ifnot: $parent.isEditable()-->
+                                       <!--ko foreach: $data.dynamicProperties-->
+                                        <!--ko if: $data.id() === "_phoneCode" && $data.value() -->
+                                    <span class="dark-grey-value" data-bind="text: '+' + $data.value() + '-'"></span> 
+                                   <!--/ko-->
+                                 
+                                    <!--ko if: $data.id() === "_phoneNumber" && $data.value() -->
+                                    <span class="dark-grey-value" data-bind="text: $data.value()"></span>
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                    <!--ko if: $parent.isEditable()-->
+                                
+                                    <!--ko if: $parent.phoneCodesList().length-->
+                                    <span role="alert" class="text-danger" id="mobileNumberEmpty" style="display: none;">Mobile number can not be empty</span>
+                                    <select class="col-md-5 form-control" id="CC-userRegistration-phoneCode" 
+                                    style="width: 100px; height: 50px; border-radius: 2px; color: #4A4A4A; font-size:16px; text-transform: uppercase; -webkit-appearance: none;background: url('/file/general/icon-down-arrow-grey.svg') no-repeat 347px #fff;" 
+                                    data-bind="options: $parent.phoneCodesList, optionsText: 'country_val' ,
+                                        value: $parent.phoneCodeEntered"></select>
+                                    <!--/ko-->
+                                    <!--ko foreach: $data.dynamicProperties-->
+                                        <!--ko if: $data.id() === "_phoneNumber" -->
+                                        <input type="text" maxlength="50" class="col-md-5 form-control" data-bind="numeric,value: $data.value()" id="CC-userRegistration-phoneNumber" style="height: 50px;border-radius: 2px;color: #4A4A4A;font-size: 16px;text-transform: uppercase;width: 271px;">
+                                        <!--/ko-->
+                                    <!--/ko-->
+                                    <span role="alert" class="text-danger" id="CC-userRegistration-phoneNumber-error" style="display: none;"></span>
+                                    <!--/ko-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <!--<th class="pt40"><span id="mobileNumberEmpty" style="color: red;display: none;">Mobile number can not be empty</span></th>-->
+                    
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-5">
+                    <div>
+                        <table class="profile-container-right-table">
+                            <tr>
+                                <th class="pt-30-m"><span class="grey-color-label">DATE OF BIRTH</span></th>
+                            </tr>
+                            <tr>
+                                <td>
+                            <!-- DDF-782  Changes Starts-->
+                                <!--ko foreach: $data.dynamicProperties-->
+                                  <!--ko if: $data.id() === "_dateOfBirth" && $data.value() -->
+                                    <!--ko ifnot: $parents[1].isEditable()-->
+                                      <span class="dark-grey-value" data-bind="text: $data.value()"></span>
+                                    <!--/ko-->
+                                    <!--ko if: $parents[1].isEditable()-->
+                                     <div class="controls col-xs-6 col-sm-6 dobDatePickerWrapper">
+                                      <span role="alert" class="text-danger" id="CC-userRegistration-dateofbirth-error" style="display: none;"></span>
+                                      <input type="text" id="myDate" autocomplete="off" class="col-md-5 form-control inputbox-dateofbirth"
+                                        placeholder="DATE OF BIRTH" data-bind="onRender:$parent.getCalender, datepicker: $parent.dateOfBirth, dpOptions: {format: 'dd/mm/yyyy'}" readonly>
+                                     </div>
+                                    <!--/ko-->
+                                  <!--/ko-->
+                                <!--/ko-->
+                            <!-- DDF-782 Changes Ends-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="pt40"><span class="grey-color-label">NATIONALITY</span></th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <!--ko foreach: $data.dynamicProperties-->
+                                    <!--ko if: $data.id() === "_nationality" && $data.value() -->
+                                    <!--ko ifnot: $parents[1].isEditable()-->
+                                    <span class="dark-grey-value" data-bind="text: $data.value() "></span>
+                                    <!--/ko-->
+                                    <!--ko if: $parents[1].isEditable()-->
+                                    <!--ko if: $parents[1].countriesList().length-->
+                                    <select class="col-md-5 form-control selectDropdown" id="CC-userRegistration-nationality" data-bind="options: $parents[1].countriesList, 
+                                    optionsText: 'displayName',
+                                    optionsCaption: 'NATIONALITY',
+                                    value: $parents[1].selectedCountryValue"></select>
+                                    <!--/ko-->
+                                    <span role="alert" class="text-danger" id="CC-userRegistration-nationality-error" style="display: none;"></span>
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <!--ko foreach: $data.dynamicProperties-->
+                                <!--ko ifnot: $parents[1].isEditable()-->
+                                <!--ko if: $data.id() === "_passportNumber" && $data.value() -->
+                                <th class="pt40"><span class="grey-color-label mobile-label">PASSPORT NUMBER</span></th>
+                                <!--/ko-->
+                                <!--ko if: $data.id() === "_emiratesId" && $data.value() -->
+                                <th class="pt40"><span class="grey-color-label mobile-label">EMIRATES ID</span></th>
+                                <!--/ko-->
+                                <!--/ko-->
+                                <!--ko if: $parents[1].isEditable()-->
+                                <!--ko if: $data.id() === "_passportNumber"-->
+                                <th class="pt40">
+
+                                    <label class="control-label inline"></label>
+                                    <span role="alert" class="text-danger" id="CC-userRegistration-passport-error" style="display: none;"></span>
+                                    <select class="col-xs-5 col-sm-5 form-control selectDropdown" data-bind="options: $parents[1].internationalIdentityType, value: $parents[1].selectedIdentityType">
+                                    </select>
+
+                                </th>
+                                <!--/ko-->
+                                <!--/ko-->
+                                <!--/ko-->
+                            </tr>
+                            <tr>
+                                <td>
+                                    <!--ko foreach: $data.dynamicProperties-->
+                                    <!--ko ifnot: $parents[1].isEditable()-->
+                                    <!--ko if: $data.id() === "_passportNumber" && $data.value() -->
+                                    <span class="dark-grey-value" data-bind="text: value"></span>
+                                    <!--/ko-->
+                                    <!--ko if: $data.id() === "_emiratesId" && $data.value() -->
+                                    <span class="dark-grey-value" data-bind="text: value"></span>
+                                    <!--/ko-->
+                                    <!--/ko-->
+
+                                    <!--ko if: $parents[1].isEditable()-->
+                                    <!--ko if: $data.id() === "_passportNumber" && $parents[1].selectedIdentityType() === "PASSPORT NUMBER" -->
+                                    <input type="text" class="col-md-5 form-control" id="CC-userRegistration-passportno" min="10" max="10" style="height: 50px; border-radius: 2px; color: #4A4A4A; font-size:16px;" aria-required="true" data-bind="value: $parents[1].passportEditValue" required="required" placeholder="NUMBER">
+                                    <!--/ko-->
+                                    <!--ko if: $data.id() === "_emiratesId" && $parents[1].selectedIdentityType() === "EMIRATES ID"-->
+                                    <input type="text" class="col-md-5 form-control" id="CC-userRegistration-passportno" min="18" max="18" maxlength='18' style="height: 50px; border-radius: 2px; color: #4A4A4A; font-size:16px;" aria-required="true" data-bind="value: $parents[1].emiratesEditValue,event: {keyup: $parents[1].onkeypressEmiratesId }" required="required" placeholder="NUMBER">
+                                    <!--/ko-->
+                                    <span role="alert" class="text-danger" id="CC-userRegistration-passportno-error" style="display: none;"></span>
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!--ko ifnot: $parent.isEditable()-->
+                <div class="col-xs-12 col-sm-12" style="left:0;margin-top: 40px;">
+                    <input type="button" class="cc-button-primary cc-save-changes cc-change-pwd" value="Change Password" data-bind="event: {click: $parent.handleChangePassword.bind($parent, $parent)}">
+                   <!--ko ifnot: $parent.isMobile-->
+                    <hr style="border-top: 1px solid #ccc;" />
+                    <!--/ko-->
+                </div>
+                <!--/ko-->
+                <!--ko if: $parent.isEditable()-->
+                <div class="col-xs-12 col-sm-12 edit-profile-buttons pd-m-0">
+                    <div class="col-xs-4 col-sm-4 pd-m-0" style="left:0;margin-left:9px;margin-top:15px;"> <button type="submit" class="cc-button-primary cc-save-changes" data-bind="event: {click: $parent.updateProfile.bind($parent,$parent)}"> SAVE CHANGES</button></div>
+                    <div class="col-xs-4 col-sm-4 cancel-m-style" style="left:0;margin-left:9px;margin-top:15px;"> <button type="submit" class="cc-button-primary cc-save-changes cc-change-pwd" data-bind="event: {click:$parent.cancelEdit.bind($parent,$parent)}"> CANCEL</button></div>
+                </div>
+                <!--/ko-->
+            </div>
+        </div>
+        <!--Modal for OTP-->
+
+        <section id="OTP-modal" class="modal fade" tabindex="-1" data-width="760" role="dialog">
+            <div class="modal-dialog" style="width: 500px;">
+                <div class="modal-content" style="border-radius: 0;">
+                    <div class="modal-body" style="padding: 20px 60px 0px 60px !important;">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <h2 style="margin-bottom: 20px;"> Enter OTP</h2>
+                                <p style="font-weight: bold;">Please verify your mobile number</p>
+                                <p>We have sent you an verification code via SMS</p>
+                                <p>Type the Verification Code below to verify</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span role="alert" class="text-danger" id="cc-messages-mobileverification-error" style="display: none;"></span>
+                            <div class="col-md-12 text-center">
+                                <!--  <input type="text" style= "width:50px; height:50px"/>-->
+                                <!--  <input type="text" style= "width:50px; height:50px"/>-->
+                                <!--<input type="text" style= "width:50px; height:50px"/>-->
+                                <!--<input type="text" style= "width:50px; height:50px"/>-->
+                                <!--    <div class="controls col-md-3">-->
+                                <!--    <label class="control-label inline" ></label>-->
+                                <!--    <input type="text" maxlength="1" data-bind="value: $parent.oneTimePasswordfieldone, event: { keyup: $parent.onTypeotp }" class="mobile-verify pass col-md-5 form-control" style="height: 50px; border-radius: 2px; color: #4A4A4A; font-size:16px;"  aria-required="true" -->
+                                <!-- required="required" >-->
+                                <!--</div>-->
+                                <!--<div class="controls col-md-3">-->
+                                <!--    <label class="control-label inline" ></label>-->
+                                <!--    <input type="text" maxlength="1" data-bind="value: $parent.oneTimePasswordfieldtwo, event: {keyup: $parent.onTypeotp }" class="mobile-verify pass col-md-5 form-control" style="height: 50px; border-radius: 2px; color: #4A4A4A; font-size:16px;"  aria-required="true" -->
+                                <!-- required="required">-->
+                                <!--</div>-->
+                                <!--<div class="controls col-md-3">-->
+                                <!--    <label class="control-label inline" ></label>-->
+                                <!--    <input type="text" maxlength="1" data-bind="value: $parent.oneTimePasswordfieldthree, event: { keyup: $parent.onTypeotp }" class="mobile-verify pass col-md-5 form-control" style="height: 50px; border-radius: 2px; color: #4A4A4A; font-size:16px;"  aria-required="true" -->
+                                <!-- required="required" >-->
+                                <!--</div>-->
+                                <!--<div class="controls col-md-3">-->
+                                <!--    <label class="control-label inline" ></label>-->
+                                <!--    <input type="text" maxlength="1" data-bind="value: $parent.oneTimePasswordfieldfour, event: { keyup: $parent.onTypeotp }" class="mobile-verify pass col-md-5 form-control" style="height: 50px; border-radius: 2px; color: #4A4A4A; font-size:16px;"  aria-required="true" -->
+                                <!-- required="required">-->
+                                <!--</div>-->
+                                <div id="divOuter">
+                                    <div id="divInner">
+                                        <input id="partitioned" type="text" maxlength="4" data-bind="numeric" />
+                                    </div>
+                                    <div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button type="button" id="otpModalBtn" class="cc-button-primary" data-bind="click: $parent.verifyOtp.bind($parent,$parent)" style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; width: 228px; 
+                                        height: 56px; border-radius: 8px; font-size:20px;margin: 20px 0;">VERIFY</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: none;color: green;padding-left: 144px;" id="resendMsg">
+                                <p>OTP has been resent</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <hr>
+                                    <p>
+                                        <span style="color: #9b9b9b;">SMS was sent to </span> 
+                                        <span style="font-weight: bold;">+</span>
+                                        <span style="margin-left: -2px; font-weight: bold;" data-bind="text:$parent.phoneCodeEntered().Number_Prefix ? $parent.phoneCodeEntered().Number_Prefix :$parent.phoneCodeValue() "></span>
+                                        <span style="font-weight: bold;" data-bind="text:$parent.phoneNumberEntered() ? $parent.phoneNumberEntered() : $parent.phoneNumberValue()"></span> <br />
+                                        <a data-bind="click: function(data, event) {$parent.resendOtp(data, event)}" style="color: #4a4a4a;"><span style="cursor: pointer;">Resend OTP</span></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: $parent.isChangingPassword()-->
+    <div class="profile-details col-xs-12" style="background-color:#fff; padding: 12px 35px 35px 35px;">
+        <table class="change-password-container">
+            <tr>
+                <th><span class="grey-color-label">Old Password:</span></th>
+            </tr>
+            <tr>
+                <td>
+                     <span role="alert" class="text-danger" id="CC-userRegistration-oldPassword-error" style="display: none;position: relative;left: 14px;top: 10px;"></span>
+                    <input type="password" data-bind="value: $parent.oldPassword" class="col-md-5 form-control input-change-pwd-style" id="CC-userRegistration-oldPassword" aria-required="true" required="required" placeholder="Old Password">
+                   
+                </td>
+            </tr>
+            <tr>
+                <th><span class="grey-color-label">New Password:</span></th>
+            </tr>
+            <tr>
+                <td>
+                    
+                    <input type="password" maxlength="12" data-bind="value: $parent.newPassword, event: { keyup: function(data, event) {$parent.changePasswordBlur($parent, data, event)}}" class="col-md-5 form-control input-change-pwd-style" id="CC-userRegistration-newPassword" aria-required="true" required="required" placeholder="New Password">
+                   <span role="alert" class="text-danger" id="CC-userRegistration-newPassword-error" style="display: none;position: relative;left: 14px;top: 10px;">
+                      Password should be 6 to 12 characters long and must not contain any spaces or special characters.
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th><span class="grey-color-label">Confirm Password:</span></th>
+            </tr>
+            <tr>
+                <td>
+                    
+                    <input type="password" maxlength="12" data-bind="value: $parent.confirmPassword" class="col-md-5 form-control input-change-pwd-style" id="CC-userRegistration-confPassword" aria-required="true" required="required" placeholder="Confirm Password">
+                    <span role="alert" class="text-danger" id="CC-userRegistration-confPassword-error" style="display: none;"></span>
+                </td>
+            </tr>
+        </table>
+        <div class="btn-container-chnage-pwd"><input type="button" class="cc-button-primary cc-save-changes" value="Save Password" data-bind="event:{click:$parent.updatePassword.bind($parent,$parent)}">
+            <input class="cc-button-secondary" type="button" value="Cancel" data-bind="event:{click: $parent.cancelUpdatePassword.bind($parent,$parent)}"></div>
+    </div>
+    <!-- /ko -->
+</div>
+<!-- /ko -->
+<!-- /ko -->

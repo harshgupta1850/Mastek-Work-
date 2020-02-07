@@ -1,0 +1,5 @@
+<div class="brgtn-add-to-bag text-center" data-bind="foreach: $parents[1].productStockListing()">
+                  <!-- ko if: $data.prodId === $parents[0].id() -->
+                  <button class="btn text-uppercase" data-bind="text: $data.text , click: $data.text=='Add To Bag' ? $parents[2].addToBag.bind(event,$parents[0]) : $parents[2].addToBag.bind(event,$parents[0])"> </button>
+                  <!-- /ko -->
+              </div>

@@ -1,0 +1,99 @@
+ var ids = []
+                    var idObj = {}
+                    console.log('products', getWidget.productGrid())
+                    getWidget.productGrid().map(function(products) {
+                        console.log('products', products)
+                        products.map(function(item) {
+                            idObj[item.product.id] = item.product.childSKUs.map(function(repid) {
+                                return repid.repositoryId
+                            })
+                            console.log('idObj', idObj)
+                            ids.push(idObj)
+                        })
+                    })
+                    console.log('ids', ids)
+                    var params = "";
+                    ids.map(function(id, i) {
+                        console.log('id', Object.keys(id)[i])
+                        console.log('value', Object.values(id)[i])
+                        Object.values(id)[i].map(function(repId) {
+                            params += Object.keys(id)[i] + ':' + repId + ','
+                        })
+                    });
+                    var param = ""
+                    param = params.slice(0, -1);
+                    console.log('params', param);
+                    var parameters = {};
+                    parameters[ccConstants.PRODUCTS_PARAM] = param;
+                    ccRestClient.request('/ccstore/v1/stockStatus', parameters, function(stockData) {
+                        var prodIdArr = []
+                        var obj={}
+                        stockData.map(function(id) {
+                            ids.map(function (e,i){
+                                // console.log('Object.keys(e)[i]',id.catRefId)
+                                if(Object.keys(e)[i]==id.productId && Object.values(e)[i]==id.catRefId){
+                                    prodIdArr.push(id.catRefId)
+                                }
+                            })
+                        })
+                        console.log('prodIdArr',prodIdArr)
+                    })
+
+
+<span data-bind="text: $data.childSKUs().length==1 ? 'Add to Bag' : 'More options' "></span>
+
+
+dependices
+inventoryViewmodel
+requestconfig mai product id
+observable
+
+widget.listingViewModel.currentPage.notifySubscribers();
+
+
+
+
+
+
+
+
+
+                                    getWidget.addToBag = function(event) {
+                    console.log('add', event.product);
+                    ccRestClient.request('/ccstore/v1/stockStatus' + '/' + event.product.id, {}, function(stockData) {
+                        console.log('stockData', stockData)
+                        var inStockRepId = []
+                        for (let key in stockData) {
+                            if (stockData[key] == 'IN_STOCK') {
+                                if (key != 'stockStatus') {
+                                    inStockRepId.push(key)
+                                }
+                            }
+                        }
+                        var newProduct = $.extend(true, {}, event.product)
+                            newProduct.orderQuantity = 1;
+                            getWidget.cart().addItem(event.product)
+                        console.log('arr', inStockRepId);
+                        // if (inStockRepId.length == 1) {
+                        //     console.log('event.product.productVariantOptions', event.product.productVariantOptions)
+                        //     var selectedOptions = getWidget.getSelectedSkuOptionsSelf(event.product.productVariantOptions);
+                        //     console.log('selectedOptions', selectedOptions)
+                        //     var selectedOptionsObj = {};
+                        //     selectedOptionsObj['selectedOptions'] = selectedOptions;
+                        //     var stockStateObj = {};
+                        //     stockStateObj['stockState'] = stockData.stockStatus;
+                        //     console.log('stockData.stockStatus', stockData.stockStatus)
+                        //     var newProduct = $.extend(true, {}, event.product, selectedOptionsObj, stockStateObj)
+                        //     newProduct.orderQuantity = 1;
+                        //     getWidget.cart().addItem(newProduct)
+                        //     // $.Topic(pubsub.topicNames.CART_ADD).publishWith(
+                        //     //     newProduct, [{
+                        //     //         message: "success"
+                        //     //     }]);
+                        // }
+                        // if (inStockRepId.length > 1) {
+                        //     console.log(event, 'More Option')
+                        // }
+                    })
+
+                };

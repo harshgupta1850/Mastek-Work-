@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title> First</title>
+    </head>
+    <body>
+        <div id='app'></div>
+        <script src="https://unpkg.com/react@16.0.0/umd/react.development.js"></script>  
+        <script src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.development.js"></script>  
+        <script src="/scripts/app.js"></script>  
+    </body>
+
+</html>
+
+
+
+productVariantImageSource: {src: $data, imageType:'thumb', alt: displayName, errorSrc: '/img/no-image.jpg', errorAlt: 'Missing Product Image'}, attr:{id: 'CC-shoppingCart-productImage-' + $parents[1].productId + $parents[1].catRefId + ($parents[1].commerceItemId ? $parents[1].commerceItemId: '') + $index() }
+
+
+
+
+
+data-bind="attr: {src: 'https://app.brighton.com/api/preview/?confirmationNum=LOCKETS-OM709&type=lockets"
+
+
+
+src="https://app.brighton.com/api/preview/?confirmationNum=LOCKETS-OM709&type=lockets"
+
+
+data-bind="attr: {src: 'https://app.brighton.com/api/preview/?confirmationNum='+ $parents[1].br_customizationNumber.transnumber +'&type='+ $parents[1].br_customizationNumber.type }"
+
+
+<!-- ko if: $parents[1].shopperInput -->
+<a data-bind="ccLink : $data">
+    <img data-bind="productVariantImageSource: {src: $data, imageType:'thumb', alt: displayName,
+    errorSrc: '/img/no-image.jpg', errorAlt: 'Missing Product Image'},
+    attr:{id: 'https://app.brighton.com/api/preview/?confirmationNum=' + $parents[1].br_customizationNumber.transnumber '&type=' + $parents[1].br_customizationNumber.type }"/>
+</a>
+<!-- /ko -->

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<head>
+    <title>
+    </title>
+    <script src="knockout-3.5.0.js"></script>
+</head>
+
+<body>
+    <div data-bind="foreach: array">
+        <input type="radio" data-bind="value:$data ,checked:$root.selected" />
+        <label data-bind="text:$data "></label>
+    </div>
+
+    <div data-bind="text:selected"></div>
+    <script>
+        var t = {
+            array: [
+                "foo",
+                "bar",
+                "baz",
+                "quux"
+            ],
+            selected: ko.observable("foo"),
+        };
+
+
+        ko.applyBindings(t);
+    </script>
+</body>
+
+</html>

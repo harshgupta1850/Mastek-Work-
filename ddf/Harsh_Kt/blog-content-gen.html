@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Blog Content Generator</title>
+   </head>
+   <body>
+       <div style="display: flex;flex-flow: wrap;">
+      <div style="flex: 0 0 40%;">
+      News<input type="radio" name="blogType" id="" data-bind="checked:blogType" value="News">
+      Awards<input type="radio" name="blogType" id="" data-bind="checked:blogType" value="Awards">
+      <div>
+         <p>Blog Date</p>
+         <input data-bind="value:blogDate">
+      </div>
+      <div>
+         <p>Blog Title</p>
+         <textarea name="" id="" style="width:80%" rows="5" data-bind="value:blogTitle"></textarea>
+      </div>
+      <div>
+         <p>Blog Summary Image Src</p>
+         <textarea name="" id="" style="width:80%" rows="5" data-bind="value:summaryImageSrc"></textarea>
+         <p>Blog Summary Image Alt</p>
+         <textarea name="" id="" style="width:80%" rows="5" data-bind="value:summaryImageAltText"></textarea>
+      </div>
+      <div>
+         <p>Blog Summary</p>
+         <textarea name="" id="" style="width:80%" rows="10" data-bind="value:blogSummary"></textarea>
+      </div>
+      <div style="margin-top:20px;padding: 20px;background: greenyellow;">
+         <h1>Add Main Page Details</h1>
+         <div data-bind="foreach:contentArray">
+            <!--ko if:$data.type === 'paragraph'-->
+            <div style="padding: 10px;background:pink;margin-top: 20px;">
+               <p style="text-align: right;"><button data-bind="click:$parent.removeItem.bind($data)">X</button></p>
+               <textarea style="margin-top:10px;width:100%" name="" id=""  rows="10" data-bind="value:content"></textarea>
+            </div>
+            <!--/ko-->
+            <!--ko if:$data.type === 'image'-->
+            <div style="padding: 10px;background:wheat;margin-top: 20px;">
+               <p style="text-align: right;"><button data-bind="click:$parent.removeItem.bind($data)">X</button></p>
+               <p>
+                  Image Source
+               </p>
+               <p>
+                  <textarea style="width:100%" data-bind="value:imgSrc"></textarea>
+               </p>
+               <p>
+                  Image Alt Text
+               </p>
+               <p>
+                  <textarea style="width:100%" data-bind="value:altText"></textarea>
+               </p>
+               <p>
+                  Image Caption
+               </p>
+               <p>
+                  <textarea style="width:100%" data-bind="value:imageCaption"></textarea>
+               </p>
+               <p>
+                  Image Width
+               </p>
+               <p>
+                  <input type="text" data-bind="value:imgWidth">
+               </p>
+            </div>
+            <!--/ko-->
+         </div>
+         <div style="margin-top: 30px;">
+            <button data-bind="click:addPara.bind($data,'para')">Add Paragraph</button>
+            <button data-bind="click:addPara.bind($data,'img')">Add Image</button>
+         </div>
+      </div>
+    </div>
+      <div style="flex: 0 0 56%;padding:20px;background: yellow;">
+         <p style="font-size:26px;font-weight:bold;color:green;">JSON OUTPUT</p>
+         <textarea name="" id="" style="width:100%;height:40%"data-bind="text:generateBlogJSON">
+
+        </textarea>
+      </div>
+    </div>
+   </body>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-debug.js"></script>
+   <script>
+      var imageDirectoryPath = '/file/general/';
+      function createImage(){
+          var self = this;
+          this.imgSrc = ko.observable('');
+          this.altText = ko.observable('');
+          this.imageCaption = ko.observable('');
+          this.type = 'image';
+          this.imgWidth = '384px';
+          this.insertHtml = ko.computed(function(){
+              return "<div class='img-cont'><img style='width:"+self.imgWidth+"' alt='"+self.altText()+"' src='"+imageDirectoryPath+self.imgSrc()+"'><span>"+self.imageCaption()+"</span></div>";
+          });
+      }
+      function createParagraph(){
+          var self = this;
+          this.content = ko.observable('');
+          this.type = 'paragraph';
+          this.insertHtml = ko.computed(function(){
+              return "<p style='text-align:justify'>"+self.content()+"</p><p style='text-align: justify;'>&nbsp;</p>";
+          });
+      }
+      function summaryGenerator(){
+          var self = this;
+          var backButtonHTML = "<a href='javascript:history.back();' style='float:right;'>&lt;&lt;Back</a>";
+          this.blogDate = ko.observable('');
+          this.blogType = ko.observable('News');
+          this.blogTitle = ko.observable('');
+          this.blogSummary = ko.observable('');
+          this.summaryImageAltText = ko.observable('');
+          this.summaryImageSrc = ko.observable('');
+          this.contentArray = ko.observableArray([new createParagraph()]);
+          this.name = ko.observable('hello');
+          this.removeItem = function(data){
+              self.contentArray.remove(data);
+          }
+          this.addPara = function(type){
+              type === 'para' ? self.contentArray.push(new createParagraph()) : self.contentArray.push(new createImage());
+          }
+          this.generateSummaryObj = function(){
+              var filteredArray = self.contentArray().map(function(item){
+                  return item.insertHtml();
+              }).join("");
+              return "<div class='container awards-details'><span class='page-title'>"+self.blogType()+"</span><span class='date'>"+self.blogDate()+"</span><div class='item-title' style='color:black;'>" + self.blogTitle() + "</div>" + filteredArray + backButtonHTML + "</div>";
+          }
+          this.generateBlogJSON = ko.computed(function(){
+              var obj = {};
+              obj['date'] = self.blogDate();
+              obj['content'] = self.blogSummary();
+              obj['summary'] = self.generateSummaryObj();
+              obj[self.blogType() === 'News' ? 'newsItemImage' : 'awardItemImage'] = {
+                  "alt" : self.summaryImageAltText(),
+                  "src" : imageDirectoryPath+self.summaryImageSrc(),
+              }
+              obj[self.blogType() === 'News' ? 'newsItemTitle' : 'awardItemTitle'] = {
+                  "itemTitle" : self.blogTitle(),
+                  "href":''
+              }
+              return JSON.stringify(obj);
+          });
+      }
+      ko.applyBindings(new summaryGenerator());
+   </script>
+</html>

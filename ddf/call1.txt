@@ -1,0 +1,34 @@
+v=1&_v=j79&a=193v=1&_v=j79&a=1290225124&t=pageview&_s=3&dl=https%3A%2F%2Fccstore-stage-z6ua.oracleoutsourcing.com%2Fcart&dp=%2Fcheckout&ul=en-us&de=UTF-8&dt=Dubai%20Duty%20Free&sd=24-bit&sr=1366x768&vp=1349x419&je=0&_u=SCCAAEIJ~&jid=&gjid=&cid=488569383.1575275931&tid=UA-43754289-2&_gid=762540797.1575275931&cos=1&col=&pa=checkout&pr1nm=Lancome%20Absolu%20Nude%20Palette&pr1id=110765300&pr1pr=294.50&pr1qt=1&pr1br=Lancome&pr1ca=PROMOTIONS&pr1va=sampleVariant20160527&z=19836953855073044&t=pageview&_s=3&dl=https%3A%2F%2Fccstore-stage-z6ua.oracleoutsourcing.com%2Fcart&dp=%2Flogin&ul=en-us&de=UTF-8&dt=Dubai%20Duty%20Free&sd=24-bit&sr=1366x768&vp=1349x443&je=0&_u=SCCAAEIJ~&jid=&gjid=&cid=488569383.1575275931&tid=UA-43754289-2&_gid=762540797.1575275931&cos=1&col=&pa=checkout&pr1nm=Apple%20iPhone%C3%82%C2%A08%20Plus%2064GB%C3%82%C2%A0Space%20Grey&pr1id=110765195&pr1pr=2279.05&pr1qt=1&pr1br=Apple&pr1ca=9673510825&pr1va=sampleVariant20160527&z=1645723977
+
+
+v: 1
+_v: j79
+a: 1290225124
+t: pageview
+_s: 3
+dl: https://ccstore-stage-z6ua.oracleoutsourcing.com/cart
+dp: /checkout
+ul: en-us
+de: UTF-8
+dt: Dubai Duty Free
+sd: 24-bit
+sr: 1366x768
+vp: 1349x419
+je: 0
+_u: SCCAAEIJ~
+jid: 
+gjid: 
+cid: 488569383.1575275931
+tid: UA-43754289-2
+_gid: 762540797.1575275931
+cos: 1
+col: 
+pa: checkout
+pr1nm: Lancome Absolu Nude Palette
+pr1id: 110765300
+pr1pr: 294.50
+pr1qt: 1
+pr1br: Lancome
+pr1ca: PROMOTIONS
+pr1va: sampleVariant20160527
+z: 1983695385

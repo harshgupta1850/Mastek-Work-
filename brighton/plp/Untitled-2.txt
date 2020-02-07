@@ -1,0 +1,11 @@
+<div class="brgtn-add-to-bag text-center">
+                  <button class="btn text-uppercase" data-bind="click: $parents[1].addToBag.bind(event)">
+                      <!--<span data-bind="text: $data.childSKUs().length==1 ? 'Add to Bag' : 'More options' "></span>-->
+                        <!-- ko if: $parents[1].isPresent -->
+                            <span>Add To bag</span>
+                        <!-- /ko -->
+                        <!-- ko if: !$parents[1].isPresent-->
+                            <span>More Options</span>
+                        <!-- /ko -->
+                  </button>
+              </div>

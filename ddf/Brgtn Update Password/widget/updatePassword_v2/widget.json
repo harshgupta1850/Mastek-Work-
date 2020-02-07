@@ -1,0 +1,178 @@
+{
+  "config": {},
+  "global": false,
+  "globalEnabled": false,
+  "i18nresources": "updatepassword",
+  "imports": [],
+  "javascript": "update-password",
+  "javascriptExtension": "extendupdatePassword_v2.js",
+  "jsEditable": false,
+  "minWidth": 1,
+  "pageTypes": ["profile"],
+  "source": 100,
+  "translations": [
+    {
+      "language": "th",
+      "name": "อัปเดตรหัสผ่าน"
+    },
+    {
+      "language": "pt_BR",
+      "name": "Atualizar Senha"
+    },
+    {
+      "language": "zh_CN",
+      "name": "更新密码"
+    },
+    {
+      "language": "uk",
+      "name": "Оновити пароль"
+    },
+    {
+      "language": "bg",
+      "name": "Актуализ. на парола"
+    },
+    {
+      "language": "et",
+      "name": "Värskenda parooli"
+    },
+    {
+      "language": "lv",
+      "name": "Atjaunināt paroli"
+    },
+    {
+      "language": "no",
+      "name": "Oppdater passord"
+    },
+    {
+      "language": "lt",
+      "name": "Atnaujinti slaptažodį"
+    },
+    {
+      "language": "fr_CA",
+      "name": "Màj mot de passe"
+    },
+    {
+      "language": "ro",
+      "name": "Actualizare parolă"
+    },
+    {
+      "language": "ja",
+      "name": "パスワードの更新"
+    },
+    {
+      "language": "sl",
+      "name": "Posodobitev gesla"
+    },
+    {
+      "language": "ru",
+      "name": "Обновить пароль"
+    },
+    {
+      "language": "hr",
+      "name": "Ažuriraj lozinku"
+    },
+    {
+      "language": "tr",
+      "name": "Parolayı Güncelle"
+    },
+    {
+      "language": "pl",
+      "name": "Aktualizacja hasła"
+    },
+    {
+      "language": "zh_TW",
+      "name": "更新密碼"
+    },
+    {
+      "language": "ko",
+      "name": "비밀번호 업데이트"
+    },
+    {
+      "language": "cs",
+      "name": "Aktualizovat heslo"
+    },
+    {
+      "language": "hu",
+      "name": "Jelszó módosítása"
+    },
+    {
+      "language": "el",
+      "name": "Ενημέρ. κωδ. πρόσβασης"
+    },
+    {
+      "language": "da",
+      "name": "Opdater adgangskode"
+    },
+    {
+      "language": "en",
+      "name": "Update Password"
+    },
+    {
+      "language": "sr",
+      "name": "Ажурирај лозинку"
+    },
+    {
+      "language": "ar",
+      "name": "تحديث كلمة السر"
+    },
+    {
+      "language": "de",
+      "name": "Kennwort aktualisieren"
+    },
+    {
+      "language": "sr_Latn",
+      "name": "Ažuriraj lozinku"
+    },
+    {
+      "language": "es",
+      "name": "Actualizar contraseña"
+    },
+    {
+      "language": "ca",
+      "name": "Actz contrasenya"
+    },
+    {
+      "language": "fr",
+      "name": "MàJ mot de passe"
+    },
+    {
+      "language": "id",
+      "name": "Perbarui Kata Sandi"
+    },
+    {
+      "language": "it",
+      "name": "Aggiorna password"
+    },
+    {
+      "language": "ms",
+      "name": "Kemas Kini Kata Laluan"
+    },
+    {
+      "language": "en_GB",
+      "name": "Update Password"
+    },
+    {
+      "language": "vi",
+      "name": "Cập nhật mật khẩu"
+    },
+    {
+      "language": "nl",
+      "name": "Wachtwoord bijwerken"
+    },
+    {
+      "language": "sv",
+      "name": "Uppdatera lösenord"
+    },
+    {
+      "language": "pt",
+      "name": "Atualizar Senha"
+    },
+    {
+      "language": "fi",
+      "name": "Päivitä salasana"
+    }
+  ],
+  "version": 2,
+  "widgetFamily": "updatePassword",
+  "widgetType": "updatePassword"
+}

@@ -1,0 +1,297 @@
+<div class="col-xs-12 col-sm-12" data-bind="onRender: getCountries.bind($data)">
+   <div id="registration-block" class="col-xs-12 col-sm-8 col-sm-offset-4" data-bind="onRender: resetUserRegistrationAndLoginForm.bind($data)">
+      <div style="box-shadow: none; border-radius: 0;border: none; text-align:center;">
+         <div id="CC-registerUserPane">
+            <div style="border-bottom: none;">
+             
+               <div class="registration-title">Register with Dubai Duty Free</div>
+               <p style="color: #9B9B9B; font-size:16px;">Use Social Logins</p>
+               <div class="center-block" style="height: 40px;">
+                   <button type="button" class="cc-button-primary pull-left social-button" data-bind="click: $data.handleFacebooklogin">
+                        <img src="/file/general/icon-facebook-color.svg" style="height:26px; padding-right:10px;">FACEBOOK
+                     </button>
+                     <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" style="display:none;"></fb:login-button>
+                     <span data-bind="onRender: getFacebookSDK"></span>
+                      <!-- Modal Popup -->
+                        <div class="modal fade" id="myModal" role="dialog">
+                          <div class="modal-dialog">
+                             <!-- Modal content-->
+                             <div class="modal-content" style="margin-left: 88px; padding-bottom:0px;">
+                                <div class="modal-header">
+                                   <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                   <h4 class="modal-title">Please Enter Mandatory Fields</h4>
+                                </div>
+                                <div class="modal-body" style="padding-top: 0px;margin-left: -94px;padding: 0px !important; ">
+                                    <div class="col-xs-12 col-sm-12">
+                                       <div id="registration-block" class="col-xs-12 col-sm-8 col-sm-offset-4 registration-block-m" style="margin-left: 100px; margin-top: 10px;text-align: center;padding-bottom: 0px;">
+                                          <div style="box-shadow: none; border-radius: 0;border: none; text-align:center;">
+                                             <div id="CC-registerUserPane">
+                                                <div>
+                                                   <p style="color: #9B9B9B;font-size:14px;text-align: left">All fields are required</p>
+                                                   <div id="CC-messages-userRegistration" data-bind="visible: showErrorMessage" role="alert" style="display: none;">
+                                                      <div role="alert" class="text-danger cc-error-message" data-bind="text: modalMessageText"></div>
+                                                   </div>
+                                    
+                                                   <!--ko with:$data-->
+                                                   <div id="CC-userRegistration" data-bind="with: $parent.user" style="text-align: left;">
+                                                      <div class="controls col-xs-12 col-sm-12" style="padding: 0 0 15px 0;">
+                                                         <span role="alert" class="text-danger" id="CC-userRegistration-title-error" style="display: none;"></span>
+                                                         <span style="font-size: 16px;padding-right: 5px;">TITLE</span>
+                                                          <input type="radio" id="mr" class="title" name="userTitle" value="MR" data-bind="checked: $parent.userTitle" />
+                                                            <label for="mr" data-bind="css:{selectedTitle : $parent.userTitle() === 'MR'}" class="custom-button">Mr.</label>
+                                                            <input type="radio" id="ms" class="title" name="userTitle" value="MS" data-bind="checked: $parent.userTitle" />
+                                                            <label for="ms" data-bind="css:{selectedTitle : $parent.userTitle() === 'MS'}" class="custom-button"> Ms.</label>
+                                                            <input type="radio" id="mrs" class="title" name="userTitle" value="MRS" data-bind="checked: $parent.userTitle" />
+                                                            <label for="mrs" data-bind="css:{selectedTitle : $parent.userTitle() === 'MRS'}" class="custom-button"> Mrs.</label>
+                                                      </div>
+                                                      <div class="form-group row">
+                                                         <div class="controls col-xs-6 col-md-6">
+                                                            <label class="control-label inline" for="CC-userRegistration-firstname" data-bind="widgetLocaleText:'firstNameText'"></label>
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-firstname-error" data-bind="validationMessage: firstName"></span>
+                                                            <input type="text" class="col-md-5 form-control inputbox" id="CC-userRegistration-firstname"
+                                                               aria-required="true" data-bind="validatableValue: firstName, widgetLocaleText : {value:'firstNameText', attr:'placeholder'}, valueUpdate: 'afterkeydown', event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }}" />
+                                                         </div>
+                                    
+                                                         <div class="controls col-xs-6 col-md-6">
+                                                            <label class="control-label inline" for="CC-userRegistration-lastname" data-bind="widgetLocaleText:'lastNameText'"></label>
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-lastname-error" data-bind="validationMessage: lastName"></span>
+                                                            <input type="text" class="col-md-5 form-control inputbox" id="CC-userRegistration-lastname"
+                                                               aria-required="true" data-bind="validatableValue: lastName, widgetLocaleText : {value:'lastNameText', attr:'placeholder'}, valueUpdate: 'afterkeydown', event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }}" />
+                                                         </div>
+                                                      </div>
+                                                      <div class="form-group row">
+                                                         <div class="controls col-xs-12 col-sm-12">
+                                                            <label class="control-label inline" for="CC-userRegistration-emailAddress" data-bind="widgetLocaleText:'emailAddressText'"></label>
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-emailAddress-error" data-bind="validationMessage: emailAddress"></span>
+                                                            <input disabled type="email" class="col-xs-5 col-sm-5 form-control inputbox" placeholder="EMAIL" id="CC-userRegistration-emailAddress"
+                                                               aria-required="true" data-bind="validatableValue: emailAddress, valueUpdate: 'afterkeydown', event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }, blur: $parent.emailAddressLostFocus.bind($parents[1], $parents[1]), focus: $parent.emailAddressFocused.bind($parents[1],$parents[1])}" />
+                                                         </div>
+                                    
+                                                      </div>
+                                                      <!--<p style="color: #9B9B9B;font-size:14px;text-align: left;">Please provide valid email for-->
+                                                      <!--   verification linkin to be sent</p>-->
+                                                      <!--<div class="form-group row">-->
+                                                      <!--   <div class="controls col-xs-12 col-sm-12">-->
+                                                      <!--      <label class="control-label inline" for="CC-userRegistration-password" data-bind="widgetLocaleText:'passwordText'">-->
+                                                               
+                                                      <!--      </label>-->
+                                                      <!--      <div class="password-errors" role="alert">-->
+                                                      <!--         <div class="text-muted" id="cc-userRegistration-password-embeddedAssistance" data-bind="embeddedAssistance: newPassword"></div>-->
+                                                      <!--         <div class="text-danger" id="CC-userRegistration-password-error" data-bind="validationMessage: newPassword"></div>-->
+                                                      <!--      </div>-->
+                                                      <!--      <input type="password" class="col-xs-5 col-sm-5 form-control inputbox inputbox-password" id="CC-userRegistration-password"-->
+                                                      <!--         aria-required="true" data-bind="validatableValue: newPassword, widgetLocaleText : {value:'passwordText', attr:'placeholder'}, valueUpdate: 'afterkeydown', -->
+                                                      <!--         event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }, blur: $parent.passwordFieldLostFocus.bind($parents[1]), focus: $parent.passwordFieldFocused.bind($parents[1])}" />-->
+                                                      <!--       </div>-->
+                                                      <!--</div>-->
+                                                      <div class="form-group row">
+                                                         <div class="controls col-xs-6 col-sm-6">
+                                                            <label class="control-label inline" for="CC-userRegistration-nationality">NATIONALITY</label>
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-nationality-error" style="display: none;"></span>
+                                                            <!--ko if: $parent.countriesList().length-->
+                                                            <select class="col-xs-5 col-sm-5 form-control inputbox-nationality" id="CC-userRegistration-nationality"
+                                                               data-bind="options: $parent.countriesList, optionsText: 'displayName', value: $parent.selectedCountry,
+                                                               optionsCaption: 'NATIONALITY'"></select>
+                                                            <!--/ko-->
+                                                         </div>
+                                                         <div class="controls col-xs-6 col-sm-6">
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-dateofbirth-error" data-bind="event: {blur:$parent.dateOfBirthValidation.bind($parent) }"></span>
+                                                            <input style="height:50px;" type="text" autocomplete="off" id="datepicker" class="col-md-5 form-control inputbox-dateofbirth"
+                                                               placeholder="DATE OF BIRTH" data-bind="onRender:$parent.getCalender, datepicker: $parent.dateOfBirth, dpOptions: {format: 'dd/mm/yyyy'}">
+                                                         </div>
+                                                      </div>
+                                                      <div class="form-group row">
+                                                         <div class="controls col-xs-6 col-sm-6">
+                                                            <label class="control-label inline"></label>
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-passport-error" style="display: none;"></span>
+                                                            <select style="height:50px;" class="col-xs-5 col-sm-5 form-control inputbox-nationality" data-bind="value: $parent.passportDropDown">
+                                                               <option>PASSPORT</option>
+                                                               <option>EMIRATES ID</option>
+                                                            </select>
+                                                         </div>
+                                                         <div class="controls col-xs-6 col-sm-6">
+                                                            <label class="control-label inline"></label>
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-passportno-error" style="display: none;"></span>
+                                                                <!--ko if: $parent.passportDropDown() === "PASSPORT"-->
+                                                                    <input type="text" class="col-xs-5 col-sm-5 form-control inputbox" id="CC-userRegistration-passportno" min="4"
+                                                                       max="10"
+                                                                       aria-required="true" data-bind="value: $parent.passportNumber, event: {keypress: $parent.onkeypresspassportno()}" required="required"
+                                                                       placeholder="PASSPORT NUMBER">
+                                                                    <!--/ko-->
+                                                                     <!--ko ifnot: $parent.passportDropDown() === "PASSPORT"-->
+                                                                    <input type="text" class="col-xs-5 col-sm-5 form-control inputbox" id="CC-userRegistration-passportno" min="4"
+                                                                       max="10"
+                                                                       aria-required="true" data-bind="value: $parent.emiratesId, event: {keypress: $parent.onkeypressEmiratesId}" required="required"
+                                                                       placeholder="EMIRATES ID">
+                                                                    <!--/ko-->
+                                                         </div>
+                                                      </div>
+                                                      <div class="controls col-xs-12 col-sm-12" style="color: #9B9B9B; font-size:16px; padding-left: 0; padding-right: 0;">
+                                                         <p style="color: #9B9B9B;font-size:14px;text-align: left;">Please provide your valid Passport
+                                                            number <br>Emirates ID is only accepted for UAE Residents</p>
+                                                         <span role="alert" class="text-danger" id="cc-messages-TermAndCondition" style="display: none;"></span>
+                                                         <div class="checkbox">
+                                                            <label class="pull-left" style="padding-right: 10px;"><input type="checkbox" data-bind="checked: $parent.termAndCondition">Accept</label>
+                                                            <a href="/termsandconditions"><span class="" style="color: #4A4A4A;">Terms &amp; Conditions</span></a>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                   <div style="border-top: none;">
+                                                      <div class="center-block">
+                                                         <button class="cc-button-primary" style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; width: 100%; height: 50px; font-size: 20px; border-radius: 8px;"
+                                                            id="CC-userRegistrationSubmit" data-bind="click: function(data, event) { registerUser.bind(data, $parent, event)() }, event: {mousedown: handleMouseDown.bind($data, $parent), mouseup: handleMouseUp.bind($data, $parent)}">REGISTER</button>
+                                                      </div>
+                                                   </div>
+                                                   <!-- /ko -->
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="padding-bottom: 0px !important;">
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                        <button type="button" class="cc-button-primary pull-right social-button" data-bind="click: handleGoogleLogin">
+                            <img src="/file/general/icon-google-color.svg" style="height:30px; padding-right:10px;">GOOGLE
+                        </button>
+                     
+                     <div class="g-signin2" style="display:none;" data-onsuccess="onSignIn"></div>
+               </div>
+            </div>
+            <p style="color: #9B9B9B;font-size:16px;margin-bottom: 0; padding-top: 15px;">OR</p>
+            <div>
+               <p style="color: #9B9B9B;font-size:14px;text-align: left;">All fields are required</p>
+               <div id="CC-messages-userRegistration" data-bind="visible: showErrorMessage" role="alert" style="display: none;">
+                  <div role="alert" class="text-danger cc-error-message" data-bind="text: modalMessageText"></div>
+               </div>
+
+               <!--ko with:$data-->
+               
+               <div id="CC-userRegistration" data-bind="with: $parent.user" style="text-align: left;">
+                  <div class="controls col-xs-12 col-sm-12" style="padding: 0 0 15px 0;">
+                     <span role="alert" class="text-danger" id="CC-userRegistration-title-error" style="display: none;"></span>
+                     <span style="font-size: 16px;padding-right: 5px;">TITLE</span>
+                    <input type="radio" id="mr" class="title" name="userTitle" value="MR" data-bind="checked: $parent.userTitle" />
+                    <label for="mr" data-bind="css:{selectedTitle : $parent.userTitle() === 'MR'}" class="custom-button">Mr.</label>
+                    <input type="radio" id="ms" class="title" name="userTitle" value="MS" data-bind="checked: $parent.userTitle" />
+                    <label for="ms" data-bind="css:{selectedTitle : $parent.userTitle() === 'MS'}" class="custom-button"> Ms.</label>
+                    <input type="radio" id="mrs" class="title" name="userTitle" value="MRS" data-bind="checked: $parent.userTitle" />
+                    <label for="mrs" data-bind="css:{selectedTitle : $parent.userTitle() === 'MRS'}" class="custom-button"> Mrs.</label>
+                  </div>
+                  <div class="form-group row">
+                     <div class="controls col-xs-6 col-md-6">
+                        <label class="control-label inline" for="CC-userRegistration-firstname" data-bind="widgetLocaleText:'firstNameText'"></label>
+                        <span role="alert" class="text-danger" id="CC-userRegistration-firstname-error" data-bind="validationMessage: firstName"></span>
+                        <input type="text" class="col-md-5 form-control inputbox" id="CC-userRegistration-firstname"
+                           aria-required="true" data-bind="validatableValue: firstName, widgetLocaleText : {value:'firstNameText', attr:'placeholder'}, valueUpdate: 'afterkeydown', event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }}" />
+                     </div>
+
+                     <div class="controls col-xs-6 col-md-6">
+                        <label class="control-label inline" for="CC-userRegistration-lastname" data-bind="widgetLocaleText:'lastNameText'"></label>
+                        <span role="alert" class="text-danger" id="CC-userRegistration-lastname-error" data-bind="validationMessage: lastName"></span>
+                        <input type="text" class="col-md-5 form-control inputbox" id="CC-userRegistration-lastname"
+                           aria-required="true" data-bind="validatableValue: lastName, widgetLocaleText : {value:'lastNameText', attr:'placeholder'}, valueUpdate: 'afterkeydown', event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }}" />
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="controls col-xs-12 col-sm-12">
+                        <label class="control-label inline" for="CC-userRegistration-emailAddress" data-bind="widgetLocaleText:'emailAddressText'"></label>
+                        <span role="alert" class="text-danger" id="CC-userRegistration-emailAddress-error" data-bind="validationMessage: emailAddress"></span>
+                        <input autocomplete="off" type="email" class="col-xs-5 col-sm-5 form-control inputbox" placeholder="EMAIL" id="CC-userRegistration-emailAddress"
+                           aria-required="true" data-bind="validatableValue: emailAddress, valueUpdate: 'afterkeydown', event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }, blur: $parent.emailAddressLostFocus.bind($parent), focus: $parent.emailAddressFocused.bind($parent)}" />
+                     </div>
+
+                  </div>
+                  <p style="color: #9B9B9B;font-size:14px;text-align: left;margin-top: -11px;">Please provide valid email for
+                     verification link to be sent</p>
+                  <div class="form-group row">
+                     <div class="controls col-xs-12 col-sm-12" style="height: 52px;">
+                        <label class="control-label inline" for="CC-userRegistration-password" data-bind="widgetLocaleText:'password'"></label>
+                        <div class="password-errors" role="alert">
+                           <!--<div class="text-muted" id="cc-userRegistration-password-embeddedAssistance" data-bind="embeddedAssistance: newPassword"></div>-->
+                           <span class="text-danger" id="CC-userRegistration-password-error" data-bind="validationMessage: newPassword"></span>
+                        </div>
+                        <input type="password" 
+                        autocomplete="off"
+                        class="col-xs-5 col-sm-5 form-control inputbox" 
+                        id="CC-userRegistration-password"
+                        aria-required="true" 
+                        data-bind="validatableValue: newPassword, 
+                        widgetLocaleText : {value:'password', attr:'placeholder'}, valueUpdate: 'afterkeydown', 
+                           event: {keydown: function(data, event) { return $parent.registerUser.bind(data, $parents[1], event)() }, blur: $parent.passwordFieldLostFocus.bind($parent), focus: $parent.passwordFieldFocused.bind($parent)}" />
+                         <div>
+                                <img class="pull-right" style="position: relative;bottom: 32px;right: 15px;z-index: 1;" src="/file/general/icon-password.svg" id="passW" data-bind="click: $parent.showHiddenPassword"/>
+                                </div>
+                         </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="controls col-xs-6 col-sm-6">
+                        <label class="control-label inline" for="CC-userRegistration-nationality">NATIONALITY</label>
+                        <span role="alert" class="text-danger" id="CC-userRegistration-nationality-error" style="display: none;"></span>
+                        <!--ko if: $parent.countriesList().length-->
+                        <select class="col-xs-5 col-sm-5 form-control inputbox-nationality" id="CC-userRegistration-nationality"
+                           data-bind="event:{blur: $parent.nationalityValidation.bind($parent)},options: $parent.countriesList, optionsText: 'displayName', value: $parent.selectedCountry,
+                           optionsCaption: 'NATIONALITY'"></select>
+                        <!--/ko-->
+                     </div>
+                        <div class="controls col-xs-6 col-sm-6 dobDatePickerWrapper">
+                            <span role="alert" class="text-danger" id="CC-userRegistration-dateofbirth-error" style="display: none;"></span>
+                            <input type="text" id="myDate" autocomplete="off" class="col-md-5 form-control inputbox-dateofbirth"
+                            placeholder="DATE OF BIRTH" data-bind="onRender:$parent.getCalender, datepicker: $parent.dateOfBirth, dpOptions: {format: 'dd/mm/yyyy'}" readonly>
+                        </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="controls col-xs-6 col-sm-6">
+                        <label class="control-label inline"></label>
+                        <span role="alert" class="text-danger" id="CC-userRegistration-passport-error" style="display: none;"></span>
+                        <select class="col-xs-5 col-sm-5 form-control inputbox-nationality" data-bind="value: $parent.passportDropDown">
+                           <option>PASSPORT</option>
+                           <option>EMIRATES ID</option>
+                        </select>
+                     </div>
+                     
+                     <div class="controls col-xs-6 col-sm-6">
+                        <label class="control-label inline"></label>
+                        <span role="alert" class="text-danger" id="CC-userRegistration-passportno-error" style="display: none;"></span>
+                        <!--ko if: $parent.passportDropDown() === "PASSPORT"-->
+                        <input type="text" class="col-xs-5 col-sm-5 form-control inputbox" id="CC-userRegistration-passportno" min="4"
+                           maxlength="50"
+                           aria-required="true" data-bind="value: $parent.passportNumber,
+                           event: {keyup: $parent.onkeypresspassportno, blur:$parent.passportNumberValidation.bind($parent) }" required="required"
+                           placeholder="PASSPORT NUMBER">
+                        <!--/ko-->
+                         <!--ko ifnot: $parent.passportDropDown() === "PASSPORT"-->
+                        <input type="text" class="col-xs-5 col-sm-5 form-control inputbox" id="CC-userRegistration-passportno" min="4"
+                           max="10"
+                           aria-required="true" maxlength='18' data-bind="numeric, value: $parent.emiratesId, event: {keyup: $parent.onkeypressEmiratesId, blur:  $parent.emirateIdValidation.bind($parent) }" required="required"
+                           placeholder="EMIRATES ID">
+                        <!--/ko-->
+                     </div>
+                  </div>
+                  <div class="controls col-xs-12 col-sm-12" style="color: #9B9B9B; font-size:16px; padding-left: 0; padding-right: 0;">
+                     <p style="color: #9B9B9B;font-size:14px;text-align: left;">Please provide your valid Passport
+                        number <br>Emirates ID is only accepted for UAE Residents</p>
+                     <span role="alert" class="text-danger-tr" id="cc-messages-TermAndCondition" style="display: none;"></span>
+                     <div class="checkbox" style="margin-top: 30px;margin-bottom: 30px;">
+                        <label class="pull-left" style="padding-right: 7px;">
+                            <input type="checkbox" data-bind="event:{blur: $parent.termAndConditionValidation.bind($parent)},checked: $parent.termAndCondition"><span style="padding-left: 6px;">Accept</span></label>
+                        <a href="/termsandconditions"><span class="" style="color: #4A4A4A;">Terms &amp; Conditions</span></a>
+                     </div>
+                  </div>
+               </div>
+               
+               <div style="border-top: none;">
+                  <div class="center-block">
+                     <button class="cc-button-primary" style="background-color: #06C5BE;border: none; text-transform: uppercase; font-weight: bold; width: 100%; height: 50px; font-size: 20px; border-radius: 8px;"
+                        id="CC-userRegistrationSubmit" data-bind="click: function(data, event) { registerUser.bind(data, $parent, event)() }, event: {mousedown: handleMouseDown.bind($data, $parent), mouseup: handleMouseUp.bind($data, $parent)}">REGISTER</button>
+                  </div>
+               </div>
+               <!-- /ko -->
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

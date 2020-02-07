@@ -1,0 +1,32 @@
+login layout
+
+<div class="controls col-xs-6 col-sm-6" style="margin-left: 21%;">
+                                                            <span role="alert" class="text-danger" id="CC-userRegistration-dateofbirth-error"></span>
+                                                            <input style="height:50px;" type="text" id="datepicker" class="col-md-5 form-control inputbox-dateofbirth inputbox-dateofbirth-m"
+                                                               placeholder="DATE OF BIRTH" data-bind="click: $parent.getDate(),value: $parent.dateOfBirth">
+                                                         </div>
+
+														 
+														 .inputbox-dateofbirth{
+        background: url(/file/general/icon-calendar.svg) no-repeat 165px #fff;
+        height: 50px;
+        width: 189px;
+    }
+    .inputbox-dateofbirth-m{
+         @media screen and (max-width: 767px) {
+                 width: 120%;
+                margin-left: -71%;
+                 background: url(/file/general/icon-calendar.svg) no-repeat 119px #fff;
+         }
+    }
+	
+
+	getCalender: function() {
+                var dateafterCurrentDate = new Date();
+                $("#myDate").datepicker({
+                    endDate: dateafterCurrentDate,
+                    format: 'dd/mm/yyyy',
+                    autocomplete:'off',
+                    autoClose: true
+                })
+            }

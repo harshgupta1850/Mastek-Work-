@@ -1,0 +1,118 @@
+809  DDF | Prod | Mobile devices | Buy ticket page | Ticket remaining number is not centrally aligned
+
+line no 69
+
+            <!-- DDF-809 style tag added  Changes Starts-->
+                <div class="col-md-4 green-box-container col-xs-4"  style=" padding-left: 0px; padding-right: 0px; " data-bind="text:TICKET_REMAINING"></div>
+             <!-- DDF-809 style tag added  Changes end-->
+
+line no 153 
+           <!-- DDF-809 style tag added  Changes Starts-->
+                <div class="col-md-4 green-box-container col-xs-4"  style=" padding-left: 0px; padding-right: 0px; " data-bind="text:TICKET_REMAINING"></div>
+            <!-- DDF-809 style tag added  Changes end-->
+
+
+810 DDF | Prod | Mobile devices | Buy ticket page | Ticket name is overlapping ticket price text
+
+line 132
+
+                        <!-- DDF-810 pn-height-change included  Changes Starts-->
+                        <div class="black-label-ser pn-height-change ">
+                            <strong style="color: black;" data-bind="text:DISPLAY_NAME"></strong><br>
+                            <strong style="color: black;" data-bind="text:EXTERIOR"></strong><br>
+                        </div>
+                        <!-- DDF-810 pn-height-change included  Changes End-->
+
+
+css
+
+    // DDF-810  Changes Starts
+    .pn-height-change{
+    	@media screen and (max-width: 767px){
+    		height: 60px;
+    	}
+    }
+    //DDF-810 Changes Ends
+	
+703 Android | Currency change menu is getting open by double click
+line no 97 
+
+									<!-- ko if:!$parent.isMobile() -->
+                                    <a data-bind="click: toggleCurrencyDropDown, event: {keydown: $data.keypressCurrencyHandler,
+                                        mouseenter: toggleCurrencyDropDown}, attr: {id: 'CC-header-currency-link', href: '#'}">
+                                        <!--<span data-bind="text: $parent.site().selectedPriceListGroup().currency.currencyCode" class="currencyCodeWidth"></span>-->
+                                        <!--ko if: selectedLocalCurrency() && selectedLocalCurrency().CURRENCYCODE-->
+                                        <span data-bind="text: selectedLocalCurrency().CURRENCYCODE"></span>
+                                        <!--/ko-->
+                                        <!--ko ifnot: selectedLocalCurrency() && selectedLocalCurrency().CURRENCYCODE-->
+                                        <!--<span data-bind="text: $parent.site().selectedPriceListGroup().currency.symbol"></span>-->
+                                        <span>AED</span>
+                                        <!--/ko-->
+                                        <!--<img class="down-arrow-menu-mobile" data-bind="attr:{src:'/file/general/icon-down-arrow.svg'}">-->
+                                    </a>
+                                    <!-- /ko -->
+                                     <!-- DDF-703   Changes Starts (put ismobile condition)-->
+                                    <!-- ko if:$parent.isMobile() -->
+                                    <a data-bind="click: toggleCurrencyDropDown, attr: {id: 'CC-header-currency-link', href: '#'}">
+                                        <!--<span data-bind="text: $parent.site().selectedPriceListGroup().currency.currencyCode" class="currencyCodeWidth"></span>-->
+                                        <!--ko if: selectedLocalCurrency() && selectedLocalCurrency().CURRENCYCODE-->
+                                        <span data-bind="text: selectedLocalCurrency().CURRENCYCODE"></span>
+                                        <!--/ko-->
+                                        <!--ko ifnot: selectedLocalCurrency() && selectedLocalCurrency().CURRENCYCODE-->
+                                        <!--<span data-bind="text: $parent.site().selectedPriceListGroup().currency.symbol"></span>-->
+                                        <span>AED</span>
+                                        <!--/ko-->
+                                        <!--<img class="down-arrow-menu-mobile" data-bind="attr:{src:'/file/general/icon-down-arrow.svg'}">-->
+                                    </a>
+                                    <!-- /ko -->
+                                    <!-- DDF-703   Changes ends (put ismobile condition)-->
+
+						<!--DDF-746 starts here -->
+						<!--ko if: if:$parents[1].AnniversaryDiscount() > 0-->
+						<div id="CC-orderSummary-salesTax" class="salesTax clearfix">
+							<img src="/file/general/icon-checked_green.svg">
+							<span class="dark-grey-style">DDF Anniversary 25% Discount</span>
+							<div class="pull-right">
+								<span style="font-size: 18px;color: #000;margin-left: -3%;">-</span>
+								<span class="bold ordersumprice"
+									data-bind="{currencyValueHandler: {price: $parents[1].AnniversaryDiscount(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+								<span class="currency-style"
+									data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+							</div>
+							<p class="para" style="padding-left: 18px; color: #9B9B9B;">(Applied on selected items)</p>
+						</div>
+						<!--/ko-->
+						<!--DDF-746 ends here -->
+							
+							
+Need to change in Subtotal							
+$parents[1].AnniversaryDiscount()						
+							
+							
+        <!--DDF-497 starts here -->
+    <!--ko if:$parent.cartAnniversaryDiscountAmount() > 0-->
+    <div class="confirmation-sales-tax">
+        <div class="dark-grey-style"><img src="/file/general/icon-checked_green.svg">&nbsp;<span>DDF Anniversary 25% Discount</span></div>
+     <div class="pull-right mt11">
+         <span>-</span>
+      <span data-bind="currencyValueHandler: {price: $parent.cartAnniversaryDiscountAmount(), currencyObj: $data.priceListGroup.currency}" class="bold"></span>
+      <span data-bind="currencySymbolHandler: {price: priceInfo.tax, currencyObj: $data.priceListGroup.currency}" class="currency-style"></span></div>
+      <!-- DDF-497 Starts here -->
+      <p class="para" style="padding-left: 18px; color: #9B9B9B;">(Applied on selected items)</p>
+      <!-- DDF-497 Ends here -->
+    </div>
+    <!--/ko-->
+    <!-- DDF-497 ends here -->
+	
+ <!--ko if: $parents[1].PreOrderDiscount() >0-->
+                            <div id="CC-orderSummary-salesTax" class="salesTax clearfix">
+                                <img src="/file/general/icon-checked_green.svg">
+                                <span class="dark-grey-style">Pre-Order Discount/Special Discount</span>
+                                <div class="pull-right">
+                                    <span style="font-size: 18px;color: #000;margin-left: -3%;">-</span>
+                                    <span class="bold ordersumprice" data-bind="{currencyValueHandler: {price: $parents[1].PreOrderDiscount(), currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}}"></span>
+                                    <span class="currency-style" data-bind="currencySymbolHandler: {price: '', currencyObj: $parents[1].site().selectedPriceListGroup().currency, nullReplace: '\u2014', prependNull: false}"></span>
+                                </div>
+                                <p class="para" style="padding-left: 18px; color: #9B9B9B;">(Applicable on pre-orderitems)</p>
+                            </div>
+                            <!--/ko-->

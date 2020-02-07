@@ -1,0 +1,23 @@
+<!-- ko if: !$parents[0].shopperInput -->
+            <img class="img-responsive" data-bind="productVariantImageSource:
+                {src: $data, imageType: 'thumb',
+                alt: displayName,
+                errorSrc: '/img/no-image.jpg',
+                errorAlt: 'Missing Product Image'
+                },
+                attr:{id: 'CC-checkoutCartSummary-itemImage-'+id+catRefId}"/>    
+        <!-- /ko -->
+        <!-- ko if: $parents[0].shopperInput -->
+            <!-- ko if: $parents[0].shopperInput.br_customizationNumber -->
+                <img class="img-responsive" data-bind="attr: {src: 'https://app.brighton.com/api/preview/?confirmationNum='+ $parents[0].shopperInput.br_customizationNumber.transnumber +'&type='+ $parents[0].shopperInput.br_customizationNumber.type, errorSrc: '/img/no-image.jpg'}" />
+            <!-- /ko -->
+            <!-- ko if: !$parents[0].shopperInput.br_customizationNumber -->
+            <img class="img-responsive" data-bind="productVariantImageSource:
+                {src: $data, imageType: 'thumb',
+                 alt: displayName,
+                 errorSrc: '/img/no-image.jpg',
+                 errorAlt: 'Missing Product Image'
+                 },
+                 attr:{id: 'CC-checkoutCartSummary-itemImage-'+id+catRefId}"/>  
+            <!-- /ko -->
+        <!-- /ko -->

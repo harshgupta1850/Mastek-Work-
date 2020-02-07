@@ -1,0 +1,14 @@
+self.user().firstName.extend({
+                          required: true,
+                          pattern:{
+                              message:'Name must not contain quotes ',
+                              params: /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/
+                          }
+            });
+self.user().lastName.extend({
+                          required: true,
+                          pattern:{
+                              message:'Name must not contain quotes ',
+                              params: /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/
+                          }
+            });

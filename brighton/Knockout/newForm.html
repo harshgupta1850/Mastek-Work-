@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<head>
+    <title>
+        form
+    </title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="knockout-3.5.0.js"></script>
+</head>
+
+<body>
+    <form data-bind="submit: submitForm">
+        <div data-bind="visible: firstPage">
+            <div class='name'>
+                <label>Name:</label>
+                <input class='input' type='text' data-bind="value:Name" /><br />
+            </div>
+            <div class='age'>
+                <label>Age:</label>
+                <input class='input' data-bind="value:Age" /><br />
+            </div>
+            <div class='email'>
+                <label>Email:</label>
+                <input class='input' type='email' data-bind="value:Email" /><br />
+            </div>
+            <button data-bind="click: savedatapage1">Save Data</button>
+            <button data-bind="click: next">Next</button>
+        </div>
+        <div data-bind="visible: secondPage">
+    
+            <div class='radio'>
+                Select frontend:
+                <div data-bind="foreach: radioValue">
+                    <input type="radio" data-bind="value: $data , checked: selectedRadio">
+                    <span data-bind="text:$data"></span>
+                </div>
+            </div>
+            <div class='select'>
+                Select backend:
+                <select data-bind="options: dropValue, optionsText: $data, value: selectedDrop"></select>
+    
+            </div>
+            <div class="check">
+                <label>Company:</label>
+                <div data-bind="foreach: checkboxValue">
+                    <input type="checkbox" data-bind="attr: { value: $data }, checked:selectCheck" />
+                    <span data-bind="text: $data"></span>
+                </div>
+            </div>
+            <div>
+                <button data-bind="click: savedatapage2">Save Data</button>
+                <button data-bind="click: prev">Prev</button>
+                <button type="submit">Submit</button>
+            </div>
+        </div>
+    
+    
+    </form>
+
+    <script>
+        var viewModel = function () {
+            this.Name = ko.observable("Hello");
+            this.Age = ko.observable("23");
+            this.invalidAge = ko.observable(false);
+            this.validAge = ko.pureComputed({
+                read: this.Age,
+                write: function (value) {
+                    if (isNaN(value)) {
+                        this.invalidAge(true);
+                    } else {
+                        this.invalidAge(false);
+                        this.Age(value);
+                    }
+                }
+            });
+            this.Email = ko.observable("a@gmail.com");
+            this.checkboxValue = ko.observableArray(["Google", "MS", "Taistech", "Mastek"]);
+            this.selectCheck = ko.observableArray(["Google"])
+            this.radioValue = ko.observableArray(["React", "Angular", "Knockout"]);
+            this.selectedRadio = ko.observable("React");
+            this.dropValue = ko.observableArray(["Node", "Java"])
+            this.selectedDrop = ko.observable("Node");
+            this.wholeData = ko.observableArray([]);
+            this.firstPageData = ko.observableArray([]);
+            this.secondPageData = ko.observableArray([]);
+            this.firstPage = ko.observable(true);
+            this.secondPage = ko.observable(false);
+            this.next = function () {
+                this.firstPage(false);
+                this.secondPage(true);
+
+            }.bind(this);
+            this.prev = function () {
+                this.firstPage(true);
+                this.secondPage(false);
+            }.bind(this);
+            this.savedatapage1 = function () {
+                var firstData = {
+                    Name: this.Name(),
+                    Age: this.Age(),
+                    Email: this.Email(),
+                }
+                this.firstPageData.push(firstData);
+                console.log(this.firstPageData());
+            }
+            this.savedatapage2 = function () {
+                var secondData = {
+                    Frontend: this.selectedRadio(),
+                    Company: this.selectCheck(),
+                    Backend: this.selectedDrop(),
+                }
+                this.secondPageData.push(secondData);
+                console.log(this.secondPageData());
+            }
+            this.submitForm = function () {
+                this.wholeData.push({first:this.firstPageData(), second:this.secondPageData()});
+                console.log(this.wholeData());
+            }
+        };
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+
+</html>

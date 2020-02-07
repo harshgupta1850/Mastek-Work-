@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+    <title>
+    </title>
+    <script src="knockout-3.5.0.js"></script>
+</head>
+
+<body>
+    <div>
+        <form data-bind="submit:addItem">
+            <h1>Item List</h1>
+            <p> Enter Item to add</p><input data-bind='value: itemToAdd' placeholder="Enter Item" />
+            <button type='submit' data-bind='enable: itemToAdd().length>0'>Add</button><br />
+            <h2>Your Items:</h2>
+        </form>
+        <div>
+            <select style="color:blue; height: 200px; width: 100px;" multiple="multiple"
+                data-bind="options :items"></select>
+        </div>
+        <button>Remove</button>
+        <button data-bind="click : sortItems">Sort</button>
+        
+
+    </div>
+    <script>
+        var listModel = function () {
+            this.items = ko.observableArray([]);
+            this.itemToAdd = ko.observable("");
+            this.addItem = function () {
+                if (this.itemToAdd !== 0) {
+                    this.items.push(this.itemToAdd());
+                    this.itemToAdd("");
+                }
+            }.bind(this);
+            this.sortItems=function(){
+                this.items.sort();
+            };
+        }
+        ko.applyBindings(new listModel());
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<div id="confirmation-summary" style="padding-top: 77px;">
+    <h3 class="order-summary-txt" data-bind="widgetLocaleText: 'orderSummaryText'"></h3>
+    <div style="background: #fff;margin: -2px 20px 0px 0px;">
+  <div class="confirmation-summary clearfix" style= "border:0;min-height: 20px;padding: 10px;margin-bottom: 20px; margin: -2px 20px 10px 20px;background: #fff;margin-top: 0;">
+    
+    <!-- ko if: confirmation -->
+    <!-- ko with: confirmation -->
+    <!-- Sub-Total -->
+    <div class="shippingCost mt12">
+        <span class="dark-grey-style" data-bind="widgetLocaleText: 'subTotalText'"></span>
+      <div class="pull-right">
+          <!--DDF-497 added '$parent.cartAnniversaryDiscountAmount()' --> 
+        <span data-bind="currencyValueHandler: {price: Math.round(priceInfo.subTotal - $parent.perOrderCartVAT() - $parent.raffleTicketsVATTotal() + $parent.preOrderCartDiscount() + $parent.cartAnniversaryDiscountAmount()), currencyObj: $data.priceListGroup.currency}" class="bold"></span>
+        <span data-bind="currencySymbolHandler: {price: priceInfo.subTotal - $parent.perOrderCartVAT() - $parent.raffleTicketsVATTotal + $parent.preOrderCartDiscount() + $parent.cartAnniversaryDiscountAmount(), currencyObj: $data.priceListGroup.currency}" class="currency-style"></span>
+      </div>
+    </div>
+ 
+    
+    <!-- Sales Tax -->
+    <!--ko if:$parent.preOrderCartDiscount() > 0-->
+    <div class="confirmation-sales-tax">
+      <!--<img src="/file/general/icon-checked_green.svg">
+      <span class="dark-grey-style" data-bind="widgetLocaleText: 'salesTaxText'"></span> -->
+       <!-- DDF-393 starts -->
+         <div class="dark-grey-style"><img src="/file/general/icon-checked_green.svg">&nbsp;<span>Pre-Order Discount/Special Discount</span><span data-bind="html:discountToolTipHtml()"></span></div>
+      <!-- DDF-393 ends -->
+     <div class="pull-right mt11">
+         <span>-</span>
+      <span data-bind="currencyValueHandler: {price: $parent.preOrderCartDiscount(), currencyObj: $data.priceListGroup.currency}" class="bold"></span>
+      <span data-bind="currencySymbolHandler: {price: priceInfo.tax, currencyObj: $data.priceListGroup.currency}" class="currency-style"></span></div>
+      <!-- DDF-497 Starts here -->
+      <p class="para" style="padding-left: 18px; color: #9B9B9B;">(Applied on pre-order items)</p>
+      <!-- DDF-497 Ends here -->
+    </div>
+    <!--/ko-->
+        <!--DDF-497 starts here -->
+    <!--ko if:$parent.cartAnniversaryDiscountAmount() > 0-->
+    <div class="confirmation-sales-tax">
+        <div class="dark-grey-style"><img src="/file/general/icon-checked_green.svg">&nbsp;<span>DDF Anniversary 25% Discount</span></div>
+     <div class="pull-right mt11">
+         <span>-</span>
+      <span data-bind="currencyValueHandler: {price: $parent.cartAnniversaryDiscountAmount(), currencyObj: $data.priceListGroup.currency}" class="bold"></span>
+      <span data-bind="currencySymbolHandler: {price: priceInfo.tax, currencyObj: $data.priceListGroup.currency}" class="currency-style"></span></div>
+      <!-- DDF-497 Starts here -->
+      <p class="para" style="padding-left: 18px; color: #9B9B9B;">(Applied on selected items)</p>
+      <!-- DDF-497 Ends here -->
+    </div>
+    <!--/ko-->
+    <!-- DDF-497 ends here -->
+    
+    <!--ko if:$parent.raffleTicketInCart().length-->
+     <div class="confirmation-sales-tax">
+      <span  class="dark-grey-style">VAT 5%</span>
+     <div class="pull-right mt11"> 
+     <span>+</span>
+     <span data-bind="currencyValueHandler: {price: $parent.raffleTicketsVATTotal(), currencyObj: $data.priceListGroup.currency}" class="bold"></span>
+      <span data-bind="currencySymbolHandler: {price: priceInfo.tax, currencyObj: $data.priceListGroup.currency}" class="currency-style"></span></div>
+        <!-- DDF-497 Starts here -->
+      <p class="para" style="color: #9B9B9B;">(Applied on MM and FS Tickets)</p>
+      <!-- DDF-497 Ends here -->
+    </div>
+    <!--/ko-->
+    <!--ko if:$parent.nonRaffleProductsInCart().length && $parent.perOrderCartVAT() > 0-->
+     <div class="confirmation-sales-tax">
+      <span  class="dark-grey-style">VAT</span>
+     <div class="pull-right mt11"> 
+     <span>+</span>
+     <span data-bind="currencyValueHandler: {price: $parent.perOrderCartVAT(), currencyObj: $data.priceListGroup.currency}" class="bold"></span>
+      <span data-bind="currencySymbolHandler: {price: 0, currencyObj: $data.priceListGroup.currency}" class="currency-style"></span></div>
+      <!-- DDF-497 Starts here -->
+      <p class="para" style="color: #9B9B9B;">(Applied on pre-order items)</p>
+      <!-- DDF-497 Ends here -->
+    </div>
+    <!--/ko-->
+ 
+    <!-- Order Total -->
+   
+    <div class="confirmation-total">
+      <div class="confirmation-total-ex-tax">
+        <span data-bind="widgetLocaleText:'orderTotalText'" style="    font-size: 14px;color: #4A4A4A;font-weight: 400;display: inline-block;margin-bottom: 8px;"></span>
+        <br/>
+        <span data-bind="currencyValueHandler: {price: priceInfo.totalWithoutTax, currencyObj: $data.priceListGroup.currency}" class="pull-left" style="font-weight:bold;font-size: 40px; color: black; padding-top: 5px; padding-bottom: 10px;"></span>
+        <span data-bind="currencySymbolHandler: {price: priceInfo.totalWithoutTax, currencyObj: $data.priceListGroup.currency}" class="pull-left currency-style" style="padding-top: 8px; font-size: 20px; padding-bottom: 10px; font-weight: normal; margin-left: 7px;"></span>
+      </div>
+    </div>
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko ifnot: confirmation -->
+    <span data-bind="widgetLocaleText: 'orderDoesNotExist'"></span>
+    <!-- /ko -->
+
+
+  </div>
+  <img src="/file/general/icon-checkout-deco.svg" style="width: 100%; background-color: #EEEFF6; padding-bottom: 4px;">
+</div>
+</div>

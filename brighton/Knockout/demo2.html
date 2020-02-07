@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<head>
+    <title>
+    </title>
+    <script src="knockout-3.5.0.js"></script>
+</head>
+<body>
+    The name is <span data-bind="text: personName"></span><br/>
+    The age is <span data-bind="text: personAge"></span>
+    <script>
+        var myViewModel={
+            personName:ko.observable('harsh'),
+            personAge: ko.observable(23)
+        };
+        ko.applyBindings(myViewModel);
+        myViewModel.personName('Random');
+        myViewModel.personAge(24);
+    </script>
+</body>
+</html>

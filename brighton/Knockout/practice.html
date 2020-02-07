@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<head>
+    <title>
+    </title>
+    <script src="knockout-3.5.0.js"></script>
+</head>
+
+<body>
+    <form data-bind="getTweets">
+        Twitter Account:
+        <input data-bind="value: twiiterName"/>
+        <button type="submit">Get Tweets</button>
+    </form>
+    <div data-bind="with: resultData">
+        <h3>Recent tweets fetched at <span data-bind="text: retriveData"></span></h3>
+        <ol data-bind="foreach :toptweets"></ol>
+
+    </div>
+    <script>
+       
+    </script>
+</body>
+
+</html>

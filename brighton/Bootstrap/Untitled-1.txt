@@ -1,0 +1,196 @@
+/**
+ * @fileoverview extendshoppingCartSummary_v15.js.
+ *
+ * @author
+ */
+define(
+    //---------------------
+    // DEPENDENCIES
+    //---------------------
+    ['knockout', 'ccRestClient', 'ccConstants', 'pubsub'],
+
+    //-----------------------
+    // MODULE DEFINITION
+    //-----------------------
+    function(ko, ccRestClient, ccConstants, pubsub) {
+
+        "use strict";
+        var getWidget;
+
+        return {
+            onLoad: function(widget) {
+                getWidget = widget;
+                getWidget.prodIdArray = ko.observableArray([]);
+                getWidget.prodIdQtyArray = ko.observableArray([]);
+                getWidget.add = ko.observable();
+                getWidget.transNumber = ko.observable();
+                getWidget.type = ko.observable();
+
+                // Funtion to extract the query parameter from URL
+
+                getWidget.getProdIdQtyFromUrl = function() {
+                    var url = window.location.href;
+                    var params = (new URL(window.location.href)).searchParams;
+                    getWidget.add = params.get("add")
+                    getWidget.transNumber = params.get("transnumber");
+                    getWidget.type = params.get("type");
+                    if (getWidget.add !== null) {
+                        var pid_qty = getWidget.add.split(';');
+                        pid_qty.map(function(data) {
+                            getWidget.prodIdArray().push(data.split(':')[0]);
+                            getWidget.prodIdQtyArray().push({
+                                prodId: data.split(':')[0],
+                                prodQty: data.split(':')[1]
+                            });
+                        });
+                    }
+
+                };
+
+                getWidget.getProdIdQtyFromUrl();
+
+                // Function to find out SKU options
+
+
+
+                widget.getSelectedSkuOptionsSelf = function(variantOptions) {
+                    var selectedOptions = [],
+                        listingVariantImage;
+                    if (variantOptions) {
+                        for (var i = 0; i < variantOptions.length; i++) {
+                            if (variantOptions[i]) {
+                                selectedOptions.push({
+                                    'optionName': variantOptions[i].optionName,
+                                    'optionValue': Object.keys(variantOptions[i].optionValueMap)[0],
+                                    'optionId': variantOptions[i].optionId,
+                                    'optionValueId': variantOptions[i].optionValueMap[Object.keys(variantOptions[i].optionValueMap)[0]]
+                                });
+                            }
+                        }
+                    }
+                    return selectedOptions;
+                };
+
+
+                // Function to add item in cart
+
+
+                widget.additem = function() {
+                    var prodListIdQty = this.prodIdQtyArray();
+                    var prodListIds = this.prodIdArray();
+                    var prodListIdsObj = {};
+                    var prodListArray = [];
+                    var queryString = '';
+                    for (var i = 0; i < (prodListIds.length); i++) {
+                        if (i === 0) {
+                            queryString = "id eq \"" + prodListIds[i] + "\"";
+                        } else {
+
+                            queryString = queryString + " or id eq \"" + prodListIds[i] + "\"";
+                        }
+
+                    }
+                    prodListIdsObj["dataItems"] = "repositoryid";
+                    prodListIdsObj["q"] = queryString;
+                    var arrayFinal = [];
+                    if (prodListIdsObj !== null) {
+                        console.log(prodListIdsObj)
+                        ccRestClient.request(ccConstants.ENDPOINT_PRODUCTS_LIST_PRODUCTS, prodListIdsObj, function(resp) {
+                                console.log('product response', resp);
+                                var localItems = [];
+                                localItems = resp.items;
+                                var localItemsId = [];
+                                for (var i = 0; i < localItems.length; i++) {
+                                    localItemsId.push(resp.items[i].id)
+                                }
+                                var childSKUs = []
+                                resp.items.map(function(sku) {
+                                    childSKUs.push(sku.childSKUs);
+                                });
+                                var repositoryIdArr = []
+                                childSKUs.map(function(skus) {
+                                    skus.map(function(repoId, i) {
+                                        if (i === 0) {
+                                            repositoryIdArr.push(repoId.repositoryId);
+                                        }
+                                    });
+                                });
+                                console.log('repositoryIdArr', repositoryIdArr);
+                                var prodIdSKUList=""
+                                for(var a=0;a<localItemsId;a++){
+                                    prodIdSKUList += localItemsId[a] + ":" + repositoryIdArr[a] + ",";
+                                }
+                                prodIdSKUList = prodIdSKUList.slice(0, -1);
+                                var params = {};
+                                params[ccConstants.PRODUCTS_PARAM] = prodIdSKUList;
+                                console.log('params', params);
+
+                                ccRestClient.authenticatedRequest("/ccstoreui/v1/stockStatus", params, function(data) {
+                                    console.log('stock status', data)
+                                })
+
+
+
+                                localItemsId.map(function(ids) {
+                                    ccRestClient.request("/ccstoreui/v1/stockStatus/" + ids, '', function(data) {
+                                        console.log('data', data.stockStatus)
+                                        localItems.map(function(response) {
+                                            
+                                            if (response.id === ids) {
+                                                var Options = response.productVariantOptions;
+                                                var selectedOptions = getWidget.getSelectedSkuOptionsSelf(Options);
+                                                var selectedOptionsObj = {
+                                                    'selectedOptions': selectedOptions
+                                                };
+                                                var stockStateObj = {
+                                                    'stockState': data.stockStatus
+                                                }
+                                                var newProduct = $.extend(true, {}, response, selectedOptionsObj, stockStateObj);
+                                                for (var i = 0; i < prodListIdQty.length; i++) {
+                                                    if (newProduct.id == prodListIdQty[i].prodId) {
+                                                        newProduct.orderQuantity = parseInt(prodListIdQty[i].prodQty, 10);
+                                                    }
+                                                }
+                                                prodListArray.push(newProduct)
+                                            }
+                                            console.log('newProduct', prodListArray)
+
+                                        })
+
+                                    })
+                                })
+
+                            },
+                            function(err) {
+                                console.log(err)
+                            });
+                    }
+
+
+                };
+
+                //function to add TransNumber and type to the commerce item from URL
+
+                widget.addCartItem = function() {
+                    for (var l = 0; l < this.prodIdArray().length; l++) {
+                        for (var k = 0; k < getWidget.cart().allItems().length; k++) {
+                            if (getWidget.cart().allItems()[k].productId == this.prodIdArray()[l]) {
+                                if (this.transNumber !== null && this.transNumber !== '') {
+                                    var objectData = {};
+                                    objectData['transNumber'] = this.transNumber;
+                                    objectData['type'] = this.type;
+                                    getWidget.cart().allItems()[k].externalData = objectData;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            },
+            beforeAppear: function() {
+                getWidget.additem();
+                console.log('extendshoppingCartSummary_v15.js before appear');
+            },
+        };
+    }
+);

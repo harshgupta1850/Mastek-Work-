@@ -1,0 +1,190 @@
+/**
+ * @fileoverview extendshoppingCartSummary_v15.js.
+ *
+ * @author
+ */
+define(
+    //---------------------
+    // DEPENDENCIES
+    //---------------------
+    ['knockout', 'ccRestClient', 'ccConstants', 'pubsub'],
+
+    //-----------------------
+    // MODULE DEFINITION
+    //-----------------------
+    function(ko, ccRestClient, ccConstants, pubsub) {
+
+        "use strict";
+        var getWidget;
+
+        return {
+            onLoad: function(widget) {
+                
+                getWidget = widget;
+                getWidget.prodIdArray = ko.observableArray([]);
+                getWidget.prodIdQtyArray = ko.observableArray([]);
+                getWidget.add = ko.observable();
+                getWidget.transNumber = ko.observable();
+                getWidget.type = ko.observable();
+
+                // Funtion to extract the query parameter from URL
+
+                widget.getProdIdQtyFromUrl = function() {
+                    var url = window.location.href;
+                    var params = (new URL(window.location.href)).searchParams;
+                    getWidget.add = params.get("add")
+                    getWidget.transNumber = params.get("transnumber");
+                    getWidget.type = params.get("type");
+                    if (getWidget.add !== null) {
+                        var pid_qty = getWidget.add.split(';');
+                        pid_qty.map(function(data) {
+                            getWidget.prodIdArray().push(data.split(':')[0]);
+                            getWidget.prodIdQtyArray().push({
+                                prodId: data.split(':')[0],
+                                prodQty: parseInt(data.split(':')[1], 10)
+                            });
+                        });
+                    }
+
+                };
+
+                getWidget.getProdIdQtyFromUrl();
+
+                // Function to find out SKU options
+
+
+                widget.getSelectedSkuOptionsSelf = function(variantOptions,x_color,x_width) {
+                    var selectedOptions = [],
+                        listingVariantImage;
+                    if (variantOptions) {
+                        for (var i = 0; i < variantOptions.length; i++) {
+                            console.log('variantOptions',variantOptions[i])
+                            console.log('x_color',x_color)
+                            console.log('x_width',x_width)
+                            console.log('variantOptions[i].optionValueMap[Object.keys(variantOptions[i].optionValueMap)[i]] :::::',variantOptions[i].optionValueMap[Object.keys(variantOptions[i].optionValueMap)[i]])
+                            console.log('Object.keys(variantOptions[i].optionValueMap)[i] :::::',Object.keys(variantOptions[i].optionValueMap)[i])
+                            if (variantOptions[i] && (x_color==Object.keys(variantOptions[i].optionValueMap)[i] || x_width==Object.keys(variantOptions[i].optionValueMap)[i])) {
+                                selectedOptions.push({
+                                    'optionName': variantOptions[i].optionName,
+                                    'optionValue': Object.keys(variantOptions[i].optionValueMap)[i],
+                                    'optionId': variantOptions[i].optionId,
+                                    'optionValueId': variantOptions[i].optionValueMap[Object.keys(variantOptions[i].optionValueMap)[i]]
+                                });
+                                console.log('selectedOptions', selectedOptions)
+                            }
+                        }
+                    }
+                    return selectedOptions;
+                };
+
+
+                // Function to add item in cart
+
+
+                widget.addItemsToCart = function() {
+                    console.log('hi:::::')
+                    var prodListIdQty = this.prodIdQtyArray();
+                    var prodListIds = this.prodIdArray();
+                    var prodListIdsObj = {};
+                    var prodListArray = [];
+                    var queryString = '';
+                    for (var i = 0; i < (prodListIds.length); i++) {
+                        if (i === 0) {
+                            queryString = "id eq \"" + prodListIds[i] + "\"";
+                        } else {
+
+                            queryString = queryString + " or id eq \"" + prodListIds[i] + "\"";
+                        }
+
+                    }
+                    prodListIdsObj["dataItems"] = "repositoryid";
+                    prodListIdsObj["q"] = queryString;
+                    if (prodListIds.length > 0) {
+                        ccRestClient.request(ccConstants.ENDPOINT_PRODUCTS_LIST_PRODUCTS, prodListIdsObj, function(productList) {
+                                console.log('product response', productList);
+                                var params = "";
+                                productList.items.map(function(item, i) {
+                                    var repId = item.childSKUs[0].repositoryId;
+                                    console.log('child',item.childSKUs[0])
+                                    if (i === productList.items.length - 1) {
+                                        params += item.id + ":" + repId;
+                                    } else {
+                                        params += item.id + ":" + repId + ",";
+                                    }
+                                });
+                                var parameters = {};
+                                parameters[ccConstants.PRODUCTS_PARAM] = params;
+                                ccRestClient.request("/ccstoreui/v1/stockStatus", parameters, function(stockData) {
+                                    console.log('stockData',stockData)
+                                    productList.items.map(function(product) {
+                                        console.log('x_color iniside',product.childSKUs[0].x_color)
+                                        console.log('x_width iniside',product.childSKUs[0].x_width)
+                                        var selectedOptions = getWidget.getSelectedSkuOptionsSelf(product.productVariantOptions,product.childSKUs[0].x_width,product.childSKUs[0].x_color);
+                                        console.log('selectedOptions',selectedOptions)
+                                        var selectedOptionsObj = {};
+                                        selectedOptionsObj['selectedOptions'] = selectedOptions;
+                                        var stockStateObj = {};
+                                        stockData.map(function(data) {
+                                            if (data.productId === product.id) {
+                                                stockStateObj['stockState'] = data.stockStatus;
+                                            }
+                                        })
+                                        var newProduct = $.extend(true, {}, product, selectedOptionsObj, stockStateObj);
+                                        console.log('newProduct',newProduct)
+                                        for (var i = 0; i < prodListIdQty.length; i++) {
+                                            if (newProduct.id == prodListIdQty[i].prodId) {
+                                                newProduct.orderQuantity = prodListIdQty[i].prodQty
+                                            }
+                                        }
+                                        prodListArray.push(newProduct)
+                                    })
+                                    getWidget.cart().addItems(prodListArray);
+                                    setTimeout(function() {
+                                        getWidget.addExternalData();
+                                        console.log('Final Items', getWidget.cart().items());
+                                    }, 3000)
+                                })
+                            },
+                            function(err) {
+                                console.log(err)
+                            });
+                    }
+                };
+                
+                //function to add TransNumber and type to the commerce item from URL
+                
+                widget.addExternalData = function() {
+                    for (var l = 0; l < this.prodIdArray().length; l++) {
+                        console.log('Length ::::: ', getWidget.cart().items().length)
+                        for (var k = 0; k < getWidget.cart().items().length; k++) {
+                            if (getWidget.cart().items()[k].productId == this.prodIdArray()[l]) {
+                                if (this.transNumber !== null && this.transNumber !== '') {
+                                    var objectData = {};
+                                    objectData['transNumber'] = this.transNumber;
+                                    objectData['type'] = this.type;
+                                    getWidget.cart().items()[k].externalData()['externalData']=objectData
+                                    // getWidget.cart().items().map(function (item) {
+                                    //   for (var i in item ) {
+                                    //     item.externalData()['externalData'] = objectData;
+                                    //   }
+                                    // });
+                                    // getWidget.cart().allItems()[k].shopperInput = objectData;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                widget.giftMyOrder = function() {
+                    console.log('gift my order');    
+                };
+                
+                widget.giftMyOrder();
+            },
+            beforeAppear: function() {
+                getWidget.addItemsToCart();
+                console.log('extendshoppingCartSummary_v15.js before appear');
+            },
+        };
+    }
+);
